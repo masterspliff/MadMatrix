@@ -1,0 +1,42 @@
+# macOS system files
+.DS_Store
+
+# Important
+.aider*
+.env
+!.aider.conf.yml
+!.aiderignore
+
+# IDE files
+.idea/
+*.sln
+
+# Build artifacts
+core/obj/
+server/obj/
+webapp/obj/
+
+# Generated files
+*.AssemblyAttributes.cs
+*.AssemblyInfo.cs
+*.AssemblyInfoInputs.cache
+*.GeneratedMSBuildEditorConfig.editorconfig
+*.GlobalUsings.g.cs
+*.assets.cache
+*.csproj.nuget.dgspec.json
+*.csproj.nuget.g.props
+*.csproj.nuget.g.targets
+project.assets.json
+project.nuget.cache
+project.packagespec.json
+*.rider.project.*
+
+# Configuration files
+server/Properties/launchSettings.json
+server/appsettings*.json
+webapp/Properties/launchSettings.json
+
+# Web app build artifacts
+webapp/wwwroot/css/
+webapp/wwwroot/icon-192.png
+webapp/wwwroot/index.html
