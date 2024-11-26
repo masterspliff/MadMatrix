@@ -9,7 +9,9 @@
 
 # IDE files
 .idea/
-*.sln
+
+# Should this be removed? 
+#*.sln
 
 # Build artifacts
 core/obj/
