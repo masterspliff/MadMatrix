@@ -167,7 +167,7 @@ alias:
 #light-mode: false
 
 ## Enable/disable pretty, colorized output (default: True)
-#pretty: true
+pretty: true
 
 ## Enable/disable streaming responses (default: True)
 #stream: true
@@ -200,7 +200,7 @@ alias:
 #completion-menu-current-bg-color: xxx
 
 ## Set the markdown code theme (default: default, other options include monokai, solarized-dark, solarized-light)
-#code-theme: default
+#code-theme: solarized-dark
 
 ## Show diffs when committing changes (default: False)
 #show-diffs: false
