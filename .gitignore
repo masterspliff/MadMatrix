@@ -4,7 +4,7 @@
 # Important
 .aider*
 .env
-!.aider.conf.yml
+.aider.conf.yml
 !.aiderignore
 
 # IDE files
@@ -32,3 +32,7 @@ project.assets.json
 project.nuget.cache
 project.packagespec.json
 *.rider.project.*
+
+# Ignore bin and obj directories
+**/bin/
+**/obj/
