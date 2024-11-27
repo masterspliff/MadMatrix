@@ -1,0 +1,5 @@
+model: gpt-4-1106-preview
+dark_mode: true
+user_input_color: cyan
+assistant_output_color: green
+code_theme: monokai
