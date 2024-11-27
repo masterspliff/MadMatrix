@@ -3,3 +3,7 @@ dark_mode: true
 user_input_color: cyan
 assistant_output_color: green
 code_theme: monokai
+alias:
+  - "fast:gpt-3.5-turbo"
+  - "smart:gpt-4"
+  - "hacker:claude-3-sonnet-20240229"
