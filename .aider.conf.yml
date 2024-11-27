@@ -169,6 +169,21 @@ alias:
 ## Enable/disable pretty, colorized output (default: True)
 pretty: true
 
+## Use colors suitable for a dark terminal background (default: False)
+dark-mode: true
+
+## Set the color for user input
+user-input-color: "#00cc00"
+
+## Set the color for assistant output
+assistant-output-color: "#0088ff"
+
+## Set the color for tool output
+tool-output-color: "#cccccc"
+
+## Set the markdown code theme
+code-theme: "monokai"
+
 ## Enable/disable streaming responses (default: True)
 #stream: true
 
