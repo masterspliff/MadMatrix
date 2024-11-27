@@ -32,13 +32,3 @@ project.assets.json
 project.nuget.cache
 project.packagespec.json
 *.rider.project.*
-
-# Configuration files
-server/Properties/launchSettings.json
-server/appsettings*.json
-webapp/Properties/launchSettings.json
-
-# Web app build artifacts
-webapp/wwwroot/css/
-webapp/wwwroot/icon-192.png
-webapp/wwwroot/index.html
