@@ -17,11 +17,9 @@
 #######
 # Main:
 
-## Specify the OpenAI API key
-openai-api-key: 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
-
-## Specify the Anthropic API key
-anthropic-api-key: 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
+## API keys are now stored in .env file
+#openai-api-key: xxx
+#anthropic-api-key: xxx
 
 ## Specify the model to use for the main chat
 #model: xxx
