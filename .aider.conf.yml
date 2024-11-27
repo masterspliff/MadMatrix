@@ -87,12 +87,10 @@ anthropic-api-key: sk-ant-api03-Z76FL8fzjSNojbsWKCPISMDXuRhw-wzGX66UfegpZR6v-scK
 #model-metadata-file: .aider.model.metadata.json
 
 ## Add a model alias (can be used multiple times)
-#alias: xxx
-## Specify multiple values like this:
-#alias:
-#  - xxx
-#  - yyy
-#  - zzz
+alias:
+  - "fast:gpt-3.5-turbo"
+  - "smart:gpt-4"
+  - "hacker:claude-3-sonnet-20240229"
 
 ## Verify the SSL cert when connecting to models (default: True)
 #verify-ssl: true
