@@ -1,10 +1,10 @@
 @page "/test"
 
-<h3>Test Page</h3>
+<h3>Updated Test Page</h3>
 
-<p>This is a simple test page.</p>
+<p>This is an updated test page with some random changes.</p>
 
-<button class="btn btn-primary" @onclick="IncrementCount">Click me</button>
+<button class="btn btn-primary" @onclick="IncrementCount">Click me if you dare!</button>
 
 <p>Current count: @currentCount</p>
 
@@ -13,6 +13,6 @@
 
     private void IncrementCount()
     {
-        currentCount++;
+        currentCount += 2;
     }
 }

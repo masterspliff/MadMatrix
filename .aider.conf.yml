@@ -17,8 +17,10 @@
 #######
 # Main:
 
-## API keys are now stored in .env file
+## Specify the OpenAI API key
 #openai-api-key: xxx
+
+## Specify the Anthropic API key
 #anthropic-api-key: xxx
 
 ## Specify the model to use for the main chat
@@ -85,6 +87,8 @@
 #model-metadata-file: .aider.model.metadata.json
 
 ## Add a model alias (can be used multiple times)
+#alias: xxx
+## Specify multiple values like this:
 alias:
   - "fast:gpt-3.5-turbo"
   - "smart:gpt-4"
@@ -157,13 +161,13 @@ alias:
 # Output Settings:
 
 ## Use colors suitable for a dark terminal background (default: False)
-dark-mode: true
+#dark-mode: false
 
 ## Use colors suitable for a light terminal background (default: False)
 #light-mode: false
 
 ## Enable/disable pretty, colorized output (default: True)
-pretty: true
+#pretty: true
 
 ## Enable/disable streaming responses (default: True)
 #stream: true
@@ -220,22 +224,22 @@ pretty: true
 auto-commits: false
 
 ## Enable/disable commits when repo is found dirty (default: True)
-#dirty-commits: true
+dirty-commits: false
 
 ## Attribute aider code changes in the git author name (default: True)
-#attribute-author: true
+attribute-author: false
 
 ## Attribute aider commits in the git committer name (default: True)
-#attribute-committer: true
+attribute-committer: false
 
 ## Prefix commit messages with 'aider: ' if aider authored the changes (default: False)
-#attribute-commit-message-author: false
+attribute-commit-message-author: false
 
 ## Prefix all commit messages with 'aider: ' (default: False)
-#attribute-commit-message-committer: false
+attribute-commit-message-committer: false
 
 ## Commit all pending changes with a suitable commit message, then exit
-#commit: false
+commit: false
 
 ## Specify a custom prompt for generating commit messages
 #commit-prompt: xxx
@@ -296,8 +300,12 @@ auto-commits: false
 #  - zzz
 
 ## specify a read-only file (can be used multiple times)
-read:
-  - CONVENTIONS.md
+#read: xxx
+## Specify multiple values like this:
+#read:
+#  - xxx
+#  - yyy
+#  - zzz
 
 ## Use VI editing mode in the terminal (default: False)
 #vim: false
@@ -312,7 +320,7 @@ read:
 #just-check-update: false
 
 ## Check for new aider versions on launch
-check-update: true
+#check-update: true
 
 ## Show release notes on first run of new version (default: None, ask user)
 #show-release-notes: xxx
@@ -381,4 +389,4 @@ check-update: true
 #voice-format: wav
 
 ## Specify the language for voice using ISO 639-1 code (default: auto)
-voice-language: en
+#voice-language: en
