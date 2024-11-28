@@ -182,7 +182,7 @@ assistant-output-color: "#0088ff"
 tool-output-color: "#cccccc"
 
 ## Set the markdown code theme
-code-theme: "monokai"
+#code-theme: "monokai"
 
 ## Enable/disable streaming responses (default: True)
 #stream: true
