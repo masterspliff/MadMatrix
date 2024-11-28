@@ -1,7 +1,60 @@
 ﻿@page "/"
+@using System.Timers
+@implements IDisposable
 
 <PageTitle>Home</PageTitle>
 
-<h1>Hello, world!</h1>
+<div class="dvd-container">
+    <div class="dvd-text" style="left: @(_posX)px; top: @(_posY)px">
+        Hello, @_currentName!
+    </div>
+</div>
 
-Welcome to your new app.
+@code {
+    private string _currentName = "Benjamin";
+    private readonly string[] _names = new[] { "Benjamin", "Valdemar", "Tony", "Minh", "Oliver" };
+    private Timer? _nameTimer;
+    private Timer? _moveTimer;
+    private double _posX = 0;
+    private double _posY = 0;
+    private double _velocityX = 2;
+    private double _velocityY = 2;
+    private readonly Random _random = new();
+
+    protected override void OnInitialized()
+    {
+        _nameTimer = new Timer(2000);
+        _nameTimer.Elapsed += ChangeNameAsync;
+        _nameTimer.Start();
+
+        _moveTimer = new Timer(50);
+        _moveTimer.Elapsed += MoveTextAsync;
+        _moveTimer.Start();
+    }
+
+    private async void ChangeNameAsync(object? sender, ElapsedEventArgs e)
+    {
+        _currentName = _names[_random.Next(_names.Length)];
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async void MoveTextAsync(object? sender, ElapsedEventArgs e)
+    {
+        var container = 800; // Approximate container size
+        _posX += _velocityX;
+        _posY += _velocityY;
+
+        if (_posX <= 0 || _posX >= container - 200)
+            _velocityX *= -1;
+        if (_posY <= 0 || _posY >= container - 100)
+            _velocityY *= -1;
+
+        await InvokeAsync(StateHasChanged);
+    }
+
+    public void Dispose()
+    {
+        _nameTimer?.Dispose();
+        _moveTimer?.Dispose();
+    }
+}
