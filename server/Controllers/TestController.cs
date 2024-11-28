@@ -7,7 +7,8 @@ namespace server.Controllers;
 [ApiController]
 [Route("[controller]")]
 
-// Test comment to trigger workflow                                                                                                                                                                       
+// Test comment to trigger workflow        
+// Second test comment to trigger workflow
 public class TestController : ControllerBase
 {
     private readonly IMongoDatabase _database;
