@@ -26,7 +26,7 @@ jobs:
       
     - name: Test Server
       env:
-        MONGODB_PASSWORD: "1337"
+        MONGODB_PASSWORD: ${{ secrets.MONGODB_PASSWORD }}
       run: |
         dotnet run --project server/server.csproj --no-build &
         sleep 10
