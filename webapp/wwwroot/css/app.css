@@ -86,26 +86,3 @@ code {
     color: #c02d76;
 }
 
-.dvd-container {
-    width: 100%;
-    height: 100vh;
-    background-color: black;
-    position: relative;
-    overflow: hidden;
-}
-
-.dvd-text {
-    position: absolute;
-    color: white;
-    font-size: 2rem;
-    font-weight: bold;
-    transition: color 0.5s ease;
-    animation: fadeInOut 2s infinite;
-    white-space: nowrap;
-}
-
-@keyframes fadeInOut {
-    0% { opacity: 0.3; }
-    50% { opacity: 1; }
-    100% { opacity: 0.3; }
-}
