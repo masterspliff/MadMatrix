@@ -7,11 +7,12 @@
     <title>webapp</title>
     <base href="/" />
     <link rel="stylesheet" href="css/app.css" />
+    <link rel="stylesheet" href="css/hacker.css" />
     <!-- If you add any scoped CSS files, uncomment the following to load them
     <link href="webapp.styles.css" rel="stylesheet" /> -->
 </head>
 
-<body>
+<body style="background-color: #000000; margin: 0; padding: 0;">
     <div id="app">
         <svg class="loading-progress">
             <circle r="40%" cx="50%" cy="50%" />
@@ -26,6 +27,9 @@
         <a class="dismiss">🗙</a>
     </div>
     <script src="_framework/blazor.webassembly.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.halo.min.js"></script>
+    <script src="js/textScramble.js"></script>
 </body>
 
 </html>

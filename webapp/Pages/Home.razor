@@ -1,60 +1,47 @@
 ﻿@page "/"
 @using System.Timers
-@implements IDisposable
+@inject IJSRuntime JSRuntime
 
 <PageTitle>Home</PageTitle>
 
-<div class="dvd-container">
-    <div class="dvd-text" style="left: @(_posX)px; top: @(_posY)px">
-        Hello, @_currentName!
-    </div>
+<div id="vanta-background" style="width: 100vw; height: 100vh; position: fixed; top: 0; left: 0; z-index: -1; background: transparent;"></div>
+
+<div class="hacker-container">
+    <div id="hackerText" class="hacker-text"></div>
 </div>
 
 @code {
-    private string _currentName = "Benjamin";
-    private readonly string[] _names = new[] { "Benjamin", "Valdemar", "Tony", "Minh", "Oliver" };
-    private Timer? _nameTimer;
-    private Timer? _moveTimer;
-    private double _posX = 0;
-    private double _posY = 0;
-    private double _velocityX = 2;
-    private double _velocityY = 2;
-    private readonly Random _random = new();
 
-    protected override void OnInitialized()
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        _nameTimer = new Timer(2000);
-        _nameTimer.Elapsed += ChangeNameAsync;
-        _nameTimer.Start();
-
-        _moveTimer = new Timer(50);
-        _moveTimer.Elapsed += MoveTextAsync;
-        _moveTimer.Start();
+        if (firstRender)
+        {
+            await InitializeVantaEffect();
+        }
     }
 
-    private async void ChangeNameAsync(object? sender, ElapsedEventArgs e)
+
+    private async Task InitializeVantaEffect()
     {
-        _currentName = _names[_random.Next(_names.Length)];
-        await InvokeAsync(StateHasChanged);
-    }
-
-    private async void MoveTextAsync(object? sender, ElapsedEventArgs e)
-    {
-        var container = 800; // Approximate container size
-        _posX += _velocityX;
-        _posY += _velocityY;
-
-        if (_posX <= 0 || _posX >= container - 200)
-            _velocityX *= -1;
-        if (_posY <= 0 || _posY >= container - 100)
-            _velocityY *= -1;
-
-        await InvokeAsync(StateHasChanged);
-    }
-
-    public void Dispose()
-    {
-        _nameTimer?.Dispose();
-        _moveTimer?.Dispose();
+        var hackerElement = await JSRuntime.InvokeAsync<IJSObjectReference>("document.getElementById", "hackerText");
+        await JSRuntime.InvokeVoidAsync("initTextScramble", hackerElement);
+        
+        var element = await JSRuntime.InvokeAsync<IJSObjectReference>("document.getElementById", "vanta-background");
+        await JSRuntime.InvokeVoidAsync("VANTA.HALO", new object[]
+        {
+            element,
+            new
+            {
+                mouseControls = true,
+                touchControls = true,
+                gyroControls = false,
+                minHeight = 200.00,
+                minWidth = 200.00,
+                baseColor = 0x0,
+                backgroundColor = 0x0,
+                amplitudeFactor = 2.30,
+                size = 2.50
+            }
+        });
     }
 }
