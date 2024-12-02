@@ -11,6 +11,4 @@ public class Event
     public string ChooseFood { get; set; }
     public string SpecialRequest { get; set; }
     public int Participant { get; set; } = new();
-    
-    public bool IsCompleted { get; set; }
 }
