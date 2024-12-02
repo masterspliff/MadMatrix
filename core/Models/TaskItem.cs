@@ -9,6 +9,7 @@ public class TaskItem
     public DateTime StartDate { get; set; }
     public DateTime EndDate { get; set; }
     public int EventId { get; set; }
+    public DateTime UpdatedAt { get; set; }
     public int AssignedToId { get; set; }
 }
 

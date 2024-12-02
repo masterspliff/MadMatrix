@@ -39,6 +39,6 @@ public class MongoUserRepository : IUserRepository
 
     public async Task<User?> GetByEmailAsync(string email)
     {
-        throw new NotImplementedException(); // Replace with actual implementation
+        return await _user.GetAllAsync().ContinueWith(task => task.Result.FirstOrDefault(u => u.Email == email));
     }
 }

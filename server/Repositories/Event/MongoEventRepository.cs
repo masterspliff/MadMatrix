@@ -1,44 +1,44 @@
 using core.Models;
 using MongoDB.Driver;
-using server.Data;
+using server.Repositories.Base;
 
 namespace server.Repositories;
 
 public class MongoEventRepository : IEventRepository
 {
-    private readonly IMongoCollection<Event> _events;
+    private readonly MongoRepository<Event> _repository;
 
-    public MongoEventRepository(MongoDbContext context)
+    public MongoEventRepository(MongoRepository<Event> repository)
     {
-        _events = context.Events;
+        _repository = repository;
     }
 
     public async Task<IEnumerable<Event>> GetAllAsync()
     {
-        return await _events.Find(_ => true).ToListAsync();
+        return await _repository.GetAllAsync();
     }
 
     public async Task<Event?> GetByIdAsync(int id)
     {
         var filter = Builders<Event>.Filter.Eq(e => e.Id, id);
-        return await _events.Find(filter).FirstOrDefaultAsync();
+        return await _repository.GetByIdAsync(id);
     }
 
     public async Task<Event> CreateAsync(Event entity)
     {
-        await _events.InsertOneAsync(entity);
+        await _repository.CreateAsync(entity);
         return entity;
     }
 
     public async Task UpdateAsync(Event entity)
     {
         var filter = Builders<Event>.Filter.Eq(e => e.Id, entity.Id);
-        await _events.ReplaceOneAsync(filter, entity);
+        await _repository.UpdateAsync(entity);
     }
 
     public async Task DeleteAsync(int id)
     {
         var filter = Builders<Event>.Filter.Eq(e => e.Id, id);
-        await _events.DeleteOneAsync(filter);
+        await _repository.DeleteAsync(id);
     }
 }
