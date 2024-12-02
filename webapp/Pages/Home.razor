@@ -1,4 +1,4 @@
-﻿@page "/"
+﻿@page "/sejt"
 @using System.Timers
 @inject IJSRuntime JSRuntime
 
@@ -23,7 +23,16 @@
 
     private async Task InitializeVantaEffect()
     {
+        // Add a small delay to ensure scripts are loaded
+        await Task.Delay(100);
+        
         var hackerElement = await JSRuntime.InvokeAsync<IJSObjectReference>("document.getElementById", "hackerText");
+        if (hackerElement == null)
+        {
+            Console.WriteLine("hackerText element not found");
+            return;
+        }
+        
         await JSRuntime.InvokeVoidAsync("initTextScramble", hackerElement);
         
         var element = await JSRuntime.InvokeAsync<IJSObjectReference>("document.getElementById", "vanta-background");

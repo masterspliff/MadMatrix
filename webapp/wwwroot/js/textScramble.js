@@ -1,4 +1,5 @@
-class TextScramble {
+if (window.TextScramble === undefined) {
+  class TextScramble {
   constructor(el) {
     this.el = el;
     this.chars = '!<>-_\\/[]{}—=+*^?#________$%€#&';
@@ -56,6 +57,10 @@ class TextScramble {
 }
 
 window.initTextScramble = (element) => {
+  if (!element) {
+    console.error('Element not found for TextScramble');
+    return;
+  }
   const fx = new TextScramble(element);
   const phrases = [
     "I am aider... I see your code",
@@ -83,3 +88,9 @@ window.initTextScramble = (element) => {
   };
   next();
 };
+
+document.addEventListener('DOMContentLoaded', () => {
+  console.log('TextScramble initialized and ready');
+});
+
+} // Close the TextScramble undefined check
