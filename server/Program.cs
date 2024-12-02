@@ -49,11 +49,10 @@ catch (Exception ex)
 }
 
 // Register repositories
-builder.Services.AddScoped<IEventRepository, EventRepository>();
-builder.Services.AddScoped<ILocationRepository, LocationRepository>();
+builder.Services.AddScoped<IEventRepository, MongoEventRepository>();
+builder.Services.AddScoped<ILocationRepository, MongoLocationRepository>();
 builder.Services.AddScoped<IUserRepository, MongoUserRepository>();
-builder.Services.AddScoped<ILocalUserRepository, LocalUserRepository>();                                                                                                                                  
-builder.Services.AddScoped<ITaskRepository, TaskRepository>();
+builder.Services.AddScoped<ITaskRepository, MongoTaskRepository>();
 
 var app = builder.Build();
 

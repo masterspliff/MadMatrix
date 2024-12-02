@@ -3,9 +3,9 @@ using System.Reflection;
 
 namespace server.Repositories.Base;
 
-public class FileRepository<T> : LocalRepositoryBase<T>, IRepository<T> where T : class
+public class LocalRepository<T> : LocalRepositoryBase<T>, IRepository<T> where T : class
 {
-    public FileRepository(string entityName) : base(entityName)
+    public LocalRepository(string entityName) : base(entityName)
     {
     }
 

@@ -4,11 +4,11 @@ using server.Data;
 
 namespace server.Repositories;
 
-public class EventRepository : IEventRepository
+public class MongoEventRepository : IEventRepository
 {
     private readonly IMongoCollection<Event> _events;
 
-    public EventRepository(MongoDbContext context)
+    public MongoEventRepository(MongoDbContext context)
     {
         _events = context.Events;
     }

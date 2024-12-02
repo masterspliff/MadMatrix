@@ -26,7 +26,7 @@ public class RepositoryFactory
             StorageType.MongoDB when _mongoContext != null => 
                 new MongoUserRepository(new MongoRepository<User>(_mongoContext.Users)),
             StorageType.File => 
-                new LocalUserRepository(new FileRepository<User>("users")),
+                new LocalUserRepository(new LocalRepository<User>("users")),
             _ => throw new ArgumentException("Invalid storage type or missing MongoDB context")
         };
     }
