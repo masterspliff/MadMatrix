@@ -4,11 +4,11 @@
     <div class="top-row ps-3 navbar navbar-dark custom-navbar" style="border: 1px solid #ffffff; border-radius: 5px;">
         <div class="container-fluid d-flex justify-content-between">
             <a class="navbar-brand text-black d-flex align-items-center" href="">
-                <span style="font-size: 1.5em; font-weight: bold;">MADKISTEN</span>
+                <span style="font-size: 1.25rem; color: white; font-weight: bold;">MADKISTEN</span>
             </a>
 
             <div class="d-flex align-items-center">
-                <button class="btn btn-dark login-button me-2" style="width: 175px; background-color: #3a646dff" @onclick="HandleLogout">Log ud</button>
+                <button class="btn-eaa" style="width: 150px; background-color: #3a646dff; color: white; border-radius: 5px; font-size: 1rem; border: none" @onclick="HandleLogout">Log ud</button>
             </div>
         </div>
     </div>
@@ -16,6 +16,46 @@
 
 <div class="content">
 
+    <div id="News" class="news-box" style="    background-color: #3a646d; color: #f5f5f5; border-radius: 15px; padding: 20px; margin: 20px 0; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); ">
+        <h1 style="    font-size: 1.5rem; font-weight: bold;color: #ffd700; margin-bottom: 10px;">NYHEDER</h1>
+        <p style="    font-size: 1rem; line-height: 1.6; margin: 10px 0;">Kantinens nye app! Velkommen</p>
+        <p >
+            EAAA-kantinens nye app gør det nemt at planlægge events, booke arrangementer og
+            skabe overblik over kommende aktiviteter. En praktisk løsning, der bringer struktur
+            og bekvemmelighed til dine planer.
+        </p>
+    </div>
+
+    
+    <div class="calendar-container" style="    background-color: #f9f9f9; padding: 20px;border-radius: 10px;box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); margin-bottom: 20px;">
+        <h2>Oversigt</h2>
+        <table style="    width: 100%; border-collapse: collapse; margin-top: 15px;">
+            <thead>
+            <tr style="    border: 1px solid #ddd;text-align: center; padding: 8px;">
+                <th>man</th>
+                <th>tir</th>
+                <th>ons</th>
+                <th>tor</th>
+                <th>fre</th>
+                <th>lør</th>
+                <th>søn</th>
+            </tr>
+            </thead>
+            <tbody>
+            <!-- Example Row -->
+            <tr style="    border: 1px solid #ddd;text-align: center; padding: 8px;">
+                <td>1</td>
+                <td>2</td>
+                <td>3</td>
+                <td>4</td>
+                <td>5</td>
+                <td>6</td>
+                <td>7</td>
+            </tr>
+            <!-- Add more rows dynamically -->
+            </tbody>
+        </table>
+    </div>
 </div>
 
 @code {
@@ -27,6 +67,6 @@ private void HandleLogout()
 Console.WriteLine("Logged out!");
 
 // Redirect to the login page
-Navigation.NavigateTo("/login");
+Navigation.NavigateTo("/");
 }
 }
