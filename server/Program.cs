@@ -23,7 +23,7 @@ builder.Services.AddCors(options =>
     });
 });
 
-// Configure MongoDB
+// Check MongoDB password before starting server
 var password = Environment.GetEnvironmentVariable("MONGODB_PASSWORD");
 if (string.IsNullOrEmpty(password))
 {
@@ -32,39 +32,27 @@ if (string.IsNullOrEmpty(password))
     Environment.SetEnvironmentVariable("MONGODB_PASSWORD", password);
 }
 
-var baseConnectionString = builder.Configuration.GetConnectionString("MongoDB");
-var connectionString = baseConnectionString?.Replace("{password}", password);
-
-var settings = MongoClientSettings.FromConnectionString(connectionString);
-settings.ServerApi = new ServerApi(ServerApiVersion.V1);
-
-var mongoClient = new MongoClient(settings);
-builder.Services.AddSingleton<IMongoClient>(mongoClient);
-
-// Register MongoDbContext
-builder.Services.AddSingleton<MongoDbContext>(sp => 
-    new MongoDbContext(connectionString!, "MadMatrix")
-);
+// Validate MongoDB connection immediately
+try 
+{
+    var mongoContext = new MongoDbContext(builder.Configuration);
+    // If we get here, the connection was successful
+    builder.Services.AddSingleton(mongoContext);
+}
+catch (Exception ex)
+{
+    Console.ForegroundColor = ConsoleColor.Red;
+    Console.WriteLine("Failed to connect to MongoDB during startup. Shutting down.");
+    Console.WriteLine($"Error: {ex.Message}");
+    Console.ResetColor();
+    Environment.Exit(1);
+}
 
 // Register repositories
 builder.Services.AddScoped<IEventRepository, EventRepository>();
 builder.Services.AddScoped<ILocationRepository, LocationRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<ITaskRepository, TaskRepository>();
-
-try 
-{
-    var database = mongoClient.GetDatabase("MadMatrix");
-    database.RunCommand<BsonDocument>(new BsonDocument("ping", 1));
-    Console.WriteLine("Successfully connected to MongoDB MadMatrix database!");
-} 
-catch (Exception ex) 
-{
-    Console.ForegroundColor = ConsoleColor.Red;
-    Console.WriteLine($"MongoDB connection failed: {ex.Message}");
-    Console.ResetColor();
-    throw;
-}
 
 var app = builder.Build();
 
