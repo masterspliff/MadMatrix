@@ -1,6 +1,5 @@
 * {
-    margin: 0;
-    padding: 0;
+    overflow: auto;
     box-sizing: border-box;
     background-color: #bed4db;
 }
@@ -87,4 +86,5 @@ body {
 code {
     color: #c02d76;
 }
+
 

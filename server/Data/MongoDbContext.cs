@@ -38,7 +38,7 @@ public class MongoDbContext
 
     public IMongoClient Client => _client;
     public IMongoDatabase Database => _database;
-    public IMongoCollection<Event> Events => _database.GetCollection<Event>("Events");
+    public IMongoCollection<TaskEvent> Events => _database.GetCollection<TaskEvent>("Events");
     public IMongoCollection<Location> Locations => _database.GetCollection<Location>("Locations");
     public IMongoCollection<User> Users => _database.GetCollection<User>("Users");
     public IMongoCollection<core.Models.TaskItem> Tasks => _database.GetCollection<core.Models.TaskItem>("Tasks");

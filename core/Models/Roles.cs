@@ -2,7 +2,7 @@ namespace core.Models;
 
 public enum UserRole
 {
-    User,
-    Organizer,
+    CoWorker,
+    Manager,
     Administrator
 }
