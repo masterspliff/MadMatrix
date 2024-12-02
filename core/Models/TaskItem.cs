@@ -7,11 +7,9 @@ public class TaskItem
     public string Description { get; set; } = string.Empty;
     public int EventId { get; set; }
     public int AssignedToId { get; set; }
-    public DateTime DueDate { get; set; }
-    public TaskPriority Priority { get; set; }
     public TaskStatus Status { get; set; }
-    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-    public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
+    public DateTime StartDate { get; set; }
+    public DateTime EndDate { get; set; }
 }
 
 public enum TaskPriority
