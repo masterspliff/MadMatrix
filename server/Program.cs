@@ -51,7 +51,8 @@ catch (Exception ex)
 // Register repositories
 builder.Services.AddScoped<IEventRepository, EventRepository>();
 builder.Services.AddScoped<ILocationRepository, LocationRepository>();
-builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IUserRepository, MongoUserRepository>();
+builder.Services.AddScoped<ILocalUserRepository, LocalUserRepository>();                                                                                                                                  
 builder.Services.AddScoped<ITaskRepository, TaskRepository>();
 
 var app = builder.Build();

@@ -1,13 +1,9 @@
 using core.Models;
-using System.Threading.Tasks;
+using server.Repositories.Base;
 
 namespace server.Repositories;
 
-public interface ITaskRepository
+public interface ITaskRepository : IRepository<TaskItem>
 {
-    System.Threading.Tasks.Task<IEnumerable<TaskItem>> GetAllAsync();
-    System.Threading.Tasks.Task<TaskItem?> GetByIdAsync(int id);
-    System.Threading.Tasks.Task<TaskItem> CreateAsync(TaskItem entity);
-    System.Threading.Tasks.Task UpdateAsync(TaskItem entity);
-    System.Threading.Tasks.Task DeleteAsync(int id);
+    // TaskItem-specific repository methods can be added here if needed
 }

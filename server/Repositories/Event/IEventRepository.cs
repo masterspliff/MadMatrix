@@ -1,13 +1,9 @@
 using core.Models;
-using System.Threading.Tasks;
+using server.Repositories.Base;
 
 namespace server.Repositories;
 
-public interface IEventRepository
+public interface IEventRepository : IRepository<Event>
 {
-    System.Threading.Tasks.Task<IEnumerable<Event>> GetAllAsync();
-    System.Threading.Tasks.Task<Event?> GetByIdAsync(int id);
-    System.Threading.Tasks.Task<Event> CreateAsync(Event entity);
-    System.Threading.Tasks.Task UpdateAsync(Event entity);
-    System.Threading.Tasks.Task DeleteAsync(int id);
+    // Event-specific repository methods can be added here if needed
 }

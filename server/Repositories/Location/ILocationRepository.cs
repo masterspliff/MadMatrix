@@ -1,13 +1,9 @@
 using core.Models;
-using System.Threading.Tasks;
+using server.Repositories.Base;
 
 namespace server.Repositories;
 
-public interface ILocationRepository
+public interface ILocationRepository : IRepository<Location>
 {
-    System.Threading.Tasks.Task<IEnumerable<Location>> GetAllAsync();
-    System.Threading.Tasks.Task<Location?> GetByIdAsync(int id);
-    System.Threading.Tasks.Task<Location> CreateAsync(Location entity);
-    System.Threading.Tasks.Task UpdateAsync(Location entity);
-    System.Threading.Tasks.Task DeleteAsync(int id);
+    // Location-specific repository methods can be added here if needed
 }

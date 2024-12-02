@@ -1,0 +1,10 @@
+using core.Models;                                                                                                                                                                                        
+using server.Repositories.Base;                                                                                                                                                                           
+                                                                                                                                                                                                           
+namespace server.Repositories;                                                                                                                                                                            
+                                                                                                                                                                                                           
+public interface ILocalUserRepository : IRepository<User>                                                                                                                                                 
+{                                                                                                                                                                                                         
+    // Local user-specific methods can be added here                                                                                                                                                      
+    Task<User?> GetByEmailAsync(string email);                                                                                                                                                            
+}
