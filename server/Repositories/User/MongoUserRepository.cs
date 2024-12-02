@@ -39,6 +39,7 @@ public class MongoUserRepository : IUserRepository
 
     public async Task<User?> GetByEmailAsync(string email)
     {
-        return await _user.GetAllAsync().ContinueWith(task => task.Result.FirstOrDefault(u => u.Email == email));
+        var users = await _user.GetAllAsync();
+        return users.FirstOrDefault(u => u.Email == email);
     }
 }
