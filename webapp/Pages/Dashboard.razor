@@ -1,6 +1,32 @@
 @page "/dashboard"
-<h3>Dashboard</h3>
+
+<div class="top-row px-4" style="padding: 30px">
+    <div class="top-row ps-3 navbar navbar-dark custom-navbar" style="border: 1px solid #ffffff; border-radius: 5px;">
+        <div class="container-fluid d-flex justify-content-between">
+            <a class="navbar-brand text-black d-flex align-items-center" href="">
+                <span style="font-size: 1.5em; font-weight: bold;">MADKISTEN</span>
+            </a>
+
+            <div class="d-flex align-items-center">
+                <button class="btn btn-dark login-button me-2" style="width: 175px; background-color: #3a646dff" @onclick="HandleLogout">Log ud</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="content">
+
+</div>
 
 @code {
-    
+[Inject] private NavigationManager Navigation { get; set; }
+
+private void HandleLogout()
+{
+// Perform logout logic here
+Console.WriteLine("Logged out!");
+
+// Redirect to the login page
+Navigation.NavigateTo("/login");
+}
 }
