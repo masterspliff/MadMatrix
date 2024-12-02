@@ -30,4 +30,4 @@ jobs:
       run: |
         dotnet run --project server/server.csproj --no-build &
         sleep 10
-        curl -f http://localhost:5267/Test/connection
+        curl -f http://localhost:5267/test/
