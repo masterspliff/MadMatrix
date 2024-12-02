@@ -4,11 +4,11 @@ public class Event
 {
     public int Id { get; set; }
     public string Title { get; set; } = string.Empty;
-    public DateTime DateTime { get; set; }
+    public DateTime DateForEvent { get; set; }
     public string LocationId { get; set; }
     public List<string> TaskIds { get; set; } = new();
-    public string Customer { get; set; }
-    public string ChooseFood { get; set; }
+    public string ByCustomer { get; set; }
+    public string FoodChoices { get; set; }
     public string SpecialRequest { get; set; }
-    public int Participant { get; set; } = new();
+    public int Participants { get; set; } = new();
 }
