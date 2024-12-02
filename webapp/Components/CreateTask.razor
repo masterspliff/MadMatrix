@@ -1,5 +1,71 @@
-<h3>CreateTask</h3>
+@page "/tasks"
+@using core.Models
+
+<h3>Opret Opgave</h3>
+<div class="card task-card">
+    <div class="form-group">
+        <label for="TaskTitle">Opgave Titel</label>
+        <InputText id="TaskTitle" @bind-Value="NewTask.Title" class="form-control" placeholder="Indtast opgave titel" />
+    </div>
+    <div class="form-group">
+        <label for="TaskDescription">Beskrivelse</label>
+        <InputText id="TaskDescription" @bind-Value="NewTask.Description" class="form-control" placeholder="Indtast beskrivelse" />
+    </div>
+    <div class="form-group">
+        <label for="StartDate">Startdato</label>
+        <InputDate id="StartDate" @bind-Value="NewTask.StartDate" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label for="EndDate">Slutdato</label>
+        <InputDate id="EndDate" @bind-Value="NewTask.EndDate" class="form-control" />
+    </div>
+
+    <!-- Dropdown for selecting user to assign the task -->
+    <div class="form-group">
+        <label for="AssignedTo">Tildelt Til (Bruger-ID)</label>
+        <InputSelect id="Assign edTo" @bind-Value="NewTask.AssignedToId" class="form-control">
+            <option value="">Vælg Bruger</option>
+            @foreach (var user in Users)
+            {
+                <option value="@user.Id">@user.FirstName @user.LastName</option>
+            }
+        </InputSelect>
+    </div>
+
+    <!-- Dropdown for selecting event related to the task -->
+    <div class="form-group">
+        <label for="AssignedEvent">Tildelt Event</label>
+        <InputSelect id="AssignedEvent" @bind-Value="NewTask.EventId" class="form-control">
+            <option value="">Vælg Event</option>
+            @foreach (var taskEvent in Events)
+            {
+                <option value="@taskEvent.Id">@taskEvent.Title</option>
+            }
+        </InputSelect>
+    </div>
+
+    <div class="form-group">
+        <button class="btn btn-primary" @onclick="CommitTask">Opret Opgave</button>
+    </div>
+</div>
 
 @code {
-    
+    private TaskItem NewTask { get; set; } = new TaskItem();
+
+    private List<User> Users { get; set; } = new List<User>
+    {
+        new User { Id = 1, FirstName = "John", LastName = "Doe" },
+        new User { Id = 2, FirstName = "Jane", LastName = "Smith" }
+    };
+
+    private List<TaskEvent> Events { get; set; } = new List<TaskEvent>
+    {
+        new TaskEvent { Id = 1, Title = "Event 1" },
+        new TaskEvent { Id = 2, Title = "Event 2" }
+    };
+
+    private void CommitTask()
+    {
+        
+    }
 }
