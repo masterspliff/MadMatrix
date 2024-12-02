@@ -1,5 +1,7 @@
 using MongoDB.Driver;
 using MongoDB.Bson;
+using server.Repositories;
+using server.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,43 +23,36 @@ builder.Services.AddCors(options =>
     });
 });
 
-// Configure MongoDB
-static IMongoClient ConfigureMongoDB(IConfiguration configuration)
+// Check MongoDB password before starting server
+var password = Environment.GetEnvironmentVariable("MONGODB_PASSWORD");
+if (string.IsNullOrEmpty(password))
 {
-    var password = Environment.GetEnvironmentVariable("MONGODB_PASSWORD");
-    if (string.IsNullOrEmpty(password))
-    {
-        Console.WriteLine("Please enter your MongoDB password:");
-        password = Console.ReadLine();
-    }
-
-    var baseConnectionString = configuration.GetConnectionString("MongoDB");
-    var connectionString = baseConnectionString?.Replace("{password}", password);
-    
-    var settings = MongoClientSettings.FromConnectionString(connectionString);
-    settings.ServerApi = new ServerApi(ServerApiVersion.V1);
-    
-    return new MongoClient(settings);
+    Console.WriteLine("Please enter your MongoDB password:");
+    password = Console.ReadLine();
+    Environment.SetEnvironmentVariable("MONGODB_PASSWORD", password);
 }
 
-// Setup MongoDB client and test connection
-var mongoClient = ConfigureMongoDB(builder.Configuration);
-builder.Services.AddSingleton<IMongoClient>(mongoClient);
-builder.Services.AddSingleton(sp => sp.GetRequiredService<IMongoClient>().GetDatabase("MadMatrix"));
-
+// Validate MongoDB connection immediately
 try 
 {
-    var database = mongoClient.GetDatabase("MadMatrix");
-    database.RunCommand<BsonDocument>(new BsonDocument("ping", 1));
-    Console.WriteLine("Successfully connected to MongoDB MadMatrix database!");
-} 
-catch (Exception ex) 
+    var mongoContext = new MongoDbContext(builder.Configuration);
+    // If we get here, the connection was successful
+    builder.Services.AddSingleton(mongoContext);
+}
+catch (Exception ex)
 {
     Console.ForegroundColor = ConsoleColor.Red;
-    Console.WriteLine($"MongoDB connection failed: {ex.Message}");
+    Console.WriteLine("Failed to connect to MongoDB during startup. Shutting down.");
+    Console.WriteLine($"Error: {ex.Message}");
     Console.ResetColor();
-    throw;
+    Environment.Exit(1);
 }
+
+// Register repositories
+builder.Services.AddScoped<IEventRepository, EventRepository>();
+builder.Services.AddScoped<ILocationRepository, LocationRepository>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<ITaskRepository, TaskRepository>();
 
 var app = builder.Build();
 
