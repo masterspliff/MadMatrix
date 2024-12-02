@@ -24,35 +24,27 @@ builder.Services.AddCors(options =>
 });
 
 // Configure MongoDB
-static IMongoClient ConfigureMongoDB(IConfiguration configuration)
+var password = Environment.GetEnvironmentVariable("MONGODB_PASSWORD");
+if (string.IsNullOrEmpty(password))
 {
-    var password = Environment.GetEnvironmentVariable("MONGODB_PASSWORD");
-    if (string.IsNullOrEmpty(password))
-    {
-        Console.WriteLine("Please enter your MongoDB password:");
-        password = Console.ReadLine();
-    }
-
-    var baseConnectionString = configuration.GetConnectionString("MongoDB");
-    var connectionString = baseConnectionString?.Replace("{password}", password);
-    
-    var settings = MongoClientSettings.FromConnectionString(connectionString);
-    settings.ServerApi = new ServerApi(ServerApiVersion.V1);
-    
-    return new MongoClient(settings);
+    Console.WriteLine("Please enter your MongoDB password:");
+    password = Console.ReadLine();
+    Environment.SetEnvironmentVariable("MONGODB_PASSWORD", password);
 }
 
-// Setup MongoDB client and test connection
-var mongoClient = ConfigureMongoDB(builder.Configuration);
+var baseConnectionString = builder.Configuration.GetConnectionString("MongoDB");
+var connectionString = baseConnectionString?.Replace("{password}", password);
+
+var settings = MongoClientSettings.FromConnectionString(connectionString);
+settings.ServerApi = new ServerApi(ServerApiVersion.V1);
+
+var mongoClient = new MongoClient(settings);
 builder.Services.AddSingleton<IMongoClient>(mongoClient);
 
 // Register MongoDbContext
 builder.Services.AddSingleton<MongoDbContext>(sp => 
-{
-    var connectionString = builder.Configuration.GetConnectionString("MongoDB")
-        ?.Replace("{password}", Environment.GetEnvironmentVariable("MONGODB_PASSWORD") ?? "");
-    return new MongoDbContext(connectionString!, "MadMatrix");
-});
+    new MongoDbContext(connectionString!, "MadMatrix")
+);
 
 // Register repositories
 builder.Services.AddScoped<IEventRepository, EventRepository>();
