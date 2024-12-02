@@ -1,5 +1,7 @@
 using MongoDB.Driver;
 using MongoDB.Bson;
+using server.Repositories;
+using server.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -43,7 +45,20 @@ static IMongoClient ConfigureMongoDB(IConfiguration configuration)
 // Setup MongoDB client and test connection
 var mongoClient = ConfigureMongoDB(builder.Configuration);
 builder.Services.AddSingleton<IMongoClient>(mongoClient);
-builder.Services.AddSingleton(sp => sp.GetRequiredService<IMongoClient>().GetDatabase("MadMatrix"));
+
+// Register MongoDbContext
+builder.Services.AddSingleton<MongoDbContext>(sp => 
+{
+    var connectionString = builder.Configuration.GetConnectionString("MongoDB")
+        ?.Replace("{password}", Environment.GetEnvironmentVariable("MONGODB_PASSWORD") ?? "");
+    return new MongoDbContext(connectionString!, "MadMatrix");
+});
+
+// Register repositories
+builder.Services.AddScoped<IEventRepository, EventRepository>();
+builder.Services.AddScoped<ILocationRepository, LocationRepository>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<ITaskRepository, TaskRepository>();
 
 try 
 {
