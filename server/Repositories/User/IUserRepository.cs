@@ -10,4 +10,5 @@ public interface IUserRepository
     System.Threading.Tasks.Task<User> CreateAsync(User entity);
     System.Threading.Tasks.Task UpdateAsync(User entity);
     System.Threading.Tasks.Task DeleteAsync(int id);
+    System.Threading.Tasks.Task<User?> GetByEmailAsync(string email);
 }

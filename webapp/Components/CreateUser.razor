@@ -1,4 +1,76 @@
-<h3>CreateUser</h3>
+@page "/createuser"
+@inject NavigationManager navManager
+@inject HttpClient Http
+
+
+<div class="container d-flex justify-content-center align-items-center vh-100">
+    <div class="card p-4 shadow" style="max-width: 500px; width: 100%;">
+        <h2 class="text-center mb-4">Create Your Account</h2>
+        <form asp-action="Register" method="post" name="createUserProfileForm">
+
+            <!-- Username Field -->
+            <div class="mb-3">
+                <label for="Username" class="form-label">Username</label>
+                <input type="text" class="form-control" id="Username" name="Username" placeholder="Choose a username" required />
+            </div>
+
+            <!-- Email Field -->
+            <div class="mb-3">
+                <label for="Email" class="form-label">Email</label>
+                <input type="email" class="form-control" id="Email" name="Email" placeholder="Enter your email" required />
+            </div>
+
+            <!-- Phone Number Field -->
+            <div class="mb-3">
+                <label for="PhoneNumber" class="form-label">Phone Number</label>
+                <input type="tel" class="form-control" id="PhoneNumber" name="PhoneNumber" placeholder="Enter your phone number" required />
+            </div>
+
+            <!-- Address Fields -->
+            <div class="mb-3">
+                <label for="StreetAddress" class="form-label">Street Address</label>
+                <input type="text" class="form-control" id="StreetAddress" name="StreetAddress" placeholder="Enter your street address" required />
+            </div>
+
+            <div class="row mb-3">
+                <!-- City Field -->
+                <div class="col-md-6 mb-3 mb-md-0">
+                    <label for="City" class="form-label">City</label>
+                    <input type="text" class="form-control" id="City" name="City" placeholder="Enter your city" required />
+                </div>
+
+                <!-- State Field -->
+                <div class="col-md-3 mb-3 mb-md-0">
+                    <label for="State" class="form-label">State</label>
+                    <input type="text" class="form-control" id="State" name="State" placeholder="State" required />
+                </div>
+
+                <!-- Postal Code Field -->
+                <div class="col-md-3">
+                    <label for="PostalCode" class="form-label">Postal Code</label>
+                    <input type="text" class="form-control" id="PostalCode" name="PostalCode" placeholder="Postal Code" required />
+                </div>
+            </div>
+
+            <!-- Password Field -->
+            <div class="mb-3">
+                <label for="Password" class="form-label">Password</label>
+                <input type="password" class="form-control" id="Password" name="Password" placeholder="Enter a password" required />
+            </div>
+
+            <!-- Confirm Password Field -->
+            <div class="mb-3">
+                <label for="ConfirmPassword" class="form-label">Confirm Password</label>
+                <input type="password" class="form-control" id="ConfirmPassword" name="ConfirmPassword" placeholder="Re-enter your password" required />
+            </div>
+
+            <!-- Submit Button -->
+            <button type="submit" class="btn btn-primary w-100">Create Account</button>
+        </form>
+    </div>
+</div>
+
+
 
 @code {
     

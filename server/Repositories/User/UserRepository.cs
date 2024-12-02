@@ -8,14 +8,20 @@ public class UserRepository : IUserRepository
 {
     private readonly IMongoCollection<User> _users;
 
-    public UserRepository(MongoDbContext context)
+    public UserRepository(IMongoDatabase database)
     {
-        _users = context.Users;
+        _users = database.GetCollection<User>("Users");
     }
 
     public async System.Threading.Tasks.Task<IEnumerable<User>> GetAllAsync()
     {
         return await _users.Find(_ => true).ToListAsync();
+    }
+    
+    public async System.Threading.Tasks.Task<User?> GetByEmailAsync(string email)
+    {
+        var filter = Builders<User>.Filter.Eq(e => e.Email, email);
+        return await _users.Find(filter).FirstOrDefaultAsync();
     }
 
     public async System.Threading.Tasks.Task<User?> GetByIdAsync(int id)
