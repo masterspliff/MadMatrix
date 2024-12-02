@@ -1,34 +1,22 @@
 using Microsoft.AspNetCore.Mvc;
-using MongoDB.Driver;
-using MongoDB.Bson;
+using server.Data;
 
 namespace server.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-
-// Test comment to trigger workflow       
-// second test
 public class TestController : ControllerBase
 {
-    private readonly IMongoDatabase _database;
+    private readonly MongoDbContext _context;
 
-    public TestController(IMongoDatabase database)
+    public TestController(MongoDbContext context)
     {
-        _database = database;
+        _context = context;
     }
 
-    [HttpGet("connection")]
-    public async Task<IActionResult> TestConnection()
+    [HttpGet]
+    public IActionResult TestConnection()
     {
-        try
-        {
-            await _database.RunCommandAsync<BsonDocument>(new BsonDocument("ping", 1));
-            return Ok(new { message = "Connection to MadMatrix database successful!" });
-        }
-        catch (Exception ex)
-        {
-            return StatusCode(500, new { message = "Connection failed", error = ex.Message });
-        }
+        return Ok(new { message = "Connected to MongoDB!" });
     }
 }
