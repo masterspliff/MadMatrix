@@ -13,30 +13,30 @@ public class LocationRepository : ILocationRepository
         _locations = context.Locations;
     }
 
-    public async Task<IEnumerable<Location>> GetAllAsync()
+    public async System.Threading.Tasks.Task<IEnumerable<Location>> GetAllAsync()
     {
         return await _locations.Find(_ => true).ToListAsync();
     }
 
-    public async Task<Location?> GetByIdAsync(int id)
+    public async System.Threading.Tasks.Task<Location?> GetByIdAsync(int id)
     {
         var filter = Builders<Location>.Filter.Eq(e => e.Id, id);
         return await _locations.Find(filter).FirstOrDefaultAsync();
     }
 
-    public async Task<Location> CreateAsync(Location entity)
+    public async System.Threading.Tasks.Task<Location> CreateAsync(Location entity)
     {
         await _locations.InsertOneAsync(entity);
         return entity;
     }
 
-    public async Task UpdateAsync(Location entity)
+    public async System.Threading.Tasks.Task UpdateAsync(Location entity)
     {
         var filter = Builders<Location>.Filter.Eq(e => e.Id, entity.Id);
         await _locations.ReplaceOneAsync(filter, entity);
     }
 
-    public async Task DeleteAsync(int id)
+    public async System.Threading.Tasks.Task DeleteAsync(int id)
     {
         var filter = Builders<Location>.Filter.Eq(e => e.Id, id);
         await _locations.DeleteOneAsync(filter);

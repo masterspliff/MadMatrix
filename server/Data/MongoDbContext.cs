@@ -16,5 +16,5 @@ public class MongoDbContext
     public IMongoCollection<Event> Events => _database.GetCollection<Event>("Events");
     public IMongoCollection<Location> Locations => _database.GetCollection<Location>("Locations");
     public IMongoCollection<User> Users => _database.GetCollection<User>("Users");
-    public IMongoCollection<core.Models.Task> Tasks => _database.GetCollection<core.Models.Task>("Tasks");
+    public IMongoCollection<core.Models.TaskItem> Tasks => _database.GetCollection<core.Models.TaskItem>("Tasks");
 }
