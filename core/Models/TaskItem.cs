@@ -8,9 +8,9 @@ public class TaskItem
     public TaskStatus Status { get; set; }
     public DateTime StartDate { get; set; } 
     public DateTime EndDate { get; set; } 
-    public int EventId { get; set; }
+    public int? EventId { get; set; }
     public DateTime UpdatedAt { get; set; }
-    public int AssignedToId { get; set; } // Worker is added to the task
+    public int? AssignedToId { get; set; } // Worker is added to the task
 }
 
 public enum TaskStatus

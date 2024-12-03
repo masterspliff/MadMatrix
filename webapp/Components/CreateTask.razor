@@ -1,5 +1,8 @@
 @page "/tasks"
 @using core.Models
+@using webapp.Service
+@inject ITaskService serviceserver
+
 
 <h3>Opret Opgave</h3>
 <EditForm Model="NewTask" OnValidSubmit="CommitTask" class="card task-card">
@@ -23,7 +26,7 @@
     <!-- Dropdown for selecting user to assign the task -->
     <div class="form-group">
         <label for="AssignedTo">Tildelt Til (Bruger-ID)</label>
-        <InputSelect id="Assign edTo" @bind-Value="NewTask.AssignedToId" class="form-control">
+        <InputSelect id="AssignedTo" @bind-Value="NewTask.AssignedToId" class="form-control">
             <option value="">Vælg Bruger</option>
             @foreach (var user in Users)
             {
@@ -39,10 +42,11 @@
             <option value="">Vælg Event</option>
             @foreach (var taskEvent in Events)
             {
-                <option value="@taskEvent.Id">@taskEvent.Title</option>
+            <option value="@taskEvent.Id">@taskEvent.Title</option>
             }
         </InputSelect>
     </div>
+
 
     <div class="form-group">
         <button class="btn btn-primary">Opret Opgave</button>
@@ -51,21 +55,43 @@
 
 @code {
     private TaskItem NewTask { get; set; } = new TaskItem();
+    private string errorMessage = string.Empty;
 
+    <!-- Skal ændres til metode som kalder API -->
     private List<User> Users { get; set; } = new List<User>
     {
         new User { Id = 1, FirstName = "John", LastName = "Doe" },
         new User { Id = 2, FirstName = "Jane", LastName = "Smith" }
     };
 
+    <!-- Skal ændres til metode som kalder API -->
     private List<TaskEvent> Events { get; set; } = new List<TaskEvent>
     {
         new TaskEvent { Id = 1, Title = "Event 1" },
         new TaskEvent { Id = 2, Title = "Event 2" }
     };
 
-    private void CommitTask()
+    
+    <!-- Calling method in Service to request the API to post the new task-->
+    private async void CommitTask()
     {
-        
+        try 
+        {
+
+            var isSuccess = await serviceserver.CreateTaskAsync(NewTask);
+
+            if (isSuccess)
+            {
+                NewTask = new TaskItem();
+            }
+            else
+            {
+                errorMessage = "Failed to create task. Check details and try again.";
+            }
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"An error occurred: {ex.Message}";
+        }
     }
 }

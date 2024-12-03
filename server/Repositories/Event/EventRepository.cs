@@ -24,6 +24,8 @@ public class EventRepository : IEventRepository
         return await _events.Find(filter).FirstOrDefaultAsync();
     }
 
+    
+    
     public async Task<TaskEvent> CreateAsync(TaskEvent entity)
     {
         // Get the highest existing ID and add 1, or start at 1 if no events exist
