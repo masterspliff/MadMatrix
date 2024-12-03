@@ -1,5 +1,8 @@
 @page "/events"
 @using core.Models
+@using webapp.Service
+@inject IEventService serviceserver
+@inject IJSRuntime JSRuntime 
 
 <h3>Create Event</h3>
 <EditForm Model="NewEvent" OnValidSubmit="CreateEventNow" class="card announcement-card">
@@ -30,6 +33,10 @@
         <InputText id="SpecialRequest" @bind-Value="NewEvent.SpecialRequest" class="form-control" placeholder="Indtast special ønsker til mad"/>
     </div>
     <div class="form-group">
+        <label for="ByCustomer">Kunde</label>
+        <InputText id="ByCustomer" @bind-Value="NewEvent.ByCustomer" class="form-control" placeholder="Indtast kunde"/>
+    </div>
+    <div class="form-group">
         <label for="Participant">Deltagere</label>
         <InputNumber id="Participant" @bind-Value="NewEvent.Participants" class="form-control"/>
     </div>
@@ -38,18 +45,8 @@
     </div>
 </EditForm>
 
-<p>Event-oplysninger:</p>
-<ul>
-    <li><strong>Navn:</strong> @NewEvent.Title</li>
-    <li><strong>Dato:</strong> @NewEvent.DateForEvent.ToString("yyyy-MM-dd")</li>
-    <li><strong>Lokation:</strong> @Locations.FirstOrDefault(l => l.Id == NewEvent.LocationId)?.Name ?? "Not selected"</li>
-    <li><strong>Madvalg:</strong> @NewEvent.FoodChoices</li>
-    <li><strong>Særlige mad behov:</strong> @NewEvent.SpecialRequest</li>
-    <li><strong>Antal deltagere:</strong> @NewEvent.Participants</li>
-</ul>
-
 @code {
-    private TaskEvent NewEvent { get; set; } = new TaskEvent();
+    private TaskEvent NewEvent = new TaskEvent();
 
     private List<Location> Locations { get; set; } = new List<Location>
     {
@@ -57,10 +54,28 @@
         new Location { Id = 2, Name = "Aarhus" }
     };
 
-    private string message = string.Empty;
-
-    private void CreateEventNow()
+    private async Task CreateEventNow()
     {
+        // Log the NewEvent object to the console
+        await JSRuntime.InvokeVoidAsync("console.log", NewEvent);
+
+        try
+        {
+            var isSuccess = await serviceserver.CreateEventAsync(NewEvent);
+
+            if (isSuccess)
+            {
+                // Optionally reset the form after successful submission
+                NewEvent = new TaskEvent(); 
+            }
+            else
+            {
+                // Handle failure
+            }
+        }
+        catch (Exception ex)
+        {
+            // Handle exceptions
+        }
     }
 }
-
