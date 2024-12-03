@@ -2,6 +2,7 @@ using MongoDB.Driver;
 using MongoDB.Bson;
 using server.Repositories;
 using server.Data;
+using webapp.Service;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,9 +16,9 @@ builder.Services.AddAuthorization();
 // Add CORS
 builder.Services.AddCors(options =>
 {
-    options.AddDefaultPolicy(builder =>
+    options.AddPolicy("AllowAll", builder =>
     {
-        builder.WithOrigins("http://localhost:5172")
+        builder.AllowAnyOrigin()
                .AllowAnyHeader()
                .AllowAnyMethod();
     });
@@ -54,6 +55,10 @@ builder.Services.AddScoped<ILocationRepository, LocationRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<ITaskRepository, TaskRepository>();
 
+// Register HTTP client services
+builder.Services.AddHttpClient();
+builder.Services.AddScoped<IUserService, UserService>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -67,10 +72,14 @@ if (app.Environment.IsDevelopment())
     });
 }
 
+app.UseCors("AllowAll");
+
 app.UseAuthentication();
 app.UseAuthorization();
-app.UseCors();
 
 app.MapControllers();
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller}/{action=Index}/{id?}");
 
 app.Run();

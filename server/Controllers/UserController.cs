@@ -34,7 +34,8 @@ public class UserController : ControllerBase
     }
 
     [HttpPost("register")]
-    public async Task<ActionResult<User>> Register(RegisterDto registerDto)
+    [Consumes("application/json")]
+    public async Task<ActionResult<User>> Register([FromBody] RegisterDto registerDto)
     {
         
         var users = await _userRepository.GetAllAsync();
