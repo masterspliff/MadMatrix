@@ -10,7 +10,7 @@ public class TaskController : ControllerBase
 {
     private readonly ITaskRepository _taskRepository;
 
-    public TaskController(ITaskRepository taskRepository)
+    public TaskController(ITaskRepository taskRepository) // navngivning??
     {
         _taskRepository = taskRepository;
     }
@@ -75,3 +75,4 @@ public class TaskController : ControllerBase
         return NoContent();
     }
 }
+// update function

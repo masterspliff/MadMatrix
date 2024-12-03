@@ -9,7 +9,8 @@ public class TaskItem
     public DateTime StartDate { get; set; }
     public DateTime EndDate { get; set; }
     public int EventId { get; set; }
-    public int AssignedToId { get; set; }
+    public DateTime UpdatedAt { get; set; }
+    public int AssignedToId { get; set; } // Worker is added to the task
 }
 
 public enum TaskStatus
@@ -18,4 +19,4 @@ public enum TaskStatus
     InProgress,
     Completed,
     Blocked
-}
+} // fjern

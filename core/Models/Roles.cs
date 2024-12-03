@@ -6,3 +6,5 @@ public enum UserRole
     Manager,
     Administrator
 }
+// lav klassefil for hver role, der definerer disse
+// enum?
