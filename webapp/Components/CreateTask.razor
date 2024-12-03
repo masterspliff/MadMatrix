@@ -2,7 +2,7 @@
 @using core.Models
 
 <h3>Opret Opgave</h3>
-<div class="card task-card">
+<EditForm Model="NewTask" OnValidSubmit="CommitTask" class="card task-card">
     <div class="form-group">
         <label for="TaskTitle">Opgave Titel</label>
         <InputText id="TaskTitle" @bind-Value="NewTask.Title" class="form-control" placeholder="Indtast opgave titel" />
@@ -45,9 +45,9 @@
     </div>
 
     <div class="form-group">
-        <button class="btn btn-primary" @onclick="CommitTask">Opret Opgave</button>
+        <button class="btn btn-primary">Opret Opgave</button>
     </div>
-</div>
+</EditForm>
 
 @code {
     private TaskItem NewTask { get; set; } = new TaskItem();

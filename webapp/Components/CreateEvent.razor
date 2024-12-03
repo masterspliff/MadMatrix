@@ -2,14 +2,14 @@
 @using core.Models
 
 <h3>Create Event</h3>
-<div class="card announcement-card">
+<EditForm Model="NewEvent" OnValidSubmit="CreateEventNow" class="card announcement-card">
     <div class="form-group">
         <label for="Title">Titel</label>
-        <InputText id="Title" @bind-Value="NewEvent.Title" class="form-control" placeholder="Indtast Titel" />
+        <InputText id="Title" @bind-Value="NewEvent.Title" class="form-control" placeholder="Indtast Titel"/>
     </div>
     <div class="form-group">
         <label for="Date">Dato</label>
-        <InputDate id="Date" @bind-Value="NewEvent.DateForEvent" class="form-control" />
+        <InputDate id="Date" @bind-Value="NewEvent.DateForEvent" class="form-control"/>
     </div>
     <div class="form-group">
         <label for="Location">Lokation</label>
@@ -23,20 +23,20 @@
     </div>
     <div class="form-group">
         <label for="FoodChoice">Madvalg</label>
-        <InputText id="FoodChoice" @bind-Value="NewEvent.FoodChoices" class="form-control" placeholder="Indtast madvalg" />
+        <InputText id="FoodChoice" @bind-Value="NewEvent.FoodChoices" class="form-control" placeholder="Indtast madvalg"/>
     </div>
     <div class="form-group">
         <label for="SpecialRequest">Særlige mad behov</label>
-        <InputText id="SpecialRequest" @bind-Value="NewEvent.SpecialRequest" class="form-control" placeholder="Indtast special ønsker til mad" />
+        <InputText id="SpecialRequest" @bind-Value="NewEvent.SpecialRequest" class="form-control" placeholder="Indtast special ønsker til mad"/>
     </div>
     <div class="form-group">
         <label for="Participant">Deltagere</label>
-        <InputNumber id="Participant" @bind-Value="NewEvent.Participants" class="form-control" />
+        <InputNumber id="Participant" @bind-Value="NewEvent.Participants" class="form-control"/>
     </div>
     <div class="form-group">
-        <button class="btn btn-primary" @onclick="CreateEventNow">Opret Event</button>
+        <button class="btn btn-primary">Opret Event</button>
     </div>
-</div>
+</EditForm>
 
 <p>Event-oplysninger:</p>
 <ul>
@@ -57,9 +57,10 @@
         new Location { Id = 2, Name = "Aarhus" }
     };
 
+    private string message = string.Empty;
+
     private void CreateEventNow()
     {
-       
     }
 }
 
