@@ -5,9 +5,9 @@ namespace server.Repositories;
 
 public interface ILocationRepository
 {
-    System.Threading.Tasks.Task<IEnumerable<Location>> GetAllAsync();
-    System.Threading.Tasks.Task<Location?> GetByIdAsync(int id);
-    System.Threading.Tasks.Task<Location> CreateAsync(Location entity);
-    System.Threading.Tasks.Task UpdateAsync(Location entity);
-    System.Threading.Tasks.Task DeleteAsync(int id);
+    Task<IEnumerable<Location>> GetAllAsync();
+    Task<Location?> GetByIdAsync(int id);
+    Task<Location> CreateAsync(Location entity);
+    Task UpdateAsync(Location entity);
+    Task DeleteAsync(int id);
 }
