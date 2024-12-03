@@ -1,0 +1,90 @@
+﻿@page "/create-task"
+@inject HttpClient Http
+@inject NavigationManager Navigation
+@using core.Models
+    
+<h3>Create Task</h3>
+
+<EditForm Model="@task" OnValidSubmit="@HandleValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    
+    <!-- Title -->
+
+    <div class="form-group"> <!-- try mb-3 or mb-5 for different styling with bootstrap. Form group stacks appearantly... -->
+        <label for="title">Task Title</label>
+        <InputText id="title" class="form-control" @bind-Value="task.Title" />
+    </div>
+
+    <!-- Description -->
+
+    <div class="form-group">
+        <label for="description">Task Description</label>
+        <InputText id="description" class="form-control" @bind-Value="task.Description" />
+    </div>
+
+    <!-- Status with status options -->
+    
+    <div class="form-group">
+        <label for="status" class="form-label">Status</label>
+        <InputSelect id="status" class="form-control" @bind-Value="task.Status">
+            <option value="NotStarted">Not Started</option>
+            <option value="InProgress">In Progress</option>
+            <option value="Completed">Completed</option>
+        </InputSelect>
+    </div>
+
+    <!-- Dates, start and end -->
+    <div class="form-group">
+        <label for="startDate" class="form-label">Start Date</label>
+        <InputDate id="startDate" class="form-control" @bind-Value="task.StartDate" />
+    </div>
+    <div class="form-group">
+        <label for="endDate">End Date</label>
+        <InputDate id="endDate" class="form-control" @bind-Value="task.EndDate" />
+    </div>
+
+    <!-- event ID -->
+    
+    <div class="mb-3">
+        <label for="eventId" class="form-label">Event ID</label>
+        <InputNumber id="eventId" class="form-control" @bind-Value="task.EventId" />
+    </div>
+
+    <!-- Assigned to ID. ?? skal det overhovedet være her?? -->
+    
+    <div class="mb-3">
+        <label for="assignedToId" class="form-label">Assigned To ID</label>
+        <InputNumber id="assignedToId" class="form-control" @bind-Value="task.AssignedToId" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Create Task</button>
+</EditForm>
+
+    @code {
+    // Declaration of a task item object
+    private TaskItem task = new TaskItem();
+    // Declaration of an error message
+    private string errorMessage;
+    
+    // Method to handle submit (handleValidSubmit())
+    private async Task HandleValidSubmit()
+    {
+        try // Try to post the task to the API
+        {
+            var response = await Http.PostAsJsonAsync("Task", task); // Post the task to the API
+            if (response.IsSuccessStatusCode)
+            {
+                Navigation.NavigateTo("/dashboard"); // Redirect to dashboard on success
+            }
+            else
+            {
+                errorMessage = "Failed to create task. Check details and try again."; // Display error message
+            }
+        }
+        catch (Exception ex) // Catch any exceptions
+        {
+            errorMessage = $"An error occured: {ex.Message}"; // Display expection error message
+        }
+    }  
+}
