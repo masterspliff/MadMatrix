@@ -1,0 +1,120 @@
+.calendar-container-wrapper {
+    display: flex;
+    align-items: flex-start; /* Juster elementerne til toppen */
+}
+
+.calendar-container {
+    margin-right: 20px; /* Tilføj lidt afstand mellem kalenderen og opgaveområdet */
+}
+
+.calendar-task {
+
+    min-width: 200px; /* Juster bredden efter behov */
+    min-height: 100px; /* Juster højden efter behov */
+    border: 1px solid #ccc; /* Tilføj en kant for at gøre det synligt */
+    padding: 10px; /* Tilføj lidt indvendig afstand */
+}
+
+
+.calendar-container {
+    background-color: #ffffff;
+    padding: 10px;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    max-width: 500px;
+    margin: 20px auto; /* Center the calendar container */
+    font-family: Arial, sans-serif;
+    color: #333;
+}
+
+.calendar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.calendar-header button {
+    width: 40px;
+    background-color: #6c63ff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 5px;
+    cursor: pointer;
+    font-size: 12px;
+}
+
+.calendar-header button:hover {
+    background-color: #5a54e3;
+}
+
+.calendar-month-selector {
+    width: 25px;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+.calendar-month-selector select {
+    background-color: #6c63ff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 5px;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 5px;
+    justify-items: center; /* Center items within each grid cell */
+}
+
+.calendar-day-name {
+    text-align: center;
+    font-weight: bold;
+    padding: 5px 0;
+    color: #6c63ff;
+    font-size: 12px;
+}
+
+.calendar-day {
+    text-align: center;
+    justify-content: space-between;
+    align-content: center;
+    width: 32px;
+    height: 32px;
+    line-height: 32px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 14px;
+}
+
+.calendar-day.empty {
+    background-color: transparent;
+    cursor: default;
+}
+
+.calendar-day:hover:not(.empty) {
+    background-color: #dcd5ff;
+}
+
+.calendar-day.selected {
+    background-color: #6c63ff;
+    color: #fff;
+}
+
+.calendar-task {
+    background-color: #ffffff;
+    padding: 10px;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    max-width: 500px;
+    margin: 20px auto; /* Center the calendar container */
+    font-family: Arial, sans-serif;
+    color: #333;
+}
+
