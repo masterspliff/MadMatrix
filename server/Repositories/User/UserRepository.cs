@@ -26,6 +26,13 @@ public class UserRepository : IUserRepository
 
     public async Task<User> CreateAsync(User entity)
     {
+        // Get the highest existing ID and add 1, or start at 1 if no users exist
+        var lastUser = await _users.Find(_ => true)
+            .SortByDescending(u => u.Id)
+            .FirstOrDefaultAsync();
+            
+        entity.Id = (lastUser?.Id ?? 0) + 1;
+        
         await _users.InsertOneAsync(entity);
         return entity;
     }

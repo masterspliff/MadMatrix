@@ -1,11 +1,14 @@
-namespace core.Models;
-
-public enum Competencies
-{
-    Dishwasher,
-    TableSetter,
-    Chef,
-    Cashier,
-    Cleaning,
-    EventLeader
-}
+ namespace core.Models;                                                                                                                                                                                    
+                                                                                                                                                                                                           
+ /// <summary>                                                                                                                                                                                             
+ /// Represents the different competencies a user can have                                                                                                                                                 
+ /// </summary>                                                                                                                                                                                                                                                                                                                                                                                
+ public enum Competency                                                                                                                                                                                    
+ {                                                                                                                                                                                                         
+     Dishwasher, // = 0                                                                                                                                                                                    
+     TableSetter, // = 1                                                                                                                                                                                   
+     Chef, // = 2                                                                                                                                                                                          
+     Cashier, // = 3                                                                                                                                                                                       
+     Cleaning, // = 4                                                                                                                                                                                      
+     EventLeader // = 5                                                                                                                                                                                    
+ }     
