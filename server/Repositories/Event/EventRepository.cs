@@ -26,7 +26,17 @@ public class EventRepository : IEventRepository
 
     public async Task<TaskEvent> CreateAsync(TaskEvent entity)
     {
+        // Get the highest existing ID and add 1, or start at 1 if no events exist
+        var lastEvent = await _events.Find(_ => true)
+            .SortByDescending(e => e.Id) 
+            .FirstOrDefaultAsync(); 
+
+       
+        entity.Id = (lastEvent?.Id ?? 0) + 1;
+
+        
         await _events.InsertOneAsync(entity);
+
         return entity;
     }
 
