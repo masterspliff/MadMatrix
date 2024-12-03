@@ -14,7 +14,7 @@ public class TaskServiceServer : ITaskService
     
     public async Task<bool> CreateTaskAsync(TaskItem newTaskItem)
     {
-        var response = await _httpClient.PostAsJsonAsync("tasks", newTaskItem );
+        var response = await _httpClient.PostAsJsonAsync("task", newTaskItem );
         return response.IsSuccessStatusCode;
     }
 }

@@ -26,7 +26,15 @@ public class TaskRepository : ITaskRepository
 
     public async Task<TaskItem> CreateAsync(TaskItem entity)
     {
+        // Get the highest existing ID and add 1, or start at 1 if no events exist
+        var lastTaskItem = await _tasks.Find(_ => true)
+            .SortByDescending(e => e.Id) 
+            .FirstOrDefaultAsync();
+        entity.Id = (lastTaskItem?.Id ?? 0) + 1;
+
+        
         await _tasks.InsertOneAsync(entity);
+
         return entity;
     }
 

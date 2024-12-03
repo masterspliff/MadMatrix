@@ -2,7 +2,7 @@
 @using core.Models
 @using webapp.Service
 @inject IEventService serviceserver
-@inject IJSRuntime JSRuntime 
+
 
 <h3>Create Event</h3>
 <EditForm Model="NewEvent" OnValidSubmit="CreateEventNow" class="card announcement-card">
@@ -47,17 +47,18 @@
 
 @code {
     private TaskEvent NewEvent = new TaskEvent();
+    private string errorMessage = string.Empty;
 
+    <!-- Skal ændres til metode som kalder API -->
     private List<Location> Locations { get; set; } = new List<Location>
     {
         new Location { Id = 1, Name = "Copenhagen" },
         new Location { Id = 2, Name = "Aarhus" }
     };
 
+    <!-- Calling method in Service to request the API to post new Event-->
     private async Task CreateEventNow()
     {
-        // Log the NewEvent object to the console
-        await JSRuntime.InvokeVoidAsync("console.log", NewEvent);
 
         try
         {
@@ -65,17 +66,17 @@
 
             if (isSuccess)
             {
-                // Optionally reset the form after successful submission
                 NewEvent = new TaskEvent(); 
             }
             else
             {
-                // Handle failure
+                errorMessage = "Failed to create event. Check details and try again.";
             }
         }
         catch (Exception ex)
         {
-            // Handle exceptions
+            errorMessage = $"An error occurred: {ex.Message}";
         }
     }
 }
+    
