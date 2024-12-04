@@ -4,7 +4,7 @@
  <div class="top-row ps-3 navbar navbar-dark custom-navbar" style="border: 1px solid #ffffff; border-radius: 5px;">                                                    
      <div class="container-fluid d-flex justify-content-between">                                                                                                      
          <a class="navbar-brand text-black d-flex align-items-center" href="">                                                                                         
-             <span style="font-size: 1.25rem; color: white; font-weight: bold;">MADKISTEN</span>                                                                       
+             <span style="font-size: 1.25rem; color: white; font-weight: bold;">MAD.EAAA</span>                                                                       
          </a>                                                                                                                                                          
                                                                                                                                                                        
          <div class="d-flex align-items-center">                                                                                                                       
@@ -15,7 +15,7 @@
                                                                                                                                                                        
  <div class="content">                                                                                                                                                 
                                                                                                                                                                        
-     <div id="News" class="news-box">                                                                                                                                  
+     <div id="news" class="news-box">                                                                                                                                  
          <h1>NYHEDER</h1> <!-- Overskrift for nyhedssektionen -->                                                                                                      
          <p>Kantinens nye app! Velkommen</p> <!-- Beskrivelse af nyheder -->                                                                                           
          <p>                                                                                                                                                           
@@ -26,8 +26,8 @@
      </div>                                                                                                                                                            
                                                                                                                                                                        
      <div>                                                                                                                                                             
-         <button @onclick="ToggleCreateEvent">Toggle Create Event</button> <!-- Knap til at vise/skjule CreateEvent-komponenten -->                                    
-         <button @onclick="ToggleCreateTask">Toggle Create Task</button> <!-- Knap til at vise/skjule CreateTask-komponenten -->                                       
+         <button class="btn-ToggleCreateEvent" @onclick="ToggleCreateEvent">Toggle Create Event</button> <!-- Knap til at vise/skjule CreateEvent-komponenten -->                                    
+         <button class="btn-ToggleCreateTask" @onclick="ToggleCreateTask">Toggle Create Task</button> <!-- Knap til at vise/skjule CreateTask-komponenten -->                                       
                                                                                                                                                                        
          @* Vis komponenterne baseret på tilstanden *@                                                                                                                 
          @if (showCreateEvent)                                                                                                                                         
@@ -39,10 +39,6 @@
          {                                                                                                                                                             
              <CreateTask /> <!-- Viser CreateTask-komponenten, hvis showCreateTask er sand -->                                                                         
          }                                                                                                                                                             
-     </div>                                                                                                                                                            
-                                                                                                                                                                       
-     <div>                                                                                                                                                             
-         <CalenderTable/> <!-- Viser CalenderTable-komponenten -->                                                                                                     
      </div>                                                                                                                                                            
                                                                                                                                                                        
  </div>                                                                                                                                                                
