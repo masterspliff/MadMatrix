@@ -1,37 +1,37 @@
 <h3>CalenderTable</h3>
 
 <div class="calendar-container-wrapper">
-<div class="calendar-container">
-    <div class="calendar-header">
-        <button @onclick="PreviousMonth">&lt;</button>
-        <span>@($"{currentMonth:D2} / {currentYear}")</span>
-        <button @onclick="NextMonth">&gt;</button>
-    </div>
-    <div class="calendar-grid">
-        @foreach (var day in GetDaysOfWeekStartingMonday())
-        {
-        <div class="calendar-day-name">@GetShortDayName(day)</div>
-        }
-
-        @for (int i = 0; i < GetOffsetForFirstDay(); i++)
-        {
-        <div class="calendar-day empty"></div>
-        }
-
-        @for (int day = 1; day <= DaysInMonth; day++)
-        {
-        <div class="calendar-day @(selectedDay == day ? "selected" : "")" @onclick="() => SelectDay(day)">
-            @day
+    <div class="calendar-container">
+        <div class="calendar-header">
+            <button @onclick="PreviousMonth">&lt;</button>
+            <span>@($"{currentMonth:D2} / {currentYear}")</span>
+            <button @onclick="NextMonth">&gt;</button>
         </div>
-        }
+        <div class="calendar-grid">
+            @foreach (var day in GetDaysOfWeekStartingMonday())
+            {
+            <div class="calendar-day-name">@GetShortDayName(day)</div>
+            }
+
+            @for (int i = 0; i < GetOffsetForFirstDay(); i++)
+            {
+            <div class="calendar-day empty"></div>
+            }
+
+            @for (int day = 1; day <= DaysInMonth; day++)
+            {
+            <div class="calendar-day @(selectedDay == day ? "selected" : "")" @onclick="() => SelectDay(day)">
+                @day
+            </div>
+            }
+        </div>
+    </div>
+
+    <div class="calendar-task">
+        <p>Tasks for the selected day will be displayed here.</p>
     </div>
 </div>
 
-<div class="calendar-task">
-    <p>Opgaver for den valgte dag vil blive vist her.</p>
-</div>
-
-</div>
 @code {                                                                                                                                                                                                                                                                                                                                                                    
      private int currentYear = DateTime.Now.Year;                                                                                                                                                                                                                                                                                                                           
      private int currentMonth = DateTime.Now.Month;                                                                                                                                                                                                                                                                                                                         

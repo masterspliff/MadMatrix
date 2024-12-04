@@ -1,18 +1,19 @@
 .calendar-container-wrapper {
     display: flex;
-    align-items: flex-start; /* Juster elementerne til toppen */
+    align-items: flex-start; /* Align items to the top */
+    gap: 0; /* Ensure no gap between flex items */
 }
 
 .calendar-container {
-    margin-right: 20px; /* Tilføj lidt afstand mellem kalenderen og opgaveområdet */
+    margin-right: 0; /* Ensure no right margin */
 }
 
 .calendar-task {
-
-    min-width: 200px; /* Juster bredden efter behov */
-    min-height: 100px; /* Juster højden efter behov */
-    border: 1px solid #ccc; /* Tilføj en kant for at gøre det synligt */
-    padding: 10px; /* Tilføj lidt indvendig afstand */
+    min-width: 200px; /* Ensure it has a visible width */
+    min-height: 100px; /* Ensure it has a visible height */
+    border: 1px solid #ccc; /* Add a border for visibility */
+    padding: 10px; /* Add some padding */
+    margin-left: 0; /* Ensure no left margin */
 }
 
 
@@ -21,7 +22,7 @@
     padding: 10px;
     border-radius: 10px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    max-width: 500px;
+    min-width: 500px;
     margin: 20px auto; /* Center the calendar container */
     font-family: Arial, sans-serif;
     color: #333;
