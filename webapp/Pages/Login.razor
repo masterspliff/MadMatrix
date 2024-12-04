@@ -1,6 +1,7 @@
 @page "/"
 @using core.Models
 @using webapp.Components
+@inject NavigationManager Navigation
 
 <div class="container mt-4">
     @if (!showRegister)
@@ -46,7 +47,14 @@
 
     private void HandleLogin()
     {
-        // TODO: Implement login logic
         Console.WriteLine("Login attempted");
+
+        // Simulate successful login
+        bool loginSuccessful = true;
+
+        if (loginSuccessful)
+        {
+            Navigation.NavigateTo("/dashboard");
+        }
     }
 }
