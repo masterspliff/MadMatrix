@@ -1,0 +1,16 @@
+.card.announcement-card {
+    padding: 20px 20px 20px 20px;
+    width: 100%;
+    background-color: #dadada;
+    border-radius: 5px;
+    color: #000000;
+}
+
+.form-control {
+    background-color: #ffffff;
+    color: #333333;
+}
+
+.btn.btn-primary {
+    margin-top: 20px;
+} 
