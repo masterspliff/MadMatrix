@@ -25,15 +25,30 @@ public class LocationService : ILocationService
         }
     }
 
-    public async Task<Location?> GetLocationByIdAsync(int id)
+    public async Task<bool> CreateLocationAsync(Location newLocationItem)
     {
         try
         {
-            return await _httpClient.GetFromJsonAsync<Location>($"Location/{id}");
+            var response = await _httpClient.PostAsJsonAsync("Location", newLocationItem);
+            return response.IsSuccessStatusCode;
         }
         catch (Exception)
         {
-            return null;
+            return false;
         }
     }
+
+    public async Task<bool> DeleteLocationAsync(int id)
+    {
+        try
+        {
+            var response = await _httpClient.DeleteAsync($"Location/{id}");
+            return response.IsSuccessStatusCode;
+        }
+        catch (Exception)
+        {
+            return false;
+        }
+    }
+    
 }

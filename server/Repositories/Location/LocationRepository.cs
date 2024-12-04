@@ -26,6 +26,14 @@ public class LocationRepository : ILocationRepository
 
     public async Task<Location> CreateAsync(Location entity)
     {
+        // Get the highest existing ID and increment by 1
+        var highestId = await _locations.Find(_ => true)
+            .SortByDescending(x => x.Id)
+            .Project(x => x.Id)
+            .FirstOrDefaultAsync();
+        
+        entity.Id = highestId + 1;
+        
         await _locations.InsertOneAsync(entity);
         return entity;
     }

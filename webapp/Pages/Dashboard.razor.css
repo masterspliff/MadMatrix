@@ -38,7 +38,7 @@
     border: none;
 }
 
-.btn-ToggleCreateEvent {
+.btn-ToggleCreate {
     width: 150px;
     height: 90px;
     background-color: #3a646dff;
@@ -48,16 +48,7 @@
     border: none;
     margin-right: 5px;
 }
-.btn-ToggleCreateTask{
-    width: 150px;
-    height: 90px;
-    background-color: #3a646dff;
-    color: white;
-    border-radius: 5px;
-    font-size: 0.75rem;
-    border: none;
-    margin-right: 5px;
-}
+
 
 .calendar-container {
     background-color: #f9f9f9;

@@ -36,8 +36,22 @@ public class LocationController : ControllerBase
     [HttpPost]
     public async Task<ActionResult<Location>> Create(Location location)
     {
-        var createdLocation = await _locationRepository.CreateAsync(location);
-        return CreatedAtAction(nameof(GetById), new { id = createdLocation.Id }, createdLocation);
+        try
+        {
+            if (string.IsNullOrEmpty(location.Name))
+            {
+                return BadRequest("Location name is required");
+            }
+
+            var createdLocation = await _locationRepository.CreateAsync(location);
+            return CreatedAtAction(nameof(GetById), new { id = createdLocation.Id }, createdLocation);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error creating location: {ex.Message}");
+            Console.WriteLine($"Stack trace: {ex.StackTrace}");
+            return StatusCode(500, "Internal server error while creating location");
+        }
     }
 
     [HttpPut("{id}")]

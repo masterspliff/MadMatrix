@@ -26,8 +26,9 @@
      </div>                                                                                                                                                            
                                                                                                                                                                        
      <div>                                                                                                                                                             
-         <button class="btn-ToggleCreateEvent" @onclick="ToggleCreateEvent">Toggle Create Event</button> <!-- Knap til at vise/skjule CreateEvent-komponenten -->                                    
-         <button class="btn-ToggleCreateTask" @onclick="ToggleCreateTask">Toggle Create Task</button> <!-- Knap til at vise/skjule CreateTask-komponenten -->                                       
+         <button class="btn-ToggleCreate" @onclick="ToggleCreateEvent">Toggle Create Event</button> <!-- Knap til at vise/skjule CreateEvent-komponenten -->                                    
+         <button class="btn-ToggleCreate" @onclick="ToggleCreateTask">Toggle Create Task</button> <!-- Knap til at vise/skjule CreateTask-komponenten -->                                       
+         <button class="btn-ToggleCreate" @onclick="ToggleCreateLocation">Toggle Create Location</button> <!-- Knap til at vise/skjule CreateLocation-komponenten -->
                                                                                                                                                                        
          @* Vis komponenterne baseret på tilstanden *@                                                                                                                 
          @if (showCreateEvent)                                                                                                                                         
@@ -38,7 +39,12 @@
          @if (showCreateTask)                                                                                                                                          
          {                                                                                                                                                             
              <CreateTask /> <!-- Viser CreateTask-komponenten, hvis showCreateTask er sand -->                                                                         
-         }                                                                                                                                                             
+         }
+
+         @if (showCreateLocation)
+         {
+             <CreateLocation /> <!-- Viser CreateLocation-komponenten, hvis showCreateLocation er sand -->
+         }
      </div>                                                                                                                                                            
                                                                                                                                                                        
  </div>                                                                                                                                                                
@@ -46,7 +52,8 @@
  @code {                                                                                                                                                               
      // Tilstande til at styre synligheden af CreateEvent og CreateTask komponenterne                                                                                  
      private bool showCreateEvent = false;                                                                                                                             
-     private bool showCreateTask = false;                                                                                                                              
+     private bool showCreateTask = false;
+     private bool showCreateLocation = false;
                                                                                                                                                                        
      // Metode til at skifte synligheden af CreateEvent-komponenten                                                                                                    
      private void ToggleCreateEvent()                                                                                                                                  
@@ -58,7 +65,13 @@
      private void ToggleCreateTask()                                                                                                                                   
      {                                                                                                                                                                 
          showCreateTask = !showCreateTask;                                                                                                                             
-     }                                                                                                                                                                 
+     }   
+     
+     // Metode til at skifte synligheden af CreateEvent-komponenten                                                                                                     
+     private void ToggleCreateLocation()                                                                                                                                                                                                             
+     {                                                                                                                                                                                                                                               
+         showCreateLocation = !showCreateLocation;                                                                                                                                                                                                   
+     }   
                                                                                                                                                                        
      [Inject] private NavigationManager Navigation { get; set; } // Dependency injection af NavigationManager til at håndtere navigation                               
                                                                                                                                                                        
