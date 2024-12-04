@@ -36,4 +36,43 @@ public class LocationService : ILocationService
             return null;
         }
     }
+
+    public async Task<bool> CreateLocationAsync(Location location)
+    {
+        try
+        {
+            var response = await _httpClient.PostAsJsonAsync("Location", location);
+            return response.IsSuccessStatusCode;
+        }
+        catch (Exception)
+        {
+            return false;
+        }
+    }
+
+    public async Task<bool> UpdateLocationAsync(Location location)
+    {
+        try
+        {
+            var response = await _httpClient.PutAsJsonAsync($"Location/{location.Id}", location);
+            return response.IsSuccessStatusCode;
+        }
+        catch (Exception)
+        {
+            return false;
+        }
+    }
+
+    public async Task<bool> DeleteLocationAsync(int id)
+    {
+        try
+        {
+            var response = await _httpClient.DeleteAsync($"Location/{id}");
+            return response.IsSuccessStatusCode;
+        }
+        catch (Exception)
+        {
+            return false;
+        }
+    }
 }
