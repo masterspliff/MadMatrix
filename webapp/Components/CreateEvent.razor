@@ -1,7 +1,9 @@
 @page "/events"
 @using core.Models
 @using webapp.Service
+@using Location = core.Models.Location
 @inject IEventService serviceserver
+@inject ILocationService locationService
 
 
 <h3>Create Event</h3>
@@ -16,13 +18,17 @@
     </div>
     <div class="form-group">
         <label for="Location">Lokation</label>
+        
         <InputSelect id="Location" @bind-Value="NewEvent.LocationId" class="form-control">
+            <!-- Fetching locations -->
             <option value="">Vælg Lokation</option>
             @foreach (var location in Locations)
             {
                 <option value="@location.Id">@location.Name</option>
             }
         </InputSelect>
+        
+        
     </div>
     <div class="form-group">
         <label for="FoodChoice">Madvalg</label>
@@ -49,12 +55,14 @@
     private TaskEvent NewEvent = new TaskEvent();
     private string errorMessage = string.Empty;
 
-    <!-- Skal ændres til metode som kalder API -->
-    private List<Location> Locations { get; set; } = new List<Location>
+    <!-- Note here -->
+    private IEnumerable<core.Models.Location> Locations { get; set; } = Enumerable.Empty<core.Models.Location>();
+
+    protected override async Task OnInitializedAsync()
     {
-        new Location { Id = 1, Name = "Copenhagen" },
-        new Location { Id = 2, Name = "Aarhus" }
-    };
+        Locations = await locationService.GetAllLocationsAsync();
+        await base.OnInitializedAsync();
+    }
 
     <!-- Calling method in Service to request the API to post new Event-->
     private async Task CreateEventNow()
