@@ -1,49 +1,78 @@
 @page "/dashboard"
 @using webapp.Components
 
-<div class="top-row ps-3 navbar navbar-dark custom-navbar" style="border: 1px solid #ffffff; border-radius: 5px;">
-    <div class="container-fluid d-flex justify-content-between">
-        <a class="navbar-brand text-black d-flex align-items-center" href="">
-            <span style="font-size: 1.25rem; color: white; font-weight: bold;">MADKISTEN</span>
-        </a>
-
-        <div class="d-flex align-items-center">
-            <button class="btn-eaa" @onclick="HandleLogout">Log ud</button>
-        </div>
-    </div>
-</div>
-
-<div class="content">
-
-    <div id="News" class="news-box">
-        <h1>NYHEDER</h1>
-        <p>Kantinens nye app! Velkommen</p>
-        <p>
-            EAAA-kantinens nye app gør det nemt at planlægge events, booke arrangementer og
-            skabe overblik over kommende aktiviteter. En praktisk løsning, der bringer struktur
-            og bekvemmelighed til dine planer.
-        </p>
-    </div>
-    
-    <div>
-        <CalenderTable/>
-    </div>
-    
-</div>
-
-
-
-@code {
-[Inject] private NavigationManager Navigation { get; set; }
-
-private void HandleLogout()
-{
-// Perform logout logic here
-Console.WriteLine("Logged out!");
-
-// Redirect to the login page
-Navigation.NavigateTo("/");
-}
-
-
-}
+ <div class="top-row ps-3 navbar navbar-dark custom-navbar" style="border: 1px solid #ffffff; border-radius: 5px;">                                                    
+     <div class="container-fluid d-flex justify-content-between">                                                                                                      
+         <a class="navbar-brand text-black d-flex align-items-center" href="">                                                                                         
+             <span style="font-size: 1.25rem; color: white; font-weight: bold;">MADKISTEN</span>                                                                       
+         </a>                                                                                                                                                          
+                                                                                                                                                                       
+         <div class="d-flex align-items-center">                                                                                                                       
+             <button class="btn-eaa" @onclick="HandleLogout">Log ud</button> <!-- Knap til at logge ud -->                                                             
+         </div>                                                                                                                                                        
+     </div>                                                                                                                                                            
+ </div>                                                                                                                                                                
+                                                                                                                                                                       
+ <div class="content">                                                                                                                                                 
+                                                                                                                                                                       
+     <div id="News" class="news-box">                                                                                                                                  
+         <h1>NYHEDER</h1> <!-- Overskrift for nyhedssektionen -->                                                                                                      
+         <p>Kantinens nye app! Velkommen</p> <!-- Beskrivelse af nyheder -->                                                                                           
+         <p>                                                                                                                                                           
+             EAAA-kantinens nye app gør det nemt at planlægge events, booke arrangementer og                                                                           
+             skabe overblik over kommende aktiviteter. En praktisk løsning, der bringer struktur                                                                       
+             og bekvemmelighed til dine planer.                                                                                                                        
+         </p>                                                                                                                                                          
+     </div>                                                                                                                                                            
+                                                                                                                                                                       
+     <div>                                                                                                                                                             
+         <button @onclick="ToggleCreateEvent">Toggle Create Event</button> <!-- Knap til at vise/skjule CreateEvent-komponenten -->                                    
+         <button @onclick="ToggleCreateTask">Toggle Create Task</button> <!-- Knap til at vise/skjule CreateTask-komponenten -->                                       
+                                                                                                                                                                       
+         @* Vis komponenterne baseret på tilstanden *@                                                                                                                 
+         @if (showCreateEvent)                                                                                                                                         
+         {                                                                                                                                                             
+             <CreateEvent /> <!-- Viser CreateEvent-komponenten, hvis showCreateEvent er sand -->                                                                      
+         }                                                                                                                                                             
+                                                                                                                                                                       
+         @if (showCreateTask)                                                                                                                                          
+         {                                                                                                                                                             
+             <CreateTask /> <!-- Viser CreateTask-komponenten, hvis showCreateTask er sand -->                                                                         
+         }                                                                                                                                                             
+     </div>                                                                                                                                                            
+                                                                                                                                                                       
+     <div>                                                                                                                                                             
+         <CalenderTable/> <!-- Viser CalenderTable-komponenten -->                                                                                                     
+     </div>                                                                                                                                                            
+                                                                                                                                                                       
+ </div>                                                                                                                                                                
+                                                                                                                                                                       
+ @code {                                                                                                                                                               
+     // Tilstande til at styre synligheden af CreateEvent og CreateTask komponenterne                                                                                  
+     private bool showCreateEvent = false;                                                                                                                             
+     private bool showCreateTask = false;                                                                                                                              
+                                                                                                                                                                       
+     // Metode til at skifte synligheden af CreateEvent-komponenten                                                                                                    
+     private void ToggleCreateEvent()                                                                                                                                  
+     {                                                                                                                                                                 
+         showCreateEvent = !showCreateEvent;                                                                                                                           
+     }                                                                                                                                                                 
+                                                                                                                                                                       
+     // Metode til at skifte synligheden af CreateTask-komponenten                                                                                                     
+     private void ToggleCreateTask()                                                                                                                                   
+     {                                                                                                                                                                 
+         showCreateTask = !showCreateTask;                                                                                                                             
+     }                                                                                                                                                                 
+                                                                                                                                                                       
+     [Inject] private NavigationManager Navigation { get; set; } // Dependency injection af NavigationManager til at håndtere navigation                               
+                                                                                                                                                                       
+     // Metode til at håndtere logout-logik                                                                                                                            
+     private void HandleLogout()                                                                                                                                       
+     {                                                                                                                                                                 
+         // Udfør logout-logik her                                                                                                                                     
+         Console.WriteLine("Logged out!");                                                                                                                             
+                                                                                                                                                                       
+         // Omdiriger til login-siden                                                                                                                                  
+         Navigation.NavigateTo("/");                                                                                                                                   
+     }                                                                                                                                                                 
+ } 

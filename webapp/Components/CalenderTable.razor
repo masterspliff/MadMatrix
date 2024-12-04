@@ -3,23 +3,29 @@
 <div class="calendar-container-wrapper">
     <div class="calendar-container">
         <div class="calendar-header">
+            <!-- Knapper til at navigere mellem måneder -->
             <button @onclick="PreviousMonth">&lt;</button>
+            <!-- Viser den aktuelle måned og år -->
             <span>@($"{currentMonth:D2} / {currentYear}")</span>
             <button @onclick="NextMonth">&gt;</button>
         </div>
         <div class="calendar-grid">
+            <!-- Viser dagene i ugen, startende med mandag -->
             @foreach (var day in GetDaysOfWeekStartingMonday())
             {
             <div class="calendar-day-name">@GetShortDayName(day)</div>
             }
 
+            <!-- Tilføjer tomme pladser for at justere den første dag i måneden -->
             @for (int i = 0; i < GetOffsetForFirstDay(); i++)
             {
             <div class="calendar-day empty"></div>
             }
 
+            <!-- Viser dagene i den aktuelle måned -->
             @for (int day = 1; day <= DaysInMonth; day++)
             {
+            <!-- Marker den valgte dag og tilføj en klikbegivenhed -->
             <div class="calendar-day @(selectedDay == day ? "selected" : "")" @onclick="() => SelectDay(day)">
                 @day
             </div>
@@ -28,82 +34,128 @@
     </div>
 
     <div class="calendar-task">
-        <p>Tasks for the selected day will be displayed here.</p>
+        <!-- Viser opgaver for den valgte dag -->
+        <h3>Opgaver for den valgte dag:</h3>
+        <ul>
+            @if (filteredTasks.Any())
+            {
+            <!-- Itererer over og viser hver opgave for den valgte dag -->
+            @foreach (var task in filteredTasks)
+            {
+            <li>@task.Name</li>
+            }
+            }
+            else
+            {
+            <!-- Viser en besked, hvis der ikke er nogen opgaver for den valgte dag -->
+            <li>Ingen opgaver for denne dag.</li>
+            }
+        </ul>
     </div>
 </div>
 
-@code {                                                                                                                                                                                                                                                                                                                                                                    
-     private int currentYear = DateTime.Now.Year;                                                                                                                                                                                                                                                                                                                           
-     private int currentMonth = DateTime.Now.Month;                                                                                                                                                                                                                                                                                                                         
-     private int selectedDay;                                                                                                                                                                                                                                                                                                                                               
-                                                                                                                                                                                                                                                                                                                                                                            
-     private void PreviousMonth()                                                                                                                                                                                                                                                                                                                                           
-     {                                                                                                                                                                                                                                                                                                                                                                      
-         if (currentMonth == 1)                                                                                                                                                                                                                                                                                                                                             
-         {                                                                                                                                                                                                                                                                                                                                                                  
-             currentMonth = 12;                                                                                                                                                                                                                                                                                                                                             
-             currentYear--;                                                                                                                                                                                                                                                                                                                                                 
-         }                                                                                                                                                                                                                                                                                                                                                                  
-         else                                                                                                                                                                                                                                                                                                                                                               
-         {                                                                                                                                                                                                                                                                                                                                                                  
-             currentMonth--;                                                                                                                                                                                                                                                                                                                                                
-         }                                                                                                                                                                                                                                                                                                                                                                  
-     }                                                                                                                                                                                                                                                                                                                                                                      
-                                                                                                                                                                                                                                                                                                                                                                            
-     private void NextMonth()                                                                                                                                                                                                                                                                                                                                               
-     {                                                                                                                                                                                                                                                                                                                                                                      
-         if (currentMonth == 12)                                                                                                                                                                                                                                                                                                                                            
-         {                                                                                                                                                                                                                                                                                                                                                                  
-             currentMonth = 1;                                                                                                                                                                                                                                                                                                                                              
-             currentYear++;                                                                                                                                                                                                                                                                                                                                                 
-         }                                                                                                                                                                                                                                                                                                                                                                  
-         else                                                                                                                                                                                                                                                                                                                                                               
-         {                                                                                                                                                                                                                                                                                                                                                                  
-             currentMonth++;                                                                                                                                                                                                                                                                                                                                                
-         }                                                                                                                                                                                                                                                                                                                                                                  
-     }                                                                                                                                                                                                                                                                                                                                                                      
-                                                                                                                                                                                                                                                                                                                                                                            
-     private void SelectDay(int day)                                                                                                                                                                                                                                                                                                                                        
-     {                                                                                                                                                                                                                                                                                                                                                                      
-         selectedDay = day;                                                                                                                                                                                                                                                                                                                                                 
-     }                                                                                                                                                                                                                                                                                                                                                                      
-                                                                                                                                                                                                                                                                                                                                                                            
-     private int DaysInMonth => DateTime.DaysInMonth(currentYear, currentMonth);                                                                                                                                                                                                                                                                                            
-                                                                                                                                                                                                                                                                                                                                                                            
-     private IEnumerable<DayOfWeek> GetDaysOfWeekStartingMonday()                                                                                                                                                                                                                                                                                                           
-     {                                                                                                                                                                                                                                                                                                                                                                      
-         return new List<DayOfWeek>                                                                                                                                                                                                                                                                                                                                         
-         {                                                                                                                                                                                                                                                                                                                                                                  
-             DayOfWeek.Monday,                                                                                                                                                                                                                                                                                                                                              
-             DayOfWeek.Tuesday,                                                                                                                                                                                                                                                                                                                                             
-             DayOfWeek.Wednesday,                                                                                                                                                                                                                                                                                                                                           
-             DayOfWeek.Thursday,                                                                                                                                                                                                                                                                                                                                            
-             DayOfWeek.Friday,                                                                                                                                                                                                                                                                                                                                              
-             DayOfWeek.Saturday,                                                                                                                                                                                                                                                                                                                                            
-             DayOfWeek.Sunday                                                                                                                                                                                                                                                                                                                                               
-         };                                                                                                                                                                                                                                                                                                                                                                 
-     }                                                                                                                                                                                                                                                                                                                                                                      
-                                                                                                                                                                                                                                                                                                                                                                            
-     private int GetOffsetForFirstDay()                                                                                                                                                                                                                                                                                                                                     
-     {                                                                                                                                                                                                                                                                                                                                                                      
-         int offset = ((int)FirstDayOfMonth - 1 + 7) % 7;                                                                                                                                                                                                                                                                                                                   
-         return offset;                                                                                                                                                                                                                                                                                                                                                     
-     }                                                                                                                                                                                                                                                                                                                                                                      
-                                                                                                                                                                                                                                                                                                                                                                            
-     private DayOfWeek FirstDayOfMonth => new DateTime(currentYear, currentMonth, 1).DayOfWeek;                                                                                                                                                                                                                                                                             
-                                                                                                                                                                                                                                                                                                                                                                            
-     private string GetShortDayName(DayOfWeek day)                                                                                                                                                                                                                                                                                                                          
-     {                                                                                                                                                                                                                                                                                                                                                                      
-         return day switch                                                                                                                                                                                                                                                                                                                                                  
-         {                                                                                                                                                                                                                                                                                                                                                                  
-             DayOfWeek.Monday => "Man",                                                                                                                                                                                                                                                                                                                                     
-             DayOfWeek.Tuesday => "Tir",                                                                                                                                                                                                                                                                                                                                    
-             DayOfWeek.Wednesday => "Ons",                                                                                                                                                                                                                                                                                                                                  
-             DayOfWeek.Thursday => "Tor",                                                                                                                                                                                                                                                                                                                                   
-             DayOfWeek.Friday => "Fre",                                                                                                                                                                                                                                                                                                                                     
-             DayOfWeek.Saturday => "Lør",                                                                                                                                                                                                                                                                                                                                   
-             DayOfWeek.Sunday => "Søn",                                                                                                                                                                                                                                                                                                                                     
-             _ => string.Empty,                                                                                                                                                                                                                                                                                                                                             
-         };                                                                                                                                                                                                                                                                                                                                                                 
-     }                                                                                                                                                                                                                                                                                                                                                                      
- } 
+@code {
+// Initialiserer det aktuelle år og måned                                                                                                                                                                                                                              
+private int currentYear = DateTime.Now.Year;
+private int currentMonth = DateTime.Now.Month;
+private int selectedDay; // Den valgte dag                                                                                                                                                                                                                             
+
+// Liste over alle opgaver                                                                                                                                                                                                                                             
+private List<TaskItem> allTasks = new List<TaskItem>
+{
+new TaskItem { Date = new DateTime(2024, 12, 3), Name = "Opgave 1" },
+new TaskItem { Date = new DateTime(2024, 12, 3), Name = "Opgave 2" },
+new TaskItem { Date = new DateTime(2024, 12, 4), Name = "Opgave 3" }
+};
+
+// Liste over filtrerede opgaver for den valgte dag                                                                                                                                                                                                                    
+private List<TaskItem> filteredTasks = new List<TaskItem>();
+
+// Skifter til den forrige måned                                                                                                                                                                                                                                       
+private void PreviousMonth()
+{
+if (currentMonth == 1)
+{
+currentMonth = 12;
+currentYear--;
+}
+else
+{
+currentMonth--;
+}
+}
+
+// Skifter til den næste måned                                                                                                                                                                                                                                         
+private void NextMonth()
+{
+if (currentMonth == 12)
+{
+currentMonth = 1;
+currentYear++;
+}
+else
+{
+currentMonth++;
+}
+}
+
+// Vælger en dag i måneden og opdaterer opgavelisten                                                                                                                                                                                                                   
+private void SelectDay(int day)
+{
+selectedDay = day;
+var selectedDate = new DateTime(currentYear, currentMonth, selectedDay);
+// Filtrerer opgaverne for at finde dem, der matcher den valgte dato                                                                                                                                                                                               
+filteredTasks = allTasks.Where(task => task.Date.Date == selectedDate.Date).ToList();
+}
+
+// Beregner antallet af dage i den aktuelle måned                                                                                                                                                                                                                      
+private int DaysInMonth => DateTime.DaysInMonth(currentYear, currentMonth);
+
+// Returnerer en liste over ugedage, startende med mandag                                                                                                                                                                                                              
+private IEnumerable<DayOfWeek> GetDaysOfWeekStartingMonday()
+{
+return new List<DayOfWeek>
+{
+DayOfWeek.Monday,
+DayOfWeek.Tuesday,
+DayOfWeek.Wednesday,
+DayOfWeek.Thursday,
+DayOfWeek.Friday,
+DayOfWeek.Saturday,
+DayOfWeek.Sunday
+};
+}
+
+// Beregner forskydningen for den første dag i måneden                                                                                                                                                                                                                 
+private int GetOffsetForFirstDay()
+{
+int offset = ((int)FirstDayOfMonth - 1 + 7) % 7;
+return offset;
+}
+
+// Returnerer ugedagen for den første dag i måneden                                                                                                                                                                                                                    
+private DayOfWeek FirstDayOfMonth => new DateTime(currentYear, currentMonth, 1).DayOfWeek;
+
+// Returnerer en kort version af ugedagens navn                                                                                                                                                                                                                        
+private string GetShortDayName(DayOfWeek day)
+{
+return day switch
+{
+DayOfWeek.Monday => "Man",
+DayOfWeek.Tuesday => "Tir",
+DayOfWeek.Wednesday => "Ons",
+DayOfWeek.Thursday => "Tor",
+DayOfWeek.Friday => "Fre",
+DayOfWeek.Saturday => "Lør",
+DayOfWeek.Sunday => "Søn",
+_ => string.Empty,
+};
+}
+
+// Klasse til at repræsentere en opgave                                                                                                                                                                                                                                
+public class TaskItem
+{
+public DateTime Date { get; set; }
+public string Name { get; set; }
+}
+} 
