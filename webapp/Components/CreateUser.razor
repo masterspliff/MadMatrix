@@ -1,103 +1,130 @@
-@using core.Models
-@using webapp.Service
-@inject IUserService UserService
-@inject NavigationManager NavigationManager
+@using core.Models 
+@using webapp.Service 
+@inject IUserService UserService 
+@inject NavigationManager NavigationManager 
 
 <div class="container mt-4">
     <h3>Create New User</h3>
 
+    <!-- Form for creating a new user -->
     <EditForm Model="@registerModel" OnValidSubmit="@HandleValidSubmit">
+        <!-- Validators for data annotations and validation summary -->
         <DataAnnotationsValidator />
         <ValidationSummary />
 
+        <!-- Input for First Name -->
         <div class="mb-3">
             <label for="firstName" class="form-label">First Name</label>
             <InputText id="firstName" class="form-control" @bind-Value="registerModel.FirstName" />
+            <!-- Display validation error for First Name -->
             <ValidationMessage For="@(() => registerModel.FirstName)" />
         </div>
 
+        <!-- Input for Last Name -->
         <div class="mb-3">
             <label for="lastName" class="form-label">Last Name</label>
             <InputText id="lastName" class="form-control" @bind-Value="registerModel.LastName" />
+            <!-- Display validation error for Last Name -->
             <ValidationMessage For="@(() => registerModel.LastName)" />
         </div>
 
+        <!-- Input for Email -->
         <div class="mb-3">
             <label for="email" class="form-label">Email</label>
             <InputText id="email" class="form-control" @bind-Value="registerModel.Email" />
+            <!-- Display validation error for Email -->
             <ValidationMessage For="@(() => registerModel.Email)" />
         </div>
 
+        <!-- Input for Password -->
         <div class="mb-3">
             <label for="password" class="form-label">Password</label>
             <InputText id="password" type="password" class="form-control" @bind-Value="registerModel.Password" />
+            <!-- Display validation error for Password -->
             <ValidationMessage For="@(() => registerModel.Password)" />
         </div>
 
+        <!-- Input for Phone Number -->
         <div class="mb-3">
             <label for="phoneNumber" class="form-label">Phone Number</label>
             <InputText id="phoneNumber" class="form-control" @bind-Value="registerModel.PhoneNumber" />
+            <!-- Display validation error for Phone Number -->
             <ValidationMessage For="@(() => registerModel.PhoneNumber)" />
         </div>
 
+        <!-- Checkbox for Competencies -->
         <div class="mb-3">
             <label class="form-label">Competencies</label>
             @{
-                var competencies = Enum.GetValues(typeof(Competency));
-                for (int i = 0; i < competencies.Length; i++)
-                {
-                    var competency = competencies.GetValue(i)!;
-                    var index = i;
-                    <div class="form-check">
-                        <InputCheckbox class="form-check-input" 
-                                     @bind-Value="competencyValues[index]" 
-                                     id="@($"competency_{competency}")"/>
-                        <label class="form-check-label" for="@($"competency_{competency}")">
-                            @competency
-                        </label>
-                    </div>
-                }
+            // Generate checkboxes for all enum values of Competency
+            var competencies = Enum.GetValues(typeof(Competency));
+            for (int i = 0; i < competencies.Length; i++)
+            {
+            var competency = competencies.GetValue(i)!;
+            var index = i; // Capture index for binding checkbox state
+            <div class="form-check">
+                <!-- Checkbox for each competency -->
+                <InputCheckbox class="form-check-input"
+                               @bind-Value="competencyValues[index]"
+                               id="@($"competency_{competency}")"/>
+                <label class="form-check-label" for="@($"competency_{competency}")">
+                    @competency <!-- Display competency name -->
+                </label>
+            </div>
+            }
             }
         </div>
 
+        <!-- Submit button -->
         <button type="submit" class="btn btn-primary">Create User</button>
     </EditForm>
 
+    <!-- Display error message if registration fails -->
     @if (!string.IsNullOrEmpty(errorMessage))
     {
-        <div class="alert alert-danger mt-3">
-            @errorMessage
-        </div>
+    <div class="alert alert-danger mt-3">
+        @errorMessage
+    </div>
     }
 </div>
 
 @code {
-    private RegisterDto registerModel = new();
-    private string errorMessage = string.Empty;
-    private bool[] competencyValues = new bool[Enum.GetValues(typeof(Competency)).Length];
+// Model to hold the form input values
+private RegisterDto registerModel = new();
 
-    private async Task HandleValidSubmit()
-    {
-        try
-        {
-            // Convert selected competencies to list
-            registerModel.Competencies = new List<Competency>();
-            var competencies = Enum.GetValues(typeof(Competency));
-            for (int i = 0; i < competencyValues.Length; i++)
-            {
-                if (competencyValues[i])
-                {
-                    registerModel.Competencies.Add((Competency)competencies.GetValue(i)!);
-                }
-            }
+// Variable to store error messages
+private string errorMessage = string.Empty;
 
-            // Method from /Service/UserService/IUserService.cs
-            var user = await UserService.RegisterUser(registerModel);
-            NavigationManager.NavigateTo("/dashboard");
-        }
-        catch (Exception ex)
-        {
-            errorMessage = $"An error occurred: {ex.Message}";
-        }
-    }
+// Boolean array to track which competencies are selected
+private bool[] competencyValues = new bool[Enum.GetValues(typeof(Competency)).Length];
+
+// Method to handle form submission
+private async Task HandleValidSubmit()
+{
+try
+{
+// Convert selected competencies (from checkboxes) to a list in the RegisterDto
+registerModel.Competencies = new List<Competency>();
+var competencies = Enum.GetValues(typeof(Competency));
+for (int i = 0; i < competencyValues.Length; i++)
+{
+if (competencyValues[i])
+{
+// Add the competency to the list if the checkbox is checked
+registerModel.Competencies.Add((Competency)competencies.GetValue(i)!);
+}
+}
+
+// Register the user via the service layer
+var user = await UserService.RegisterUser(registerModel);
+
+// Navigate to the dashboard page on success
+NavigationManager.NavigateTo("/dashboard");
+}
+catch (Exception ex)
+{
+// Handle and display any errors during registration
+errorMessage = $"An error occurred: {ex.Message}";
+}
+}
 }
