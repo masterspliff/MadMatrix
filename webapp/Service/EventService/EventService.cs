@@ -16,4 +16,13 @@ public class EventService : IEventService
         var response = await _httpClient.PostAsJsonAsync("event", newEvent);
         return response.IsSuccessStatusCode;
     }
+    public async Task<List<TaskEvent>> GetAllEventsAsync()
+    {
+        var response = await _httpClient.GetAsync("event");
+        if (response.IsSuccessStatusCode)
+        {
+            return await response.Content.ReadFromJsonAsync<List<TaskEvent>>();
+        }
+        throw new Exception("Could not fetch events");
+    }
 }

@@ -1,39 +1,34 @@
 ﻿@page "/EventViewer"
 @using webapp.Service
-@using webapp.Components
+@inject IEventService eventService
 @inject ITaskService taskService
 @inject ITaskService serviceserver
 
-<h3>EventViewer</h3>
+<h3>Event Viewer</h3>
 
-<h3>Opgaver for Event @eventId</h3>
-
-@if (tasks == null)
+@if (events == null)
 {
-<p>Loading tasks...</p>
+    <p>Loading events...</p>
 }
-else if (!tasks.Any())
+else if (!events.Any())
 {
-<p>Ingen opgaver fundet for dette event.</p>
+    <p>No events found.</p>
 }
 else
 {
-<ul>
-    @foreach (var task in tasks)
-    {
-        <li>@task</li>
-    }
-</ul>
+    <ul>
+        @foreach (var eventItem in events)
+        {
+        <li>@eventItem.Title</li>
+        }
+    </ul>
 }
 
 @code {
-    [Parameter]
-    public int eventId { get; set; }
-
-    private List<TaskItem> tasks;
+    private List<TaskEvent> events;
 
     protected override async Task OnInitializedAsync()
     {
-        tasks = await serviceserver.GetTasksByEventIdAsync(eventId);
+        events = await eventService.GetAllEventsAsync();
     }
 }
