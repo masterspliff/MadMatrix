@@ -1,51 +1,17 @@
-﻿@page "/EventViewer"
-@using webapp.Service
-@inject IEventService eventService
-@inject ITaskService taskService
-@inject ITaskService serviceserver
+﻿@page "/EventViewer/{EventId:int}"
 
-<h3>Event Viewer</h3>
+<h3>EventViewer</h3>
 
-@if (events == null)
-{
-    <p>Loading events...</p>
-}
-else if (!events.Any())
-{
-    <p>No events found.</p>
-}
-else
-{
-    <ul>
-        <div class="event-grid">
-            @foreach (var eventItem in events)
-            {
-                <div class="event-card">
-                    <div class="card-body" style="cursor: pointer;">
-                        <div class="card-body">
-                            <div class="d-flex align-items-center mb-2">
-                                <div>
-                                    <p class="small">#@eventItem.Id</p>
-                                    <h5 class="card-title mb-0 text-center">@eventItem.Title</h5>
-                                </div>
-                            </div>
-                            <p class="card-text">Location: @eventItem.LocationId</p>
-                            <p class="card-text">Date: @eventItem.DateForEvent</p>
-                            <p class="card-text">Customer: @eventItem.ByCustomer</p>
-                            <button class="btn">View Event</button>
-                        </div>
-                    </div>
-                </div>
-            }
-        </div>
-    </ul>
-}
+<h3>@EventId</h3>
 
 @code {
-    private List<TaskEvent> events;
-
-    protected override async Task OnInitializedAsync()
-    {
-        events = await eventService.GetAllEventsAsync();
-    }
+    
+    [Parameter]
+    public int? EventId { get; set; }
+    
+    // view the event info
+    
+    // view the tasks individually Stacked
+    
+    // access each task (modal?)
 }

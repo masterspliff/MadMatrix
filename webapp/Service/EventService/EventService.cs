@@ -25,4 +25,14 @@ public class EventService : IEventService
         }
         throw new Exception("Could not fetch events");
     }
+    
+    public async Task<TaskEvent> GetEventByIdAsync(int eventId)
+    {
+        var response = await _httpClient.GetAsync($"event/{eventId}");
+        if (response.IsSuccessStatusCode)
+        {
+            return await response.Content.ReadFromJsonAsync<TaskEvent>();
+        }
+        throw new Exception("Could not fetch event");
+    }
 }

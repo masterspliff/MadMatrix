@@ -1,0 +1,54 @@
+﻿@page "/Events"
+@using webapp.Service
+@using core.Models
+@inject IEventService EventService
+@inject NavigationManager NavigationManager
+
+<h3>Event Viewer</h3>
+
+@if (events == null)
+{
+    <p>Loading events...</p>
+}
+else if (!events.Any())
+{
+    <p>No events found.</p>
+}
+else
+{
+    <ul>
+        <div class="event-grid">
+            @foreach (var eventItem in events)
+            {
+                <div class="event-card">
+                    <div class="card-body" style="cursor: pointer;">
+                        <div class="d-flex align-items-center mb-2">
+                            <div>
+                                <p class="small">#@eventItem.Id</p>
+                                <h5 class="card-title mb-0 text-center">@eventItem.Title</h5>
+                            </div>
+                        </div>
+                        <p class="card-text">Location: @eventItem.LocationId</p>
+                        <p class="card-text">Date: @eventItem.DateForEvent</p>
+                        <p class="card-text">Customer: @eventItem.ByCustomer</p>
+                        <button class="btn" @onclick="() => NavigateToTasks(eventItem.Id)">View Event</button>
+                    </div>
+                </div>
+            }
+        </div>
+    </ul>
+}
+
+@code {
+    private List<TaskEvent> events;
+
+    protected override async Task OnInitializedAsync()
+    {
+        events = await EventService.GetAllEventsAsync();
+    }
+    
+    private void NavigateToTasks(int EventId)
+    {
+        NavigationManager.NavigateTo($"/EventViewer/{EventId}");
+    }
+}
