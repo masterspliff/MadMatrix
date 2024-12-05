@@ -4,7 +4,7 @@
  <div class="top-row ps-3 navbar navbar-dark custom-navbar" style="border: 1px solid #ffffff; border-radius: 5px;">                                                    
      <div class="container-fluid d-flex justify-content-between">                                                                                                      
          <a class="navbar-brand text-black d-flex align-items-center" href="">                                                                                         
-             <span style="font-size: 1.25rem; color: white; font-weight: bold;">MAD.EAAA</span>                                                                       
+             <span style="font-size: 1.25rem; color: white; font-weight: bold; padding-left: 0rem !important; ">MAD.EAAA</span>                                                                       
          </a>                                                                                                                                                          
                                                                                                                                                                        
          <div class="d-flex align-items-center">                                                                                                                       
@@ -23,15 +23,45 @@
              skabe overblik over kommende aktiviteter. En praktisk løsning, der bringer struktur                                                                       
              og bekvemmelighed til dine planer.                                                                                                                        
          </p>                                                                                                                                                          
-     </div>                                                                                                                                                            
-                                                                                                                                                                       
-     <div>                                                                                                                                                             
-         <button class="btn-ToggleCreate" @onclick="ToggleCreateEvent">Toggle Create Event</button> <!-- Knap til at vise/skjule CreateEvent-komponenten -->                                    
-         <button class="btn-ToggleCreate" @onclick="ToggleCreateTask">Toggle Create Task</button> <!-- Knap til at vise/skjule CreateTask-komponenten -->                                       
+     </div>
+
+     <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#myModal">
+         Open Modal
+     </button>
+
+     <!-- The Modal -->
+     <div class="modal fade" id="myModal" tabindex="-1" aria-labelledby="myModalLabel" aria-hidden="true">
+         <div class="modal-dialog modal-xl">
+             <div class="modal-content">
+                 <div class="modal-header">
+                     <h5 class="modal-title" id="myModalLabel">Modal Title</h5>
+                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                 </div>
+                 <div class="modal-body">
+                     <!-- Modal content goes here -->
+                     ...
+                 </div>
+                 <div class="modal-footer">
+                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                     <button type="button" class="btn btn-primary">Save changes</button>
+                 </div>
+             </div>
+         </div>
+     </div>
+     
+
+     <div>                       
+         <div class="employee-content">
+             <div class="box"></div>
+             <div class="box"></div>
+             <div class="box"></div>
+             <div class="box"></div>
+         </div>
+         
+         <button class="btn-ToggleCreate" @onclick="ToggleCreateEvent">Toggle Create Event</button> <!-- Knap til at vise/skjule CreateEvent-komponenten -->
+         <button class="btn-ToggleCreate" @onclick="ToggleCreateTask">Toggle Create Task</button> <!-- Knap til at vise/skjule CreateTask-komponenten -->
          <button class="btn-ToggleCreate" @onclick="ToggleCreateLocation">Toggle Create Location</button> <!-- Knap til at vise/skjule CreateLocation-komponenten -->
          <button class="btn-ToggleCreate" @onclick="ToggleTestDisplay">Toggle Test Display</button> <!-- Knap til at vise/skjule Testdisplay-komponenten -->
-
-
          @* Vis komponenterne baseret på tilstanden *@                                                                                                                 
          @if (showCreateEvent)                                                                                                                                         
          {                                                                                                                                                             
@@ -53,9 +83,11 @@
          }
      </div>                                                                                                                                                            
                                                                                                                                                                        
- </div>                                                                                                                                                                
-                                                                                                                                                                       
- @code {                                                                                                                                                               
+ </div>
+
+<ListingsEmployee/>
+
+@code {                                                                                                                                                               
      // Tilstande til at styre synligheden af CreateEvent og CreateTask komponenterne                                                                                  
      private bool showCreateEvent = false;                                                                                                                             
      private bool showCreateTask = false;
