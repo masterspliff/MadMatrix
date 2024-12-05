@@ -1,18 +1,20 @@
 @using core.Models
 @using webapp.Service
-@inject ILocationService serviceserver
-@inject NavigationManager NavigationManager
+@using webapp.Components.Shared
+@inject ILocationService LocationService
 
 <h3>Location Management</h3>
 
-<EditForm Model="NewLocation" OnValidSubmit="CommitLocation" class="card location-card p-3">
+<EditForm Model="@locationModel" OnValidSubmit="HandleCreateLocation" class="card location-card p-3">
     <div class="row">
         <div class="col-md-6">
             <h4>Create Location</h4>
-            <div class="form-group mb-3">
-                <label for="LocationName">Location Name</label>
-                <InputText id="LocationName" @bind-Value="NewLocation.Name" class="form-control" placeholder="Enter location name" />
-            </div>
+            <FormInput TValue="string"
+                Id="locationName" 
+                Label="Location Name" 
+                Type="text" 
+                @bind-Value="locationModel.Name" 
+                Placeholder="Enter location name" />
             <div class="form-group">
                 <button type="submit" class="btn btn-primary">Create Location</button>
             </div>
@@ -20,18 +22,19 @@
 
         <div class="col-md-6">
             <h4>Delete Location</h4>
-            <div class="form-group mb-3">
-                <label for="locationToDelete">Select Location</label>
-                <select id="locationToDelete" class="form-control" @bind="selectedLocationId">
-                    <option value="0">Select a location to delete...</option>
-                    @foreach (var location in locations)
-                    {
-                        <option value="@location.Id">@location.Name</option>
-                    }
-                </select>
-            </div>
+            <FormInput TValue="int"
+                Id="locationDelete" 
+                Label="Select Location" 
+                Type="select" 
+                @bind-Value="selectedLocationId" 
+                DefaultOption="Select a location to delete...">
+                @foreach (var location in locationsList)
+                {
+                    <option value="@location.Id">@location.Name</option>
+                }
+            </FormInput>
             <div class="form-group">
-                <button type="button" class="btn btn-danger" @onclick="DeleteLocation" disabled="@(selectedLocationId == 0)">
+                <button type="button" class="btn btn-danger" @onclick="HandleDeleteLocation" disabled="@(selectedLocationId == 0)">
                     Delete Selected Location
                 </button>
             </div>
@@ -39,45 +42,36 @@
     </div>
 </EditForm>
 
-@if (!string.IsNullOrEmpty(errorMessage))
-{
-    <div class="alert alert-danger mt-3">
-        @errorMessage
-    </div>
-}
+<ErrorDisplay Message="@errorMessage" />
 
 @code {
-    private Location NewLocation { get; set; } = new Location { Id = 0, Name = string.Empty };
+    private Location locationModel = new() { Id = 0, Name = string.Empty };
     private string errorMessage = string.Empty;
-    private IEnumerable<Location> locations = new List<Location>();
-    private int selectedLocationId = 0;
+    private IEnumerable<Location> locationsList = Array.Empty<Location>();
+    private int selectedLocationId;
 
     [Parameter]
     public EventCallback OnLocationCreated { get; set; }
 
-    protected override async Task OnInitializedAsync()
-    {
-        await LoadLocations();
-    }
+    protected override async Task OnInitializedAsync() => 
+        await RefreshLocations();
 
-    private async Task LoadLocations()
-    {
-        locations = await serviceserver.GetAllLocationsAsync();
-        StateHasChanged();
-    }
+    private async Task RefreshLocations() => 
+        locationsList = await LocationService.GetAllLocationsAsync();
 
-    private async Task DeleteLocation()
+    private async Task HandleDeleteLocation()
     {
+        Console.WriteLine($"Selected Location ID: {selectedLocationId}");
         if (selectedLocationId == 0) return;
 
         try
         {
-            var success = await serviceserver.DeleteLocationAsync(selectedLocationId);
-            if (success)
+            if (await LocationService.DeleteLocationAsync(selectedLocationId))
             {
-                await LoadLocations();
+                await RefreshLocations();
                 selectedLocationId = 0;
                 await OnLocationCreated.InvokeAsync();
+                errorMessage = string.Empty;
             }
             else
             {
@@ -90,17 +84,16 @@
         }
     }
 
-    private async Task CommitLocation()
+    private async Task HandleCreateLocation()
     {
         try 
         {
-            var isSuccess = await serviceserver.CreateLocationAsync(NewLocation);
-
-            if (isSuccess)
+            if (await LocationService.CreateLocationAsync(locationModel))
             {
-                NewLocation = new Location { Id = 0, Name = string.Empty };
+                locationModel = new() { Id = 0, Name = string.Empty };
                 await OnLocationCreated.InvokeAsync();
-                StateHasChanged();
+                await RefreshLocations();
+                errorMessage = string.Empty;
             }
             else
             {

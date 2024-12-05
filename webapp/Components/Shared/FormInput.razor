@@ -1,0 +1,70 @@
+@typeparam TValue
+
+<div class="form-group">
+    @if (!string.IsNullOrEmpty(Label))
+    {
+        <label for="@Id">@Label</label>
+    }
+
+    @switch (Type?.ToLower())
+    {
+        case "select":
+            <InputSelect id="@Id" class="form-control" Value="@Value" ValueChanged="@(async (TValue val) => await ValueChanged.InvokeAsync(val))" ValueExpression="@(() => Value)">
+                @if (!string.IsNullOrEmpty(DefaultOption))
+                {
+                    <option value="0">@DefaultOption</option>
+                }
+                @ChildContent
+            </InputSelect>
+            break;
+
+        case "date":
+            <InputDate TValue="TValue" id="@Id" class="form-control" @bind-Value="Value" />
+            break;
+
+        case "number":
+            <InputNumber TValue="TValue" id="@Id" class="form-control" @bind-Value="Value" placeholder="@Placeholder" />
+            break;
+
+        default: // handles "text" and any unspecified types
+            <InputText id="@Id" 
+                      class="form-control" 
+                      @bind-Value="@currentValue"
+                      placeholder="@Placeholder" />
+            break;
+    }
+</div>
+
+@code {
+    [Parameter] public string Id { get; set; } = string.Empty;
+    [Parameter] public string Label { get; set; } = string.Empty;
+    [Parameter] public string Type { get; set; } = "text";
+    [Parameter] public string Placeholder { get; set; } = string.Empty;
+    [Parameter] public string DefaultOption { get; set; } = string.Empty;
+    [Parameter] public TValue Value { get; set; } = default!;
+    [Parameter] public EventCallback<TValue> ValueChanged { get; set; }
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+
+    private string currentValue
+    {
+        get => Value?.ToString() ?? string.Empty;
+        set
+        {
+            if (string.IsNullOrEmpty(value))
+            {
+                ValueChanged.InvokeAsync(default);
+                return;
+            }
+
+            try
+            {
+                var convertedValue = (TValue)Convert.ChangeType(value, typeof(TValue));
+                ValueChanged.InvokeAsync(convertedValue);
+            }
+            catch
+            {
+                // If conversion fails, don't update the value
+            }
+        }
+    }
+}
