@@ -30,7 +30,7 @@
             <option value="">Vælg Bruger</option>
             @foreach (var user in Users)
             {
-                <option value="@user.Id">@user.FirstName @user.LastName</option>
+            <option value="@user.Id">@user.FirstName @user.LastName</option>
             }
         </InputSelect>
     </div>
@@ -54,44 +54,44 @@
 </EditForm>
 
 @code {
-    private TaskItem NewTask { get; set; } = new TaskItem();
-    private string errorMessage = string.Empty;
+private TaskItem NewTask { get; set; } = new TaskItem();
+private string errorMessage = string.Empty;
 
-    <!-- Skal ændres til metode som kalder API -->
-    private List<User> Users { get; set; } = new List<User>
-    {
-        new User { Id = 1, FirstName = "John", LastName = "Doe" },
-        new User { Id = 2, FirstName = "Jane", LastName = "Smith" }
-    };
+<!-- Skal ændres til metode som kalder API -->
+private List<User> Users { get; set; } = new List<User>
+{
+new User { Id = 1, FirstName = "John", LastName = "Doe" },
+new User { Id = 2, FirstName = "Jane", LastName = "Smith" }
+};
 
-    <!-- Skal ændres til metode som kalder API -->
-    private List<TaskEvent> Events { get; set; } = new List<TaskEvent>
-    {
-        new TaskEvent { Id = 1, Title = "Event 1" },
-        new TaskEvent { Id = 2, Title = "Event 2" }
-    };
+<!-- Skal ændres til metode som kalder API -->
+private List<TaskEvent> Events { get; set; } = new List<TaskEvent>
+{
+new TaskEvent { Id = 1, Title = "Event 1" },
+new TaskEvent { Id = 2, Title = "Event 2" }
+};
 
-    
-    <!-- Calling method in Service to request the API to post the new task-->
-    private async void CommitTask()
-    {
-        try 
-        {
 
-            var isSuccess = await serviceserver.CreateTaskAsync(NewTask);
+<!-- Calling method in Service to request the API to post the new task-->
+private async void CommitTask()
+{
+try
+{
 
-            if (isSuccess)
-            {
-                NewTask = new TaskItem();
-            }
-            else
-            {
-                errorMessage = "Failed to create task. Check details and try again.";
-            }
-        }
-        catch (Exception ex)
-        {
-            errorMessage = $"An error occurred: {ex.Message}";
-        }
-    }
+var isSuccess = await serviceserver.CreateTaskAsync(NewTask);
+
+if (isSuccess)
+{
+NewTask = new TaskItem();
+}
+else
+{
+errorMessage = "Failed to create task. Check details and try again.";
+}
+}
+catch (Exception ex)
+{
+errorMessage = $"An error occurred: {ex.Message}";
+}
+}
 }
