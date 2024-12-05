@@ -29,7 +29,9 @@
          <button class="btn-ToggleCreate" @onclick="ToggleCreateEvent">Toggle Create Event</button> <!-- Knap til at vise/skjule CreateEvent-komponenten -->                                    
          <button class="btn-ToggleCreate" @onclick="ToggleCreateTask">Toggle Create Task</button> <!-- Knap til at vise/skjule CreateTask-komponenten -->                                       
          <button class="btn-ToggleCreate" @onclick="ToggleCreateLocation">Toggle Create Location</button> <!-- Knap til at vise/skjule CreateLocation-komponenten -->
-                                                                                                                                                                       
+         <button class="btn-ToggleCreate" @onclick="ToggleTestDisplay">Toggle Test Display</button> <!-- Knap til at vise/skjule Testdisplay-komponenten -->
+
+
          @* Vis komponenterne baseret på tilstanden *@                                                                                                                 
          @if (showCreateEvent)                                                                                                                                         
          {                                                                                                                                                             
@@ -45,6 +47,10 @@
          {
              <CreateLocation /> <!-- Viser CreateLocation-komponenten, hvis showCreateLocation er sand -->
          }
+         @if (showTestDisplay)
+         {
+            <TaskDisplay /> <!-- Viser CreateLocation-komponenten, hvis showCreateLocation er sand -->
+         }
      </div>                                                                                                                                                            
                                                                                                                                                                        
  </div>                                                                                                                                                                
@@ -54,6 +60,7 @@
      private bool showCreateEvent = false;                                                                                                                             
      private bool showCreateTask = false;
      private bool showCreateLocation = false;
+     private bool showTestDisplay = false;
                                                                                                                                                                        
      // Metode til at skifte synligheden af CreateEvent-komponenten                                                                                                    
      private void ToggleCreateEvent()                                                                                                                                  
@@ -72,6 +79,11 @@
      {                                                                                                                                                                                                                                               
          showCreateLocation = !showCreateLocation;                                                                                                                                                                                                   
      }   
+     
+     private void ToggleTestDisplay()                                                                                                                                  
+     {               
+         showTestDisplay = !showTestDisplay;
+     }           
                                                                                                                                                                        
      [Inject] private NavigationManager Navigation { get; set; } // Dependency injection af NavigationManager til at håndtere navigation                               
                                                                                                                                                                        

@@ -1,6 +1,7 @@
 @using core.Models
 @using webapp.Service
-@page "/testdisplay"
+@page "/testdisplay" 
+<!-- naming? -->
 @inject ITaskService serviceserver
 
 @if (tasks == null)
@@ -19,11 +20,11 @@ else
                             <h5 class="card-title mb-0 text-center">@task.Title</h5>
                         </div>
                     </div>
-                    <p class="card-text">@task?.Description</p>
-                    <p class="card-text">@task?.Status</p>
-                    <p class="card-text">@task?.StartDate.ToString("MM/dd/yyyy")</p>
-                    <p class="card-text">@task?.EndDate.ToString("MM/dd/yyyy")</p>
-                </div>
+                        <p class="card-text">@task.Description</p>
+                        <p class="card-text">@task.Status</p>
+                        <p class="card-text">@task.StartDate.ToString("MM/dd/yyyy")</p>
+                        <p class="card-text">@task.EndDate.ToString("MM/dd/yyyy")</p>
+                    </div>
             </div>
         </div>
     }
