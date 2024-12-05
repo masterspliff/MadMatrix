@@ -1,3 +1,12 @@
+@* 
+    FormInput is a generic component that can handle different data types through TValue.
+    This makes it reusable for various form inputs (string, int, datetime, etc.) while maintaining type safety.
+    
+    Usage examples:
+    <FormInput TValue="string" /> - For text inputs
+    <FormInput TValue="int" /> - For numeric inputs
+    <FormInput TValue="DateTime" /> - For date inputs
+*@
 @typeparam TValue
 
 <div class="form-group">
@@ -36,13 +45,18 @@
 </div>
 
 @code {
+    // Basic input attributes
     [Parameter] public string Id { get; set; } = string.Empty;
     [Parameter] public string Label { get; set; } = string.Empty;
     [Parameter] public string Type { get; set; } = "text";
     [Parameter] public string Placeholder { get; set; } = string.Empty;
     [Parameter] public string DefaultOption { get; set; } = string.Empty;
+    
+    // The actual value of type TValue that this input manages
     [Parameter] public TValue Value { get; set; } = default!;
+    // Event callback for two-way binding using @bind-Value
     [Parameter] public EventCallback<TValue> ValueChanged { get; set; }
+    // Allows nested content (used primarily for select options)
     [Parameter] public RenderFragment? ChildContent { get; set; }
 
     private string currentValue
