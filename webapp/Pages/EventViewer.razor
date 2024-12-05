@@ -17,10 +17,27 @@ else if (!events.Any())
 else
 {
     <ul>
-        @foreach (var eventItem in events)
-        {
-        <li>@eventItem.Title</li>
-        }
+        <div class="event-grid">
+            @foreach (var eventItem in events)
+            {
+                <div class="event-card">
+                    <div class="card-body" style="cursor: pointer;">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center mb-2">
+                                <div>
+                                    <p class="small">#@eventItem.Id</p>
+                                    <h5 class="card-title mb-0 text-center">@eventItem.Title</h5>
+                                </div>
+                            </div>
+                            <p class="card-text">Location: @eventItem.LocationId</p>
+                            <p class="card-text">Date: @eventItem.DateForEvent</p>
+                            <p class="card-text">Customer: @eventItem.ByCustomer</p>
+                            <button class="btn">View Event</button>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
     </ul>
 }
 
