@@ -1,0 +1,39 @@
+﻿@page "/EventViewer"
+@using webapp.Service
+@using webapp.Components
+@inject ITaskService taskService
+@inject ITaskService serviceserver
+
+<h3>EventViewer</h3>
+
+<h3>Opgaver for Event @eventId</h3>
+
+@if (tasks == null)
+{
+<p>Loading tasks...</p>
+}
+else if (!tasks.Any())
+{
+<p>Ingen opgaver fundet for dette event.</p>
+}
+else
+{
+<ul>
+    @foreach (var task in tasks)
+    {
+        <li>@task</li>
+    }
+</ul>
+}
+
+@code {
+    [Parameter]
+    public int eventId { get; set; }
+
+    private List<TaskItem> tasks;
+
+    protected override async Task OnInitializedAsync()
+    {
+        tasks = await serviceserver.GetTasksByEventIdAsync(eventId);
+    }
+}
