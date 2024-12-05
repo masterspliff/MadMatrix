@@ -1,97 +1,119 @@
 @page "/tasks"
 @using core.Models
+@using TaskStatus = core.Models.TaskStatus
 @using webapp.Service
-@inject ITaskService serviceserver
-
+@inject ITaskService taskservice
+@inject IUserService userservice
 
 <h3>Opret Opgave</h3>
+
 <EditForm Model="NewTask" OnValidSubmit="CommitTask" class="card task-card">
     <div class="form-group">
         <label for="TaskTitle">Opgave Titel</label>
         <InputText id="TaskTitle" @bind-Value="NewTask.Title" class="form-control" placeholder="Indtast opgave titel" />
     </div>
+
     <div class="form-group">
         <label for="TaskDescription">Beskrivelse</label>
         <InputText id="TaskDescription" @bind-Value="NewTask.Description" class="form-control" placeholder="Indtast beskrivelse" />
     </div>
+
     <div class="form-group">
         <label for="StartDate">Startdato</label>
         <InputDate id="StartDate" @bind-Value="NewTask.StartDate" class="form-control" />
     </div>
+
     <div class="form-group">
         <label for="EndDate">Slutdato</label>
         <InputDate id="EndDate" @bind-Value="NewTask.EndDate" class="form-control" />
     </div>
 
-    <!-- Dropdown for selecting user to assign the task -->
+    <!-- Dropdown for Task Status -->
     <div class="form-group">
-        <label for="AssignedTo">Tildelt Til (Bruger-ID)</label>
-        <InputSelect id="AssignedTo" @bind-Value="NewTask.AssignedToId" class="form-control">
-            <option value="">Vælg Bruger</option>
-            @foreach (var user in Users)
+        <label for="TaskStatus">Status</label>
+        <select id="TaskStatus" class="form-control" @bind="NewTask.Status">
+            @foreach (var status in Enum.GetValues(typeof(TaskStatus)).Cast<TaskStatus>())
             {
-                <option value="@user.Id">@user.FirstName @user.LastName</option>
+                <option value="@status">@status</option>
             }
-        </InputSelect>
+        </select>
     </div>
 
-    <!-- Dropdown for selecting event related to the task -->
+    <!-- Checkboxes for Users -->
     <div class="form-group">
-        <label for="AssignedEvent">Tildelt Event</label>
-        <InputSelect id="AssignedEvent" @bind-Value="NewTask.EventId" class="form-control">
-            <option value="">Vælg Event</option>
-            @foreach (var taskEvent in Events)
+        <label for="AssignedTo">Tildel Medarbejdere</label>
+        <div>
+            @foreach (var user in UserList)
             {
-            <option value="@taskEvent.Id">@taskEvent.Title</option>
+                <div>
+                    <input
+                        type="checkbox"
+                        id="user_@user.Id"
+                        @onchange="() => ToggleUserSelection(user.Id)"
+                        checked="@SelectedUserIds.Contains(user.Id)" />
+                    <label for="user_@user.Id">@user.FirstName @user.LastName</label>
+                </div>
             }
-        </InputSelect>
+        </div>
     </div>
 
-
     <div class="form-group">
-        <button class="btn btn-primary">Opret Opgave</button>
+        <button type="submit" class="btn btn-primary">Opret Opgave</button>
     </div>
 </EditForm>
 
 @code {
-    private TaskItem NewTask { get; set; } = new TaskItem();
-    private string errorMessage = string.Empty;
+    private TaskItem NewTask { get; set; } = new TaskItem(); // Uses the default values set in the model
+    private List<User> UserList { get; set; } = new();
+    private List<int> SelectedUserIds { get; set; } = new();
 
-    <!-- Skal ændres til metode som kalder API -->
-    private List<User> Users { get; set; } = new List<User>
+    protected override async Task OnInitializedAsync()
     {
-        new User { Id = 1, FirstName = "John", LastName = "Doe" },
-        new User { Id = 2, FirstName = "Jane", LastName = "Smith" }
-    };
+        await LoadUsers();
+    }
 
-    <!-- Skal ændres til metode som kalder API -->
-    private List<TaskEvent> Events { get; set; } = new List<TaskEvent>
+    private async Task LoadUsers()
     {
-        new TaskEvent { Id = 1, Title = "Event 1" },
-        new TaskEvent { Id = 2, Title = "Event 2" }
-    };
+        UserList = await userservice.LoadUsers();
+    }
 
-    
-    <!-- Calling method in Service to request the API to post the new task-->
-    private async void CommitTask()
+    private void ToggleUserSelection(int userId)
     {
-        try 
+        if (SelectedUserIds.Contains(userId))
         {
+            SelectedUserIds.Remove(userId);
+        }
+        else
+        {
+            SelectedUserIds.Add(userId);
+        }
+    }
 
-            var isSuccess = await serviceserver.CreateTaskAsync(NewTask);
+    private async Task CommitTask()
+    {
+        // Ensure valid dates and status before submission
+        if (NewTask.StartDate == default || NewTask.EndDate == default)
+        {
+            // Handle invalid dates
+            return;
+        }
+
+        try
+        {
+            // Assign selected user IDs to the task
+            NewTask.AssignedToIds = SelectedUserIds;
+
+            var isSuccess = await taskservice.CreateTaskAsync(NewTask);
 
             if (isSuccess)
             {
-                NewTask = new TaskItem();
-            }
-            else
-            {
-                errorMessage = "Failed to create task. Check details and try again.";
+                NewTask = new TaskItem(); // Reset form
+                SelectedUserIds.Clear(); // Clear selected users
             }
         }
         catch (Exception ex)
         {
-            errorMessage = $"An error occurred: {ex.Message}";
+            // Handle error
         }
     }
 }
