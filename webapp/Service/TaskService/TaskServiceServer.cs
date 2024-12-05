@@ -17,6 +17,19 @@ public class TaskServiceServer : ITaskService
         var response = await _httpClient.PostAsJsonAsync("task", newTaskItem );
         return response.IsSuccessStatusCode;
     }
+    
+    public async Task<List<TaskItem>> LoadTask()
+    {
+        List<TaskItem> tasks = new List<TaskItem>();
+        
+            var response = await _httpClient.GetAsync("task");
+            if (response.IsSuccessStatusCode)
+            {
+                tasks = await response.Content.ReadFromJsonAsync<List<TaskItem>>();
+                return tasks;
+            }
+            throw new Exception("Could not load task");
+    }
 }
 
 

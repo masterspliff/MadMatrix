@@ -1,5 +1,47 @@
-<h3>TaskListings</h3>
+@using core.Models
+@using webapp.Service
+@page "/testdisplay"
+@inject ITaskService serviceserver
+
+@if (tasks == null)
+{
+    <p>Loading tasks...</p>
+}
+else
+{
+    @foreach (var task in tasks)
+    {
+        <div class="col-sm-6 col-md-4 mb-4">
+            <div class="card announcement-card" style="cursor: pointer;">
+                <div class="card-body">
+                    <div class="d-flex align-items-center mb-2">
+                        <div>
+                            <h5 class="card-title mb-0 text-center">@task.Title</h5>
+                        </div>
+                    </div>
+                    <p class="card-text">@task?.Description</p>
+                    <p class="card-text">@task?.Status</p>
+                    <p class="card-text">@task?.StartDate.ToString("MM/dd/yyyy")</p>
+                    <p class="card-text">@task?.EndDate.ToString("MM/dd/yyyy")</p>
+                </div>
+            </div>
+        </div>
+    }
+}
 
 @code {
+
+    public List<TaskItem> tasks { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await GetAllTask();
+    }
+
+    private async Task GetAllTask()
+    {
+        tasks = await serviceserver.LoadTask();
+    }
     
 }
+

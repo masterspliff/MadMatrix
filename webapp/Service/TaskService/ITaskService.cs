@@ -3,5 +3,6 @@ using core.Models;
 
 public interface ITaskService
 {
-    public Task<bool> CreateTaskAsync(TaskItem newTaskItem);
+    Task<bool> CreateTaskAsync(TaskItem newTaskItem);
+    Task<List<TaskItem>> LoadTask();
 }
