@@ -41,9 +41,18 @@ public class TaskController : ControllerBase
             return BadRequest(ModelState);
         }
 
+        // Check if task has a list of users to assign
+        if (task.AssignedToIds == null || !task.AssignedToIds.Any())
+        {
+            return BadRequest("At least one user must be assigned to the task.");
+        }
+
         var createdTask = await _taskRepository.CreateAsync(task);
+
+        // Optionally, send the assigned user IDs back in the response
         return CreatedAtAction(nameof(GetById), new { id = createdTask.Id }, createdTask);
     }
+
 
     [HttpPut("{id}")]
     public async Task<IActionResult> Update(int id, TaskItem task)

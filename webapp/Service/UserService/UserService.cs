@@ -33,4 +33,17 @@ public class UserService : IUserService
         
         throw new Exception("Invalid email or password");
     }
+    
+    public async Task<List<User>> LoadUsers()
+    {
+        List<User> UserList = new List<User>();
+        
+        var response = await _httpClient.GetAsync("user");
+        if (response.IsSuccessStatusCode)
+        {
+            UserList = await response.Content.ReadFromJsonAsync<List<User>>();
+            return UserList;
+        }
+        throw new Exception("Could not load task");
+    }
 }
