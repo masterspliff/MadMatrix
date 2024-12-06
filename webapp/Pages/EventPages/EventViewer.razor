@@ -2,6 +2,7 @@
 @using webapp.Service
 @inject NavigationManager NavigationManager
 @inject IEventService EventService
+@inject ITaskService TaskService
 
 <div class="top-row ps-3 navbar navbar-dark custom-navbar" style="border: 1px solid #ffffff; border-radius: 5px;">
     <div class="container-fluid d-flex justify-content-between">
@@ -23,6 +24,7 @@ else
 {
     <div class="event-grid"> 
         <div class="event-details">
+            <h1>Event Details</h1>
             <h3>@_currentEvent.Title</h3>
             <p><strong>Location:</strong> @_currentEvent.LocationId</p>
             <p><strong>Date:</strong> @_currentEvent.DateForEvent</p>
@@ -31,32 +33,48 @@ else
             <p><strong>Special Request:</strong> @_currentEvent.SpecialRequest</p>
             <p><strong>Participants:</strong> @_currentEvent.Participants</p>
         </div>
-    </div>
+        <div class="event-details">
+            <h1>Task Overview</h1>
+            @foreach (var task in _tasks)
+            {
+            <div class="event-details">
+                <h3>@task.Title</h3>
+                <p><strong>Description:</strong> @task.Description</p>
+                <p><strong>Status:</strong> @task.Status</p>
+                <p><strong>Start Date:</strong> @task.StartDate</p>
+                <p><strong>End Date:</strong> @task.EndDate</p>
+                <p><strong>Assigned To:</strong> @task.AssignedToId</p>
+            </div>
+            }
+        </div>
+    </div>    
 }    
-
+<!-- get all the tasks that has the eventid. kom så jit -->
 
 @code {
+
     // view the event info
-    [Parameter]
-    public int EventId { get; set; }
+    [Parameter] public int EventId { get; set; }
 
     private TaskEvent? _currentEvent;
-    
+    private List<TaskItem> _tasks = new();
+
     protected override async Task OnInitializedAsync()
     {
         _currentEvent = await EventService.GetEventByIdAsync(EventId);
         if (_currentEvent == null)
-        { 
+        {
             Console.WriteLine("Event not found");
         }
+        
     }
-    
+
     private void NavigateToEvents()
     {
         NavigationManager.NavigateTo("/Events");
     }
-    
-    // view the tasks individually Stacked
 
-    // access each task (modal?)
+    // view the tasks
+
+
 }
