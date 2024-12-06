@@ -1,0 +1,49 @@
+﻿@page "/EventViewer/{EventId:int}"
+@using webapp.Service
+@using core.Models
+@inject IEventService EventService
+
+<h3>EventViewer</h3>
+
+@if (currentEvent == null)
+{
+        <p>Loading event details...</p>
+}
+else
+{
+    <div>
+        <h3>@currentEvent.Title</h3>
+        <p><strong>Location:</strong> @currentEvent.LocationId</p>
+        <p><strong>Date:</strong> @currentEvent.DateForEvent</p>
+        <p><strong>Customer:</strong> @currentEvent.ByCustomer</p>
+        <p><strong>Food Choices:</strong> @currentEvent.FoodChoices</p>
+        <p><strong>Special Request:</strong> @currentEvent.SpecialRequest</p>
+        <p><strong>Participants:</strong> @currentEvent.Participants</p>
+    </div>
+}
+
+
+@code {
+    // view the event info
+    [Parameter]
+    public int EventId { get; set; }
+
+    private TaskEvent? currentEvent;
+    
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            currentEvent = await EventService.GetEventByIdAsync(EventId);
+        }
+        catch (Exception ex)
+        {
+            // Handle the exception (e.g., log it, show a message to the user, etc.)
+            Console.WriteLine($"Error fetching event: {ex.Message}");
+        }
+    }
+    
+    // view the tasks individually Stacked
+
+    // access each task (modal?)
+}
