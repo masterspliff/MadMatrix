@@ -54,7 +54,8 @@ else
 @code {
 
     // view the event info
-    [Parameter] public int EventId { get; set; }
+    [Parameter]
+    public int EventId { get; set; }
 
     private TaskEvent? _currentEvent;
     private List<TaskItem> _tasks = new();
@@ -66,7 +67,10 @@ else
         {
             Console.WriteLine("Event not found");
         }
-        
+        else
+        {
+            _tasks = await TaskService.GetTasksByEventIdAsync(EventId);
+        }
     }
 
     private void NavigateToEvents()

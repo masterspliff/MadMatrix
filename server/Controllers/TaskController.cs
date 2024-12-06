@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using core.Models;
 using server.Repositories;
+using webapp.Service;
 
 namespace server.Controllers;
 
@@ -83,6 +84,7 @@ public class TaskController : ControllerBase
         await _taskRepository.DeleteAsync(id);
         return NoContent();
     }
+    
 }
 
 // update function
