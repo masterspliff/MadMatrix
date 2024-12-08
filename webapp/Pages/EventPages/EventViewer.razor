@@ -1,5 +1,6 @@
 ﻿@page "/EventViewer/{EventId:int}"
 @using webapp.Service
+@using webapp.Components
 @inject NavigationManager NavigationManager
 @inject IEventService EventService
 @inject ITaskService TaskService
@@ -42,8 +43,16 @@ else
                 <p><strong>Description:</strong> @task.Description</p>
                 <p><strong>Status:</strong> @task.Status</p>
                 <p><strong>Start Date:</strong> @task.StartDate</p>
-                <p><strong>End Date:</strong> @task.EndDate</p>
-                <p><strong>Assigned To:</strong> @task.AssignedToIds</p>
+                <p><strong>End Date:</strong> @task.EndDate</p> 
+                <p><strong>Assigned To:</strong></p>
+                <div class="assigned-to">
+                    @foreach (var id in task.AssignedToIds)
+                    {
+                        // component that takes id and handles logic of displaying pfp and other info'
+                        // 
+                        <UserViewer userId="@id"/>
+                    }
+                </div>
             </div>
             }
         </div>
@@ -54,8 +63,7 @@ else
 @code {
 
     // view the event info
-    [Parameter]
-    public int EventId { get; set; }
+    [Parameter] public int EventId { get; set; }
 
     private TaskEvent? _currentEvent;
     private List<TaskItem> _tasks = new();
@@ -80,5 +88,5 @@ else
 
     // view the tasks
 
-
+    }
 }

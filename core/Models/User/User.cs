@@ -14,7 +14,7 @@ public class User
     public int Id { get; set; }
 
     /// <summary>
-    /// The user's first name
+    /// The user's< first name
     /// </summary>
     [Required]
     [StringLength(50)]
