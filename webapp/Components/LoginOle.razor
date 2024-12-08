@@ -1,0 +1,97 @@
+@using webapp.Service.LoginService
+@inject ILoginService loginService
+@inject NavigationManager navManager
+
+<div class="container mt-4">
+    @if (!string.IsNullOrEmpty(errorText))
+    {
+        <div class="alert alert-danger" role="alert">
+            @errorText
+        </div>
+    }
+
+    <div class="card shadow-sm p-4" style="max-width: 400px; margin: auto;">
+        <h3 class="text-center mb-4">Home</h3>
+        
+        <div class="mb-3">
+            <label for="username" class="form-label">Email:</label>
+            <InputText id="username" @bind-Value="username" 
+                      placeholder="Enter your email..." class="form-control" />
+        </div>
+        
+        <div class="mb-3">
+            <label for="password" class="form-label">Password:</label>
+            <InputText id="password" @bind-Value="password" type="password"
+                      placeholder="Enter your password..." class="form-control" />
+        </div>
+
+        <button @onclick="OnClickLogin" class="btn btn-primary w-100" disabled="@isLoading">
+            @if (isLoading)
+            {
+                <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                <span class="ms-2">Loading...</span>
+            }
+            else
+            {
+                <span>Login</span>
+            }
+        </button>
+    </div>
+</div>
+
+@code {
+    private string username = "";
+    private string password = "";
+    private string errorText = "";
+    private bool isLoading = false;
+
+    [Parameter]
+    public string Target { get; set; } = "dashboard";
+
+    private async Task OnClickLogin()
+    {
+        try
+        {
+            isLoading = true;
+            errorText = "";
+
+            if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(password))
+            {
+                errorText = "Please enter both email and password";
+                return;
+            }
+
+            var success = await loginService.Login(username, password);
+            if (success)
+            {
+                var user = await loginService.GetUserLoggedIn();
+                if (user != null)
+                {
+                    // Print out user propeties
+                    Console.WriteLine($"User logged in successfully:");
+                    Console.WriteLine($"ID: {user.Id}");
+                    Console.WriteLine($"Name: {user.FirstName} {user.LastName}");
+                    Console.WriteLine($"Email: {user.Email}");
+                    Console.WriteLine($"Phone: {user.PhoneNumber}");
+                    Console.WriteLine($"Email Notifications: {user.EmailNotification}");
+                    Console.WriteLine($"Roles: {string.Join(", ", user.Roles)}");
+                    Console.WriteLine($"Competencies: {string.Join(", ", user.Competencies)}");
+                }
+                navManager.NavigateTo(Target);
+            }
+            else
+            {
+                errorText = "Invalid email or password";
+            }
+        }
+        catch (Exception ex)
+        {
+            errorText = "An error occurred during login. Please try again.";
+            Console.WriteLine($"Home error: {ex.Message}");
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+}

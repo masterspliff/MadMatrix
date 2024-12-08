@@ -1,6 +1,7 @@
 using MongoDB.Driver;
 using MongoDB.Bson;
 using server.Repositories;
+using server.Repositories.Login;
 using server.Data;
 using webapp.Service;
 
@@ -54,6 +55,9 @@ builder.Services.AddScoped<IEventRepository, EventRepository>();
 builder.Services.AddScoped<ILocationRepository, LocationRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<ITaskRepository, TaskRepository>();
+
+// Register Login repositories
+builder.Services.AddScoped<ILoginRepository, LoginRepositoryMongoDB>();
 
 // Register HTTP client services
 builder.Services.AddHttpClient();
