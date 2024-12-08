@@ -25,3 +25,10 @@
     font-size: 0.9rem;
     color: #666;
 }
+
+.assigned-to {
+    display: flex;
+    align-items: center;
+    margin-top: 8px;
+    flex-direction: row;
+}

@@ -46,4 +46,16 @@ public class UserService : IUserService
         }
         throw new Exception("Could not load task");
     }
+    
+    public async Task<User> GetUserById(int id)
+    {
+        var response = await _httpClient.GetAsync($"user/{id}");
+        if (response.IsSuccessStatusCode)
+        {
+            return await response.Content.ReadFromJsonAsync<User>();
+        }
+        
+        throw new Exception("User not found");
+    }
+    
 }
