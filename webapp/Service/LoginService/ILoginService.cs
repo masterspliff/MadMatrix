@@ -10,4 +10,10 @@ public interface ILoginService
     // If user is valid the function will return true and the
     // user is set to be logged in.
     Task<bool> Login(string username, string password);
+
+    // Check if a user is currently logged in
+    Task<bool> IsLoggedIn();
+
+    // Log out the current user
+    Task Logout();
 }

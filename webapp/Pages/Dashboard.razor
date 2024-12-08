@@ -1,5 +1,7 @@
 @page "/dashboard"
 @using webapp.Components
+@using Microsoft.AspNetCore.Components
+@using webapp.Service.LoginService
 
  <div class="top-row ps-3 navbar navbar-dark custom-navbar" style="border: 1px solid #ffffff; border-radius: 5px;">                                                    
      <div class="container-fluid d-flex justify-content-between">                                                                                                      
@@ -8,7 +10,7 @@
          </a>                                                                                                                                                          
                                                                                                                                                                        
          <div class="d-flex align-items-center">                                                                                                                       
-             <button class="btn-eaa" @onclick="HandleLogout">Log ud</button> <!-- Knap til at logge ud -->                                                             
+             <button class="btn-eaa" @onclick="@(async () => await HandleLogout())">Log ud</button> <!-- Knap til at logge ud -->                                                             
          </div>                                                                                                                                                        
      </div>                                                                                                                                                            
  </div>                                                                                                                                                                
@@ -93,6 +95,18 @@
      private bool showCreateTask = false;
      private bool showCreateLocation = false;
      private bool showTestDisplay = false;
+
+     [Inject] 
+     private ILoginService LoginService { get; set; }
+
+     protected override async Task OnInitializedAsync()
+     {
+         // Check if user is authenticated
+         if (!await LoginService.IsLoggedIn())
+         {
+             Navigation.NavigateTo("/");
+         }
+     }
                                                                                                                                                                        
      // Metode til at skifte synligheden af CreateEvent-komponenten                                                                                                    
      private void ToggleCreateEvent()                                                                                                                                  
@@ -120,12 +134,9 @@
      [Inject] private NavigationManager Navigation { get; set; } // Dependency injection af NavigationManager til at håndtere navigation                               
                                                                                                                                                                        
      // Metode til at håndtere logout-logik                                                                                                                            
-     private void HandleLogout()                                                                                                                                       
+     private async Task HandleLogout()                                                                                                                                       
      {                                                                                                                                                                 
-         // Udfør logout-logik her                                                                                                                                     
-         Console.WriteLine("Logged out!");                                                                                                                             
-                                                                                                                                                                       
-         // Omdiriger til login-siden                                                                                                                                  
+         await LoginService.Logout();
          Navigation.NavigateTo("/");                                                                                                                                   
      }                                                                                                                                                                 
  } 

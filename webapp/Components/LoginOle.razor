@@ -3,40 +3,54 @@
 @inject NavigationManager navManager
 
 <div class="container mt-4">
-    @if (!string.IsNullOrEmpty(errorText))
+    @if (isLoggedIn)
     {
-        <div class="alert alert-danger" role="alert">
-            @errorText
+        <div class="alert alert-success text-center" role="alert">
+            <h4 class="alert-heading">You are logged in!</h4>
+            <p>Welcome back. You can now access all features.</p>
+            <div class="d-flex gap-2 justify-content-center">
+                <button @onclick="@(() => navManager.NavigateTo("/dashboard"))" class="btn btn-success">Dashboard</button>
+                <button @onclick="@(async () => await HandleLogout())" class="btn btn-outline-danger">Logout</button>
+            </div>
         </div>
     }
+    else
+    {
+        @if (!string.IsNullOrEmpty(errorText))
+        {
+            <div class="alert alert-danger" role="alert">
+                @errorText
+            </div>
+        }
 
-    <div class="card shadow-sm p-4" style="max-width: 400px; margin: auto;">
-        <h3 class="text-center mb-4">Home</h3>
-        
-        <div class="mb-3">
-            <label for="username" class="form-label">Email:</label>
-            <InputText id="username" @bind-Value="username" 
-                      placeholder="Enter your email..." class="form-control" />
-        </div>
-        
-        <div class="mb-3">
-            <label for="password" class="form-label">Password:</label>
-            <InputText id="password" @bind-Value="password" type="password"
-                      placeholder="Enter your password..." class="form-control" />
-        </div>
+        <div class="card shadow-sm p-4" style="max-width: 400px; margin: auto;">
+            <h3 class="text-center mb-4">Home</h3>
+            
+            <div class="mb-3">
+                <label for="username" class="form-label">Email:</label>
+                <InputText id="username" @bind-Value="username" 
+                          placeholder="Enter your email..." class="form-control" />
+            </div>
+            
+            <div class="mb-3">
+                <label for="password" class="form-label">Password:</label>
+                <InputText id="password" @bind-Value="password" type="password"
+                          placeholder="Enter your password..." class="form-control" />
+            </div>
 
-        <button @onclick="OnClickLogin" class="btn btn-primary w-100" disabled="@isLoading">
-            @if (isLoading)
-            {
-                <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-                <span class="ms-2">Loading...</span>
-            }
-            else
-            {
-                <span>Login</span>
-            }
-        </button>
-    </div>
+            <button @onclick="OnClickLogin" class="btn btn-primary w-100" disabled="@isLoading">
+                @if (isLoading)
+                {
+                    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                    <span class="ms-2">Loading...</span>
+                }
+                else
+                {
+                    <span>Login</span>
+                }
+            </button>
+        </div>
+    }
 </div>
 
 @code {
@@ -44,9 +58,22 @@
     private string password = "";
     private string errorText = "";
     private bool isLoading = false;
+    private bool isLoggedIn = false;
 
     [Parameter]
     public string Target { get; set; } = "dashboard";
+
+    protected override async Task OnInitializedAsync()
+    {
+        isLoggedIn = await loginService.IsLoggedIn();
+    }
+
+    private async Task HandleLogout()
+    {
+        await loginService.Logout();
+        isLoggedIn = false;
+        StateHasChanged();
+    }
 
     private async Task OnClickLogin()
     {
@@ -64,6 +91,7 @@
             var success = await loginService.Login(username, password);
             if (success)
             {
+                isLoggedIn = true;
                 var user = await loginService.GetUserLoggedIn();
                 if (user != null)
                 {

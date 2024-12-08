@@ -34,4 +34,15 @@ public class LoginServiceClientSide : ILoginService  {
     {
         return username.Equals("peter") && password.Equals("1234");
     }
+
+    public async Task<bool> IsLoggedIn()
+    {
+        var user = await GetUserLoggedIn();
+        return user != null;
+    }
+
+    public async Task Logout()
+    {
+        await localStorage.RemoveItemAsync("user");
+    }
 }
