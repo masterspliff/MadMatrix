@@ -1,0 +1,168 @@
+@page "/edittask/{taskid}"
+@using TaskStatus = core.Models.TaskStatus
+@using webapp.Service
+@inject ITaskService taskservice
+@inject IUserService userservice
+
+<h3>Redigere opgave</h3>
+
+@* Error Message Display *@
+@if (!string.IsNullOrEmpty(ErrorMessage))
+{
+    <div class="alert alert-danger">@ErrorMessage</div>
+}
+
+@* Form *@
+<EditForm Model="UpdateTaskItem" OnValidSubmit="UpdateTask" class="card task-card" styling="max-width: 800px; margin: 0 auto;">
+    <div class="form-group">
+        <label for="TaskTitle">Opgave Titel</label>
+        <InputText id="TaskTitle" @bind-Value="UpdateTaskItem.Title" class="form-control" placeholder="Indtast opgave titel" />
+    </div>
+
+    <div class="form-group">
+        <label for="TaskDescription">Beskrivelse</label>
+        <InputText id="TaskDescription" @bind-Value="UpdateTaskItem.Description" class="form-control" placeholder="Indtast beskrivelse" />
+    </div>
+
+    <div class="form-group">
+        <label for="StartDate">Startdato</label>
+        <InputDate id="StartDate" @bind-Value="UpdateTaskItem.StartDate" class="form-control" />
+    </div>
+
+    <div class="form-group">
+        <label for="EndDate">Slutdato</label>
+        <InputDate id="EndDate" @bind-Value="UpdateTaskItem.EndDate" class="form-control" />
+    </div>
+
+    <div class="form-group">
+        <label for="TaskStatus">Status</label>
+        <select id="TaskStatus" class="form-control" @bind="UpdateTaskItem.Status">
+            @foreach (var status in Enum.GetValues(typeof(TaskStatus)).Cast<TaskStatus>())
+            {
+                <option value="@status">@status</option>
+            }
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label for="AssignedTo">Tildel Medarbejdere</label>
+        <div>
+            @if (UserList.Any())
+            {
+                @foreach (var user in UserList)
+                {
+                    <div>
+                        <input
+                            type="checkbox"
+                            id="user_@user.Id"
+                            @onchange="() => ToggleUserSelection(user.Id)"
+                            checked="@SelectedUserIds.Contains(user.Id)" />
+                        <label for="user_@user.Id">@user.FirstName @user.LastName</label>
+                    </div>
+                }
+            }
+            else
+            {
+                <p>Ingen medarbejdere tilgængelige.</p>
+            }
+        </div>
+    </div>
+    
+    <button type="submit" class="btn btn-primary">Opdater Opgave</button>
+    
+    @if (displayMessage)
+    {
+        <div class="success-message">
+            Opgave er opdateret
+        </div>
+    }
+
+    <div class="form-group">
+    </div>
+</EditForm>
+
+@code {
+    private TaskItem UpdateTaskItem { get; set; } = new TaskItem();
+    private List<User> UserList { get; set; } = new();
+    private List<int> SelectedUserIds { get; set; } = new();
+    private bool displayMessage;
+    private string ErrorMessage { get; set; }
+
+    // Parameter can only be parsed as string and have to be manually converted to int
+    [Parameter] 
+    public string taskid { get; set; } 
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Convert taskid string to int manually
+        if (int.TryParse(taskid, out var parsedTaskId))
+        {
+            
+            await LoadTask(parsedTaskId);
+        }
+        else
+        {
+            ErrorMessage = "Invalid task ID";
+        }
+        await LoadUsers();
+    }
+
+    // Get the selected task based on id
+    private async Task LoadTask(int taskId)
+    {
+        UpdateTaskItem = await taskservice.GetTaskAsync(taskId);
+        if (UpdateTaskItem.AssignedToIds != null)
+        {
+            SelectedUserIds = new List<int>(UpdateTaskItem.AssignedToIds);
+        }
+    }
+
+    // Load employees
+    private async Task LoadUsers()
+    {
+        UserList = await userservice.LoadUsers();
+    }
+
+    // Onclick if user already selected - removes from the list else added to list
+    private void ToggleUserSelection(int userId)
+    {
+        if (SelectedUserIds.Contains(userId))
+        {
+            SelectedUserIds.Remove(userId);
+        }
+        else
+        {
+            SelectedUserIds.Add(userId);
+        }
+    }
+
+    // Updating exising task
+    private async Task UpdateTask()
+    {
+        if (UpdateTaskItem.StartDate == default || UpdateTaskItem.EndDate == default || UpdateTaskItem.EndDate < UpdateTaskItem.StartDate)
+        {
+            ErrorMessage = "Ugyldige datoer.";
+            return;
+        }
+
+        try
+        {
+            UpdateTaskItem.AssignedToIds = SelectedUserIds;
+            var isSuccess = await taskservice.EditTaskAsync(int.Parse(taskid), UpdateTaskItem);
+
+            if (isSuccess)
+            {
+                displayMessage = true;
+                ErrorMessage = string.Empty;
+            }
+            else
+            {
+                ErrorMessage = "Kunne ikke opdatere opgaven. Prøv igen.";
+            }
+        }
+        catch (Exception ex)
+        {
+            ErrorMessage = "Der opstod en fejl under opdateringen: " + ex.Message;
+        }
+    }
+}
