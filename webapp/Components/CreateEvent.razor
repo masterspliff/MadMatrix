@@ -7,7 +7,7 @@
 
 
 <h3>Create Event</h3>
-<EditForm Model="NewEvent" OnValidSubmit="CreateEventNow" class="card announcement-card">
+<EditForm Model="NewEvent" OnValidSubmit="CreateEventNow" class="card announcement-card" styling="max-width: 800px; margin: 0 auto;">
     <div class="form-group">
         <label for="Title">Titel</label>
         <InputText id="Title" @bind-Value="NewEvent.Title" class="form-control" placeholder="Indtast Titel"/>
