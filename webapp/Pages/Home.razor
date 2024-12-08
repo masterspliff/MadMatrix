@@ -1,0 +1,33 @@
+@page "/"
+@using webapp.Components
+
+<div class="container mt-4">
+    @if (!showRegister)
+    {
+        <h3 class="text-center my-4">Welcome to MadMatrix</h3>
+        <LoginOle Target="dashboard" />
+        
+        <div class="text-center mt-3">
+            <p>
+                Don't have an account?
+                <a @onclick="ToggleRegister" class="text-primary" style="cursor: pointer;">Sign Up</a>
+            </p>
+        </div>
+    }
+    else
+    {
+        <div class="mb-3">
+            <button class="btn btn-link" @onclick="ToggleRegister">← Back to Home</button>
+        </div>
+        <CreateUser/>
+    }
+</div>
+
+@code {
+    private bool showRegister = false;
+
+    private void ToggleRegister()
+    {
+        showRegister = !showRegister;
+    }
+}

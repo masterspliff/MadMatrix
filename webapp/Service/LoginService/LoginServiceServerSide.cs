@@ -4,23 +4,24 @@ using core.Models;
     
 namespace webapp.Service.LoginService;
 
-
 public class LoginServiceServerSide : LoginServiceClientSide
 {
-    private HttpClient http;
+    private readonly HttpClient _http;
     
-    private string serverUrl = "http://localhost:5151";
     public LoginServiceServerSide(ILocalStorageService ls, HttpClient http) : base(ls)
     {
-        this.http = http;
-        
+        _http = http;
     }
 
     protected override async Task<bool> Validate(string username, string password)
     {
-        User user = new User() { Username = username, Password = password , Role= new Role{Id=0, Name = "admin"}};
-        var res = await http.PostAsJsonAsync<User>($"{serverUrl}/api/login/validate", user);
-        var body = await res.Content.ReadAsStringAsync();
-        return body.Equals("true");
+        var loginDto = new LoginDto 
+        { 
+            Email = username,
+            Password = password 
+        };
+        
+        var response = await _http.PostAsJsonAsync("api/Login", loginDto);
+        return response.IsSuccessStatusCode;
     }
 }

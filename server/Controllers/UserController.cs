@@ -59,8 +59,6 @@ public class UserController : ControllerBase
             PhoneNumber = registerDto.PhoneNumber,
             Competencies = registerDto.Competencies, // Copy competencies from the DTO
             Roles = new List<UserRole> { UserRole.CoWorker }, // Assign a default role
-            CreatedAt = DateTime.UtcNow, // Set creation timestamp
-            UpdatedAt = DateTime.UtcNow  // Set update timestamp
         };
 
         await _userRepository.CreateAsync(user); // Save the new user in the database
@@ -83,7 +81,6 @@ public class UserController : ControllerBase
             return Unauthorized("Invalid email or password"); // Return a 401 Unauthorized status if invalid
         }
 
-        user.LastLogin = DateTime.UtcNow; // Update the last login timestamp
         await _userRepository.UpdateAsync(user); // Save the updated user details
 
         return Ok(user); // Return the user with a 200 OK status
@@ -104,7 +101,6 @@ public class UserController : ControllerBase
             return NotFound(); // Return a 404 Not Found status if the user doesn't exist
         }
 
-        user.UpdatedAt = DateTime.UtcNow; // Update the timestamp
         await _userRepository.UpdateAsync(user); // Save the updated user details
 
         return NoContent(); // Return a 204 No Content status on successful update

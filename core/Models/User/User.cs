@@ -55,8 +55,8 @@ public class User
     
     public bool EmailNotification { get; set; } = true;
     
-    public DateTime LastLogin { get; set; }
-    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-    public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
+    public DateTime LastLogin { get; set; } = DateTime.UtcNow;
+    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;                                                                                                                                                                                       
+    public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;   
 }
 

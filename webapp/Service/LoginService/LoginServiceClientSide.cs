@@ -1,4 +1,5 @@
 namespace webapp.Service.LoginService;
+using Blazored.LocalStorage;
 using core.Models;
 
 public class LoginServiceClientSide : ILoginService  {
@@ -12,10 +13,16 @@ public class LoginServiceClientSide : ILoginService  {
         var res = await localStorage.GetItemAsync<User>("user");
         return res;
     }
-    public async Task<bool> Login(string username, string password) {
+    public async Task<bool> Login(string username, string password) 
+    {
         if (await Validate(username, password))
         {
-            User user = new User { Username = username, Password = "verified", Role = new Role{Id=1, Name = "admin" }};
+            var user = new User 
+            { 
+                Email = username,
+                Password = "verified",
+                Roles = new List<UserRole> { UserRole.CoWorker }
+            };
             
             await localStorage.SetItemAsync("user", user);
             return true;
