@@ -57,6 +57,9 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<ITaskRepository, TaskRepository>();
 
 // Register Login repositories based on environment
+// Change the value inside appsettings.Development.json for either local og online
+// true = use memory
+// false = use mongodb
 if (builder.Configuration.GetValue<bool>("UseInMemoryDatabase"))
 {
     builder.Services.AddScoped<ILoginRepository, LoginRepositoryInMemory>();
