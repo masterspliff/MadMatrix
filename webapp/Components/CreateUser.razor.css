@@ -1,0 +1,33 @@
+.Compentency-checkbox {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.Compentency-checkbox input[type="checkbox"] {
+    margin-right: 10px;
+}
+
+.Compentency-checkbox label {
+    display: block;
+    width: 100%;
+    padding: 5px;
+    background-color: #f0f0f0; /* Lys grå baggrund */
+    border-radius: 4px;
+    font-size: 16px;
+    color: #333;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-left: 10px;
+}
+
+.Compentency-checkbox label:hover {
+    background-color: #e0e0e0; /* Mørkere grå ved hover */
+}
+
+.Compentency-checkbox input[type="checkbox"] {
+    margin-right: 10px;
+    width: 10px; /* Indstil bredde */
+    height: 10px; /* Indstil højde */
+    transform: scale(1.5); /* Skaler checkboksen op */
+}          

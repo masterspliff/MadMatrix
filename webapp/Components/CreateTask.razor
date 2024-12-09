@@ -5,12 +5,12 @@
 @inject ITaskService taskservice
 @inject IUserService userservice
 
-<h3>Opret Opgave</h3>
+<EditForm Model="NewTask" OnValidSubmit="CommitTask" class="card announcement-card" style="max-width: 800px; margin: 5px auto; border: none; ">
 
-<EditForm Model="NewTask" OnValidSubmit="CommitTask" class="card task-card" styling="max-width: 800px; margin: 0 auto;">
+    <h4 style="margin: 10px 0px 30px 0px">Opret Opgave</h4>
     <div class="form-group">
         <label for="TaskTitle">Opgave Titel</label>
-        <InputText id="TaskTitle" @bind-Value="NewTask.Title" class="form-control" placeholder="Indtast opgave titel" />
+        <InputText id="TaskTitle" @bind-Value="NewTask.Title" class="form-control" placeholder="Indtast opgave titel"/>
     </div>
 
     <div class="form-group">
@@ -20,12 +20,12 @@
 
     <div class="form-group">
         <label for="StartDate">Startdato</label>
-        <InputDate id="StartDate" @bind-Value="NewTask.StartDate" class="form-control" />
+        <InputDate id="StartDate" @bind-Value="NewTask.StartDate" class="form-control"/>
     </div>
 
     <div class="form-group">
         <label for="EndDate">Slutdato</label>
-        <InputDate id="EndDate" @bind-Value="NewTask.EndDate" class="form-control" />
+        <InputDate id="EndDate" @bind-Value="NewTask.EndDate" class="form-control"/>
     </div>
 
     <!-- Dropdown for Task Status -->
@@ -41,18 +41,18 @@
 
     <!-- Checkboxes for Users -->
     <div class="form-group">
-        <label for="AssignedTo">Tildel Medarbejdere</label>
+        <label for="AssignedTo" style="margin-bottom: 15px">Tildel Medarbejdere</label>
         <div>
             @foreach (var user in UserList)
             {
-                <div>
-                    <input
-                        type="checkbox"
-                        id="user_@user.Id"
-                        @onchange="() => ToggleUserSelection(user.Id)"
-                        checked="@SelectedUserIds.Contains(user.Id)" />
-                    <label for="user_@user.Id">@user.FirstName @user.LastName</label>
-                </div>
+            <div class="user-checkbox">
+                <input
+                    type="checkbox" 
+                    id="user_@user.Id"
+                    @onchange="() => ToggleUserSelection(user.Id)"
+                    checked="@SelectedUserIds.Contains(user.Id)"/>
+                <label for="user_@user.Id" style="font-size: 12px; font-weight: normal">@user.FirstName @user.LastName</label>
+            </div>
             }
         </div>
     </div>

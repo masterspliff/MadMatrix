@@ -1,7 +1,7 @@
-.card.announcement-card {
+.card {
     padding: 20px;
     width: 100%;
-    background-color: #dadada;
+    background-color: #ae1010;
     border-radius: 5px;
     color: #000000;
 }
@@ -13,7 +13,6 @@
 .form-group label {
     display: block;
     font-weight: bold;
-    margin-bottom: 5px;
     color: #555;
 }
 

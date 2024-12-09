@@ -3,7 +3,7 @@
 @using webapp.Components.Shared
 @inject ILocationService LocationService
 
-<h3>Location Management</h3>
+
 
 @* 
     This component uses FormInput with different TValue types:
@@ -14,37 +14,38 @@
     making the form handling type-safe and reducing boilerplate code.
 *@
 
-<EditForm Model="@locationModel" OnValidSubmit="HandleCreateLocation" class="card location-card p-3">
-    <div class="row">
+<EditForm Model="@locationModel" OnValidSubmit="HandleCreateLocation" class="card location-card p-3" style="border: none">
+    <div class="row justify-content-center">
+        <h3 style="margin-bottom: 30px">Lokation adminstration</h3>
         <div class="col-md-6">
-            <h4>Create Location</h4>
+            <h4>Opret Lokation</h4>
             <FormInput TValue="string"
                 Id="locationName" 
-                Label="Location Name" 
+                Label="Lokation navn" 
                 Type="text" 
                 @bind-Value="locationModel.Name" 
-                Placeholder="Enter location name" />
-            <div class="form-group">
-                <button type="submit" class="btn btn-primary">Create Location</button>
+                Placeholder="Navngiv lokationens navn" />
+            <div class="form-group" style="margin-top: 10px">
+                <button type="submit" class="btn btn-primary" style="width: 100%">Opret Location</button>
             </div>
         </div>
-
+        
         <div class="col-md-6">
-            <h4>Delete Location</h4>
+            <h4>Slet Location</h4>
             <FormInput TValue="int"
                 Id="locationDelete" 
-                Label="Select Location" 
+                Label="Vælg lokation" 
                 Type="select" 
                 @bind-Value="selectedLocationId" 
-                DefaultOption="Select a location to delete...">
+                DefaultOption="Vælg ønskede lokation for at slette">
                 @foreach (var location in locationsList)
                 {
                     <option value="@location.Id">@location.Name</option>
                 }
             </FormInput>
-            <div class="form-group">
-                <button type="button" class="btn btn-danger" @onclick="HandleDeleteLocation" disabled="@(selectedLocationId == 0)">
-                    Delete Selected Location
+            <div class="form-group" style="margin-top: 10px">
+                <button type="button" class="btn btn-danger" style="width: 100%;" @onclick="HandleDeleteLocation" disabled="@(selectedLocationId == 0)">
+                    Slet lokation
                 </button>
             </div>
         </div>
