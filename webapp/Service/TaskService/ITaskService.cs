@@ -14,5 +14,6 @@ public interface ITaskService
 
     // Get Task based on id
     Task<TaskItem> GetTaskAsync(int taskid);
-
+    
+    Task<List<TaskItem>> GetTasksByEventIdAsync(int eventId);  
 }

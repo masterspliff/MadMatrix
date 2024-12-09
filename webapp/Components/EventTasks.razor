@@ -1,0 +1,35 @@
+﻿@page "/event-tasks/{EventId:int}"
+@using Service
+@inject EventService EventService
+
+@code {
+    [Parameter] 
+    public int EventId { get; set; }
+    
+    private TaskEvent? CurrentEvent;
+    
+    protected override async Task OnInitializedAsync()
+        {
+            CurrentEvent = await EventService.GetEventByIdAsync(EventId);
+        }
+    }
+
+    @if (CurrentEvent == null)
+        {
+            <p>Event was not found.</p>
+        }
+    else
+        {
+        /*<h3>Opgaver for: @CurrentEvent.Title</h3>
+        <ul>
+            @foreach (var task in CurrentEvent.TaskIds)
+            {
+            <li>
+                <strong>@task.Title</strong> - @task.Description
+                <span style="color: @(task.IsCompleted ? "green" : "red");">
+                            @(task.IsCompleted ? "✔ Afsluttet" : "✘ Ikke afsluttet")
+                        </span>
+            </li>
+            }
+            </ul> */
+    }

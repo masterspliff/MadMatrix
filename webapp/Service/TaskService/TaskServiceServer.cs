@@ -48,6 +48,16 @@ public class TaskServiceServer : ITaskService
         }
         throw new Exception("Could not load task");
     }
+    
+    public async Task<List<TaskItem>> GetTasksByEventIdAsync(int eventId)
+    {
+        var response = await _httpClient.GetAsync("task");
+        if (response.IsSuccessStatusCode)
+        {
+            return await response.Content.ReadFromJsonAsync<List<TaskItem>>();
+        }
+        throw new Exception("Could not load event tasks");
+    }
 }
 
 
