@@ -6,8 +6,9 @@
 @inject ILocationService locationService
 
 
-<h3>Create Event</h3>
-<EditForm Model="NewEvent" OnValidSubmit="CreateEventNow" class="card announcement-card" styling="max-width: 800px; margin: 0 auto;">
+
+<EditForm Model="NewEvent" OnValidSubmit="CreateEventNow" class="card announcement-card" style="max-width: 800px; margin: 5px auto; border: none; ">
+    <h4 style="margin: 10px 0px 30px 0px">Opret Event</h4>
     <div class="form-group">
         <label for="Title">Titel</label>
         <InputText id="Title" @bind-Value="NewEvent.Title" class="form-control" placeholder="Indtast Titel"/>

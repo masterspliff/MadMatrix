@@ -4,20 +4,19 @@
 <div class="container mt-4">
     @if (!showRegister)
     {
-        <h3 class="text-center my-4">Welcome to MadMatrix</h3>
         <LoginOle Target="dashboard" />
         
         <div class="text-center mt-3">
             <p>
-                Don't have an account?
-                <a @onclick="ToggleRegister" class="text-primary" style="cursor: pointer;">Sign Up</a>
+                Ingen konto endnu?
+                <a @onclick="ToggleRegister" class="text-primary" style="cursor: pointer;">Opret her</a>
             </p>
         </div>
     }
     else
     {
         <div class="mb-3">
-            <button class="btn btn-link" @onclick="ToggleRegister">← Back to Home</button>
+            <button class="btn btn-link" @onclick="ToggleRegister" style="width: 125px; height: 50px; border-radius: 5px; background-color: #0c63e4; color: white; font-size: 10px">← Tilbage til login</button>
         </div>
         <CreateUser/>
     }
