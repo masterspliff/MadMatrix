@@ -1,0 +1,16 @@
+﻿@using webapp.Service
+@inject IUserService UserService
+
+<p class="assigned-user">@user.FirstName @user.LastName</p>
+
+@code {
+    [Parameter]
+    public int userId { get; set; }
+    private User user = new User();
+
+    protected override async Task OnInitializedAsync()
+    {
+        user = await UserService.GetUserById(userId);        
+    }
+    
+}
