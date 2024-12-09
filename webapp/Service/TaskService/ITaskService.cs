@@ -5,6 +5,9 @@ public interface ITaskService
 {
     // Create a new Task
     Task<bool> CreateTaskAsync(TaskItem newTaskItem);
+    Task<List<TaskItem>> LoadTask();
+    Task<List<TaskItem>> GetTasksByEventIdAsync(int eventId);
+
     
     // Update existing Task
     Task<bool> EditTaskAsync(int id, TaskItem updateTaskItem);

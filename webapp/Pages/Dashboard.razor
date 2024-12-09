@@ -1,5 +1,6 @@
 @page "/dashboard"
 @using webapp.Components
+@inject NavigationManager NavigationManager
 @using Microsoft.AspNetCore.Components
 @using webapp.Service.LoginService
 
@@ -64,6 +65,9 @@
          <button class="btn-ToggleCreate" @onclick="ToggleCreateTask">Toggle Create Task</button> <!-- Knap til at vise/skjule CreateTask-komponenten -->
          <button class="btn-ToggleCreate" @onclick="ToggleCreateLocation">Toggle Create Location</button> <!-- Knap til at vise/skjule CreateLocation-komponenten -->
          <button class="btn-ToggleCreate" @onclick="ToggleTestDisplay">Toggle Test Display</button> <!-- Knap til at vise/skjule Testdisplay-komponenten -->
+         <button class="btn-ToggleCreate" @onclick="NavigateToEvents">Events</button> 
+
+
          @* Vis komponenterne baseret på tilstanden *@                                                                                                                 
          @if (showCreateEvent)                                                                                                                                         
          {                                                                                                                                                             
@@ -130,6 +134,11 @@
      {               
          showTestDisplay = !showTestDisplay;
      }           
+     
+     private void NavigateToEvents()
+     {
+         NavigationManager.NavigateTo("/Events");
+     }
                                                                                                                                                                        
      [Inject] private NavigationManager Navigation { get; set; } // Dependency injection af NavigationManager til at håndtere navigation                               
                                                                                                                                                                        
