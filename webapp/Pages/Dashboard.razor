@@ -7,16 +7,31 @@
  <div class="top-row ps-3 navbar navbar-dark custom-navbar" style="border: 1px solid #ffffff; border-radius: 5px;">                                                    
      <div class="container-fluid d-flex justify-content-between">                                                                                                      
          <a class="navbar-brand text-black d-flex align-items-center" href="">                                                                                         
-             <span style="font-size: 1.25rem; color: white; font-weight: bold; padding-left: 0rem !important; ">MAD.EAAA</span>                                                                       
+             <span style="font-size: 2em; color: #3a646dff; font-weight: lighter; margin-left: -28px; ">MAD.EAAA</span>                                                                       
          </a>                                                                                                                                                          
                                                                                                                                                                        
-         <div class="d-flex align-items-center">                                                                                                                       
+         <div class="d-flex align-items-center">
+             <button class="btn-profile" style=" "data-bs-toggle="modal" data-bs-target="#profileModal">Min Profil</button>
              <button class="btn-eaa" @onclick="HandleLogout">Log ud</button> <!-- Knap til at logge ud -->                                                             
          </div>                                                                                                                                                        
      </div>                                                                                                                                                            
- </div>                                                                                                                                                                
-                                                                                                                                                                       
- <div class="content">                                                                                                                                                 
+ </div>
+
+<div class="modal fade" id="profileModal" tabindex="-1" aria-labelledby="profileModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <EditProfile />
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="content">                                                                                                                                                 
                                                                                                                                                                        
      <div id="news" class="news-box">                                                                                                                                  
          <h3>NYHEDER</h3> <!-- Overskrift for nyhedssektionen -->                                                                                                      
@@ -66,6 +81,23 @@
                  </div>
              </div>
          </div>
+
+         <button type="button" class="Create-Event-Box" data-bs-toggle="modal" data-bs-target="#locationModal">
+             Oversigt over lokationer
+         </button>
+         <div class="modal fade" id="locationModal" tabindex="-1" aria-labelledby="locationModalLabel" aria-hidden="true">
+             <div class="modal-dialog modal-lg">
+                 <div class="modal-content">
+                     <div class="modal-header">
+                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                     </div>
+                     <div class="modal-body">
+                         <CreateLocation/>
+                     </div>
+                 </div>
+             </div>
+         </div>
+         
      </div>
      
 
@@ -106,8 +138,6 @@
      </div>                                                                                                                                                            
                                                                                                                                                                        
  </div>
-
-<ListingsEmployee/>
 
 @code {                                                                                                                                                               
      [Inject] 
@@ -164,6 +194,6 @@
          Console.WriteLine("Logged out!");                                                                                                                             
                                                                                                                                                                        
          // Omdiriger til login-siden                                                                                                                                  
-         Navigation.NavigateTo("/");                                                                                                                                   
+         Navigation.NavigateTo("/login");                                                                                                                                   
      }                                                                                                                                                                 
  } 

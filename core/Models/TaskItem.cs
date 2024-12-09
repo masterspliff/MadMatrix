@@ -10,7 +10,7 @@ namespace core.Models
         public DateTime EndDate { get; set; } = DateTime.Now.AddDays(1); // Default to 1 day after the start date
         public int? EventId { get; set; } // Optional, can be null
         public DateTime UpdatedAt { get; set; } = DateTime.Now; // Default to current date
-        public List<int> AssignedToIds { get; set; } = new();
+        public List<int> AssignedToIds { get; set; } = new List<int>();     
     }
 
     public enum TaskStatus

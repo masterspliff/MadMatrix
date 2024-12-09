@@ -1,61 +1,60 @@
-@page "/"
-@using core.Models
-@using webapp.Components
-@inject NavigationManager Navigation
-
-
-<div class="container mt-4">
-    @if (!showRegister)
-    {
-        <h3 class="text-center my-4">Login</h3>
-        <div class="d-flex justify-content-center align-items-center">
-            <div class="card shadow-sm p-4" style="width: 100%; max-width: 400px;">
-                <h4 class="text-center mb-4">Please Login</h4>
-                <form>
-                    <div class="mb-3">
-                        <label for="email" class="form-label">Email address</label>
-                        <input type="email" id="email" class="form-control" placeholder="Enter your email" />
-                    </div>
-                    <div class="mb-3">
-                        <label for="password" class="form-label">Password</label>
-                        <input type="password" id="password" class="form-control" placeholder="Enter your password" />
-                    </div>
-                    <button type="button" class="btn btn-primary w-100" @onclick="HandleLogin">Login</button>
-                </form>
-                <p class="text-center mt-3">
-                    Don't have an account? 
-                    <a @onclick="ToggleRegister" class="text-primary" style="cursor: pointer;">Sign Up</a>
-                </p>
-            </div>
-        </div>
-    }
-    else
-    {
-        <div class="mb-3">
-            <button class="btn btn-link" @onclick="ToggleRegister">← Back to Login</button>
-        </div>
-        <CreateUser />
-    }
-</div>
-
-@code {
-    private bool showRegister = false;
-
-    private void ToggleRegister()
-    {
-        showRegister = !showRegister;
-    }
-
-    private void HandleLogin()
-    {
-        Console.WriteLine("Login attempted");
-
-        // Simulate successful login
-        bool loginSuccessful = true;
-
-        if (loginSuccessful)
-        {
-            Navigation.NavigateTo("/dashboard");
-        }
-    }
-}
+ @page "/login"                                                                                                                                                                                                                                                                                                                                                          
+    @using core.Models                                                                                                                                                                                                                                                                                                                                                      
+    @using webapp.Components                                                                                                                                                                                                                                                                                                                                                
+    @inject NavigationManager Navigation                                                                                                                                                                                                                                                                                                                                    
+                                                                                                                                                                                                                                                                                                                                                                            
+    <div class="container mt-4">                                                                                                                                                                                                                                                                                                                                            
+        @if (!showRegister)                                                                                                                                                                                                                                                                                                                                                 
+        {                                                                                                                                                                                                                                                                                                                                                                   
+            <h3 class="text-center my-4">Login</h3>                                                                                                                                                                                                                                                                                                                         
+            <div class="d-flex justify-content-center align-items-center">                                                                                                                                                                                                                                                                                                  
+                <div class="card shadow-sm p-4" style="width: 100%; max-width: 400px;">                                                                                                                                                                                                                                                                                     
+                    <h4 class="text-center mb-4">Please Login</h4>                                                                                                                                                                                                                                                                                                          
+                    <form>                                                                                                                                                                                                                                                                                                                                                  
+                        <div class="mb-3">                                                                                                                                                                                                                                                                                                                                  
+                            <label for="email" class="form-label">Email address</label>                                                                                                                                                                                                                                                                                     
+                            <input type="email" id="email" class="form-control" placeholder="Enter your email" />                                                                                                                                                                                                                                                           
+                        </div>                                                                                                                                                                                                                                                                                                                                              
+                        <div class="mb-3">                                                                                                                                                                                                                                                                                                                                  
+                            <label for="password" class="form-label">Password</label>                                                                                                                                                                                                                                                                                       
+                            <input type="password" id="password" class="form-control" placeholder="Enter your password" />                                                                                                                                                                                                                                                  
+                        </div>                                                                                                                                                                                                                                                                                                                                              
+                        <button type="button" class="btn btn-primary w-100" @onclick="HandleLogin">Login</button>                                                                                                                                                                                                                                                           
+                    </form>                                                                                                                                                                                                                                                                                                                                                 
+                    <p class="text-center mt-3">                                                                                                                                                                                                                                                                                                                            
+                        Don't have an account?                                                                                                                                                                                                                                                                                                                              
+                        <a @onclick="ToggleRegister" class="text-primary" style="cursor: pointer;">Sign Up</a>                                                                                                                                                                                                                                                              
+                    </p>                                                                                                                                                                                                                                                                                                                                                    
+                </div>                                                                                                                                                                                                                                                                                                                                                      
+            </div>                                                                                                                                                                                                                                                                                                                                                          
+        }                                                                                                                                                                                                                                                                                                                                                                   
+        else                                                                                                                                                                                                                                                                                                                                                                
+        {                                                                                                                                                                                                                                                                                                                                                                   
+            <div class="mb-3">                                                                                                                                                                                                                                                                                                                                              
+                <button class="btn btn-link" @onclick="ToggleRegister">← Back to Login</button>                                                                                                                                                                                                                                                                             
+            </div>                                                                                                                                                                                                                                                                                                                                                          
+            <CreateUser />                                                                                                                                                                                                                                                                                                                                                  
+        }                                                                                                                                                                                                                                                                                                                                                                   
+    </div>                                                                                                                                                                                                                                                                                                                                                                  
+                                                                                                                                                                                                                                                                                                                                                                            
+    @code {                                                                                                                                                                                                                                                                                                                                                                 
+        private bool showRegister = false;                                                                                                                                                                                                                                                                                                                                  
+                                                                                                                                                                                                                                                                                                                                                                            
+        private void ToggleRegister()                                                                                                                                                                                                                                                                                                                                       
+        {                                                                                                                                                                                                                                                                                                                                                                   
+            showRegister = !showRegister;                                                                                                                                                                                                                                                                                                                                   
+        }                                                                                                                                                                                                                                                                                                                                                                   
+                                                                                                                                                                                                                                                                                                                                                                            
+        private void HandleLogin()                                                                                                                                                                                                                                                                                                                                          
+        {                                                                                                                                                                                                                                                                                                                                                                   
+            Console.WriteLine("Login attempted");                                                                                                                                                                                                                                                                                                                           
+                                                                                                                                                                                                                                                                                                                                                                            
+            // Simulate successful login                                                                                                                                                                                                                                                                                                                                    
+            bool loginSuccessful = true;                                                                                                                                                                                                                                                                                                                                    
+                                                                                                                                                                                                                                                                                                                                                                            
+            if (loginSuccessful)                                                                                                                                                                                                                                                                                                                                            
+            {                                                                                                                                                                                                                                                                                                                                                               
+                Navigation.NavigateTo("/dashboard");                                                                                                                                                                                                                                                                                                                        
+            }                                                                                                                                                                                                                                                                                                                                                               
+        }                                                                                                                                                                                                                                                                                                                                                                   
+    } 
