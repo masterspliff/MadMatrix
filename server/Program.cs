@@ -56,8 +56,15 @@ builder.Services.AddScoped<ILocationRepository, LocationRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<ITaskRepository, TaskRepository>();
 
-// Register Login repositories
-builder.Services.AddScoped<ILoginRepository, LoginRepositoryMongoDB>();
+// Register Login repositories based on environment
+if (builder.Configuration.GetValue<bool>("UseInMemoryDatabase"))
+{
+    builder.Services.AddScoped<ILoginRepository, LoginRepositoryInMemory>();
+}
+else
+{
+    builder.Services.AddScoped<ILoginRepository, LoginRepositoryMongoDB>();
+}
 
 // Register HTTP client services
 builder.Services.AddHttpClient();
