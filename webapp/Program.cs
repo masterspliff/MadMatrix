@@ -19,7 +19,16 @@ builder.Services.AddScoped<ILocationService, LocationService>();
 // Add Blazored LocalStorage
 builder.Services.AddBlazoredLocalStorage();
 
-// Register LoginService - using ServerSide implementation
-builder.Services.AddScoped<ILoginService, LoginServiceServerSide>();
+// Register LoginService with mode configuration
+// Get LoginMode from configuration
+
+builder.Services.AddScoped<ILoginService>(sp => 
+    new LoginServiceClientSide(
+        sp.GetRequiredService<ILocalStorageService>(),
+        sp.GetRequiredService<HttpClient>(),
+        LoginMode.Online // Using Demo mode for offline testing
+        ));
+
+
 
 await builder.Build().RunAsync();
