@@ -4,18 +4,7 @@
 @using webapp.Service.LoginService
 @inject NavigationManager NavigationManager
 
-<div class="top-row ps-3 navbar navbar-dark custom-navbar" style="border: 1px solid #ffffff; border-radius: 5px;">
-    <div class="container-fluid d-flex justify-content-between">
-        <a class="navbar-brand text-black d-flex align-items-center" href="">
-            <span style="font-size: 2em; color: #3a646dff; font-weight: lighter; margin-left: -28px; ">MAD.EAAA</span>
-        </a>
-
-        <div class="d-flex align-items-center">
-            <button class="btn-profile" style=" "data-bs-toggle="modal" data-bs-target="#profileModal">Min Profil</button>
-            <button class="btn-eaa" @onclick="HandleLogout">Log ud</button> <!-- Knap til at logge ud -->
-        </div>
-    </div>
-</div>
+<Navbar />
 
 <ModalWrapper ModalId="profileModal">
     <EditProfile />
@@ -23,17 +12,8 @@
 
 
 <div class="content">
-
-    <div id="news" class="news-box">
-        <h3>NYHEDER</h3> <!-- Overskrift for nyhedssektionen -->
-        <p>Kantinens nye app! Velkommen</p> <!-- Beskrivelse af nyheder -->
-        <p>
-            EAAA-kantinens nye app gør det nemt at planlægge events, booke arrangementer og
-            skabe overblik over kommende aktiviteter. En praktisk løsning, der bringer struktur
-            og bekvemmelighed til dine planer.
-        </p>
-    </div>
-
+    <Hero />
+    
     <div class="link-content">
         <button type="button" class="Create-Event-Box" data-bs-toggle="modal" data-bs-target="#eventModal">
             Opret Event
@@ -73,49 +53,7 @@ if (!await LoginService.IsLoggedIn())
 Navigation.NavigateTo("/");
 }
 }
-// Tilstande til at styre synligheden af CreateEvent og CreateTask komponenterne                                                                                  
-private bool showCreateEvent = false;
-private bool showCreateTask = false;
-private bool showCreateLocation = false;
-private bool showTestDisplay = false;
-
-// Metode til at skifte synligheden af CreateEvent-komponenten                                                                                                    
-private void ToggleCreateEvent()
-{
-showCreateEvent = !showCreateEvent;
-}
-
-// Metode til at skifte synligheden af CreateTask-komponenten                                                                                                     
-private void ToggleCreateTask()
-{
-showCreateTask = !showCreateTask;
-}
-
-// Metode til at skifte synligheden af CreateEvent-komponenten                                                                                                     
-private void ToggleCreateLocation()
-{
-showCreateLocation = !showCreateLocation;
-}
-
-private void ToggleTestDisplay()
-{
-showTestDisplay = !showTestDisplay;
-}
-
-private void NavigateToEvents()
-{
-NavigationManager.NavigateTo("/Events");
-}
 
 [Inject] private NavigationManager Navigation { get; set; } // Dependency injection af NavigationManager til at håndtere navigation                               
 
-// Metode til at håndtere logout-logik                                                                                                                            
-private void HandleLogout()
-{
-// Udfør logout-logik her                                                                                                                                     
-Console.WriteLine("Logged out!");
-
-// Omdiriger til login-siden                                                                                                                                  
-Navigation.NavigateTo("/login");
-}
 } 
