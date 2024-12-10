@@ -4,6 +4,7 @@
 @inject ILoginService LoginService
 
 <div class="container mt-4">
+    
     @if (currentUser != null)
     {
         <div class="alert alert-info">
@@ -24,23 +25,24 @@
             }
         </div>
     }
+    
     @if (!showRegister)
     {
-    <LoginOle Target="dashboard" />
+        <LoginOle Target="dashboard"/>
 
-    <div class="text-center mt-3">
-        <p>
-            Ingen konto endnu?
-            <a @onclick="ToggleRegister" class="text-primary" style="cursor: pointer;">Opret her</a>
-        </p>
-    </div>
+        <div class="text-center mt-3">
+            <p>
+                Ingen konto endnu?
+                <a @onclick="ToggleRegister" class="text-primary" style="cursor: pointer;">Opret her</a>
+            </p>
+        </div>
     }
     else
     {
-    <div class="mb-3">
-        <button class="btn btn-link" @onclick="ToggleRegister" style="width: 125px; height: 50px; border-radius: 5px; background-color: #0c63e4; color: white; font-size: 10px">← Tilbage til login</button>
-    </div>
-    <CreateUser/>
+        <div class="mb-3">
+            <button class="btn btn-link" @onclick="ToggleRegister" style="width: 125px; height: 50px; border-radius: 5px; background-color: #0c63e4; color: white; font-size: 10px">← Tilbage til login</button>
+        </div>
+        <CreateUser/>
     }
 </div>
 
