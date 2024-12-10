@@ -1,0 +1,50 @@
+﻿@using webapp.Service
+@using TaskStatus = core.Models.TaskStatus
+@inject IUserService UserService
+@inject ITaskService TaskService
+
+    <h3>@Title</h3>
+    @if (ShowData == true)
+    {
+        <p><strong>Status:</strong> @Status</p>
+        <p><strong>Start Date:</strong> @StartDate</p>
+        <p><strong>End Date:</strong> @EndDate</p>
+        <p><strong>Assigned To:</strong></p>
+            <div class="assigned-to">
+                @foreach (var id in @AssignedTo)
+                {
+                // component that takes id and handles logic of displaying pfp and other info'
+                <UserViewer userId="@id"/>
+                }
+            }
+
+        </div>
+    }
+    @if (ShowDescription == true)
+    {
+        <p><strong>Assigned To:</strong></p>
+        <div class="assigned-to">
+            @foreach (var id in @AssignedTo)
+            {
+                // component that takes id and handles logic of displaying pfp and other info'
+                <UserViewer userId="@id"/>
+            }
+        </div>
+    <p><strong>Description:</strong>@Description</p>
+    }
+    
+
+    @code {
+    //Import parameters from the Model(?)
+    [Parameter] public int taskId { get; set; }
+    [Parameter] public string Title { get; set; }
+    [Parameter] public string Description { get; set; }
+    [Parameter] public TaskStatus Status { get; set; }
+    [Parameter] public DateTime StartDate { get; set; }
+    [Parameter] public DateTime EndDate { get; set; }
+    [Parameter] public List<int> AssignedTo { get; set; }
+
+    [Parameter] public bool? ShowDescription { get; set; } = false;
+    [Parameter] public bool? ShowData { get; set; } = false;
+
+    }
