@@ -93,7 +93,7 @@
             if (success)
             {
                 isLoggedIn = true;
-                var user = await loginService.GetUserLoggedIn();
+                var user = await loginService.GetCurrentUser();
                 if (user != null)
                 {
                     // Print out user propeties

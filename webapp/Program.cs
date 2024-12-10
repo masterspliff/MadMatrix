@@ -26,7 +26,7 @@ builder.Services.AddScoped<ILoginService>(sp =>
     new LoginServiceClientSide(
         sp.GetRequiredService<ILocalStorageService>(),
         sp.GetRequiredService<HttpClient>(),
-        LoginMode.Online // Using Demo mode for offline testing
+        LoginMode.Demo // Using Demo mode for offline testing
         ));
 
 
