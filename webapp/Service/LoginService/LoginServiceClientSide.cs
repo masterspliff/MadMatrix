@@ -29,6 +29,15 @@ public class LoginServiceClientSide : ILoginService
             Email = "worker@demo.com",
             Password = "demo",
             Roles = new List<UserRole> { UserRole.CoWorker }
+        },
+        new User 
+        { 
+            Id = 3,
+            FirstName = "Demo",
+            LastName = "Manager",
+            Email = "manager@demo.com",
+            Password = "demo",
+            Roles = new List<UserRole> { UserRole.Manager }
         }
     };
     
@@ -39,7 +48,7 @@ public class LoginServiceClientSide : ILoginService
         _mode = mode;
     }
 
-    public async Task<User?> GetUserLoggedIn()
+    public async Task<User?> GetCurrentUser()
     {
         return await _localStorage.GetItemAsync<User>("user");
     }
@@ -61,7 +70,7 @@ public class LoginServiceClientSide : ILoginService
             Password = password 
         };
         
-        var response = await _http.PostAsJsonAsync("api/Login", loginDto);
+        var response = await _http.PostAsJsonAsync("user/login", loginDto);
         if (response.IsSuccessStatusCode)
         {
             var user = await response.Content.ReadFromJsonAsync<User>();
@@ -90,7 +99,7 @@ public class LoginServiceClientSide : ILoginService
 
     public async Task<bool> IsLoggedIn()
     {
-        var user = await GetUserLoggedIn();
+        var user = await GetCurrentUser();
         return user != null;
     }
 
