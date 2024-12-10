@@ -1,0 +1,76 @@
+@typeparam TEnum where TEnum : Enum
+
+<div class="form-group">
+    <label class="form-label">@Label</label>
+    @if (IsCheckboxList)
+    {
+        @foreach (var value in Enum.GetValues(typeof(TEnum)))
+        {
+            <div class="enum-checkbox">
+                <InputCheckbox class="form-check-input"
+                             @bind-Value="selectedValues[Array.IndexOf(Enum.GetValues(typeof(TEnum)), value)]"
+                             id="@($"enum_{value}")" />
+                <label class="form-check-label" for="@($"enum_{value}")">
+                    @value
+                </label>
+            </div>
+        }
+    }
+    else
+    {
+        <InputSelect class="form-control" Value="@Value" ValueChanged="@ValueChanged" ValueExpression="@(() => Value)">
+            @if (!string.IsNullOrEmpty(DefaultOption))
+            {
+                <option value="">@DefaultOption</option>
+            }
+            @foreach (var value in Enum.GetValues(typeof(TEnum)))
+            {
+                <option value="@value">@value</option>
+            }
+        </InputSelect>
+    }
+</div>
+
+@code {
+    [Parameter] public string Label { get; set; } = string.Empty;
+    [Parameter] public bool IsCheckboxList { get; set; }
+    [Parameter] public string DefaultOption { get; set; } = string.Empty;
+    [Parameter] public TEnum Value { get; set; }
+    [Parameter] public EventCallback<TEnum> ValueChanged { get; set; }
+    [Parameter] public EventCallback<IEnumerable<TEnum>> SelectionChanged { get; set; }
+
+    private bool[] selectedValues = Array.Empty<bool>();
+
+    protected override void OnInitialized()
+    {
+        if (IsCheckboxList)
+        {
+            selectedValues = new bool[Enum.GetValues(typeof(TEnum)).Length];
+        }
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (IsCheckboxList && selectedValues.Any(x => x))
+        {
+            var selected = GetSelectedValues();
+            await SelectionChanged.InvokeAsync(selected);
+        }
+    }
+
+    private IEnumerable<TEnum> GetSelectedValues()
+    {
+        var values = Enum.GetValues(typeof(TEnum));
+        var selected = new List<TEnum>();
+        
+        for (int i = 0; i < selectedValues.Length; i++)
+        {
+            if (selectedValues[i])
+            {
+                selected.Add((TEnum)values.GetValue(i)!);
+            }
+        }
+        
+        return selected;
+    }
+}

@@ -1,0 +1,21 @@
+.content {
+    margin-right: 100px;
+    margin-left: 100px;
+}
+
+.news-box h3 {
+    font-weight: bold;
+    color: #f0e87d;
+}
+
+.news-box {
+    background-color: #393939;
+    padding: 40px;
+    width: 100%;
+    max-width: 100%;
+    min-height: 200px;
+    border-radius: 10px;
+    color: #ffffff;
+    box-sizing: border-box;
+    font-weight: lighter;
+}
