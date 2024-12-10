@@ -20,4 +20,8 @@
       <_ContentIncludedByDefault Remove="wwwroot\js\textScramble.js" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Components\Show\" />
+    </ItemGroup>
+
 </Project>

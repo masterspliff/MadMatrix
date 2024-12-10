@@ -6,11 +6,6 @@
 
 <Navbar />
 
-<ModalWrapper ModalId="profileModal">
-    <EditProfile />
-</ModalWrapper>
-
-
 <div class="content">
     <Hero />
     
@@ -38,22 +33,30 @@
             <CreateLocation/>
         </ModalWrapper>
 
+        <button type="button" class="Create-Event-Box" data-bs-toggle="modal" data-bs-target="#adminModal">
+            Administration Panel
+        </button>
+        
+        <ModalWrapper ModalId="adminModal" ModalSize="modal-xl">
+            <TestComponent/>
+        </ModalWrapper>
+
     </div>
 </div>
 
 @code {
-[Inject]
-private ILoginService LoginService { get; set; }
+    [Inject]
+    private ILoginService LoginService { get; set; }
 
-protected override async Task OnInitializedAsync()
-{
-// Check if user is authenticated
-if (!await LoginService.IsLoggedIn())
-{
-Navigation.NavigateTo("/");
-}
-}
+        protected override async Task OnInitializedAsync()
+            {
+                // Check if user is authenticated
+                if (!await LoginService.IsLoggedIn())
+                {
+                    Navigation.NavigateTo("/");
+                }
+            }
 
-[Inject] private NavigationManager Navigation { get; set; } // Dependency injection af NavigationManager til at håndtere navigation                               
-
-} 
+            // Dependency injection af NavigationManager til at håndtere navigation  
+    [Inject] private NavigationManager Navigation { get; set; }                              
+    } 

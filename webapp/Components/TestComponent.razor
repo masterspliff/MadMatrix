@@ -1,0 +1,184 @@
+@using core.Models
+@using webapp.Service
+@using webapp.Components.Shared
+@using webapp.Service.LoginService
+@inject IEventService EventService
+@inject ITaskService TaskService
+@inject ILocationService LocationService
+@inject ILoginService LoginService
+
+<div class="container-fluid">
+    @if (isCreating)
+    {
+    <div class="row mb-3">
+        <div class="col">
+            <button class="btn btn-secondary" @onclick="GoBack">
+                <i class="bi bi-arrow-left"></i> Gå tilbage
+            </button>
+        </div>
+    </div>
+
+    @switch (selectedType)
+    {
+    case "Event":
+    <CreateEvent OnEventCreated="HandleItemCreated"/>
+    break;
+    case "Task":
+    <CreateTask OnTaskCreated="HandleItemCreated"/>
+    break;
+    case "Location":
+    <CreateLocation OnLocationCreated="HandleItemCreated"/>
+    break;
+    }
+    }
+    else
+    {
+    <div class="row mb-3">
+        <div class="col">
+            <div class="input-group">
+                <select class="form-select" @bind="selectedType">
+                    <option value="">Vælg type...</option>
+                    <option value="Event">Events</option>
+                    <option value="Task">Opgaver</option>
+                    <option value="Location">Lokationer</option>
+                </select>
+                @if (currentUser?.Roles.Contains(UserRole.Administrator) == true)
+                {
+                <button class="btn btn-primary" @onclick="() => isCreating = true">
+                    <i class="bi bi-plus-lg"></i> Opret ny
+                </button>
+                }
+            </div>
+        </div>
+    </div>
+
+    @if (!string.IsNullOrEmpty(selectedType))
+    {
+    <div class="row">
+        <div class="col">
+            @switch (selectedType)
+            {
+            case "Event":
+            @if (events != null)
+            {
+            <div class="list-group">
+                @foreach (var evt in events)
+                {
+                <button class="list-group-item list-group-item-action"
+                        @onclick="() => SelectEvent(evt)">
+                    @evt.Title
+                </button>
+                }
+            </div>
+            }
+            break;
+
+            case "Task":
+            @if (tasks != null)
+            {
+            <div class="list-group">
+                @foreach (var task in tasks)
+                {
+                <button class="list-group-item list-group-item-action"
+                        @onclick="() => SelectTask(task)">
+                    @task.Title
+                </button>
+                }
+            </div>
+            }
+            break;
+
+            case "Location":
+            @if (locations != null)
+            {
+            <div class="list-group">
+                @foreach (var location in locations)
+                {
+                <button class="list-group-item list-group-item-action"
+                        @onclick="() => SelectLocation(location)">
+                    @location.Name
+                </button>
+                }
+            </div>
+            }
+            break;
+            }
+        </div>
+    </div>
+    }
+
+    @* Modals for creating new items *@
+    <ModalWrapper ModalId="eventModal" ModalSize="modal-xl">
+        <CreateEvent OnEventCreated="RefreshData"/>
+    </ModalWrapper>
+
+    <ModalWrapper ModalId="taskModal" ModalSize="modal-xl">
+        <CreateTask OnTaskCreated="RefreshData"/>
+    </ModalWrapper>
+
+    <ModalWrapper ModalId="locationModal" ModalSize="modal-xl">
+        <CreateLocation OnLocationCreated="RefreshData"/>
+    </ModalWrapper>
+    }
+</div>
+
+@code {
+private string selectedType = "";
+private User? currentUser;
+private List<TaskEvent>? events;
+private List<TaskItem>? tasks;
+private List<Location>? locations;
+
+protected override async Task OnInitializedAsync()
+{
+currentUser = await LoginService.GetCurrentUser();
+await RefreshData();
+}
+
+private async Task RefreshData()
+{
+switch (selectedType)
+{
+case "Event":
+events = await EventService.GetAllEventsAsync();
+break;
+case "Task":
+tasks = (await TaskService.LoadAllTask()).ToList();
+break;
+case "Location":
+locations = (await LocationService.GetAllLocationsAsync()).ToList();
+break;
+}
+}
+
+private bool isCreating = false;
+private string modalTarget => $"#{selectedType.ToLower()}Modal";
+
+private async Task HandleItemCreated()
+{
+await RefreshData();
+isCreating = false;
+StateHasChanged();
+}
+
+private void GoBack()
+{
+isCreating = false;
+StateHasChanged();
+}
+
+private async Task SelectEvent(TaskEvent evt)
+{
+// Implement event selection logic
+}
+
+private async Task SelectTask(TaskItem task)
+{
+// Implement task selection logic
+}
+
+private async Task SelectLocation(Location location)
+{
+// Implement location selection logic
+}
+}
