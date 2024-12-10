@@ -36,11 +36,11 @@ else
             <p><strong>Participants:</strong> @_currentEvent.Participants</p>
         </div>
         <div class="task-overview information-pane">
-            <h1>Task Overview</h1>
+            <h1>Task Overview // DETTE SKAL VÆRE EVENT TASKS OG IKKE ALLE TASKS</h1>
             @foreach (var task in _tasks)
             {
-                <div @onclick="() => OpenTask(task.Id)">
-                    <TaskCard Title="@task.Title" Description="@task.Description" Status="@task.Status" AssignedTo="@task.AssignedToIds" StartDate="@task.StartDate" EndDate="@task.EndDate"/>
+                <div class="information-pane hover-effect" @onclick="() => OpenTask(task.Id)">
+                    <TaskCard ShowData="true" Title="@task.Title" Description="@task.Description" Status="@task.Status" AssignedTo="@task.AssignedToIds" StartDate="@task.StartDate" EndDate="@task.EndDate"/>
                 </div>
             }
         </div>
@@ -52,15 +52,18 @@ else
         else
             // render the task details
             // need some logic to lookup the ?taskId={taskId} in the _tasks list
-            
-            //get the taskId from the query string, and find that task in the _tasks list
+            // //get the taskId from the query string, and find that task in the _tasks list
             //then use that data to display the task details in the task card
-        {
-        <div class="task-details information-pane">
-            <TaskCard ShowDescription="true" Title="@_tasks[0].Title" Description="@_tasks[0].Description" Status="@_tasks[0].Status" AssignedTo="@_tasks[0].AssignedToIds" StartDate="@_tasks[0].StartDate" EndDate="@_tasks[0].EndDate"/>
-            
-        </div>
-        }
+            @if (taskId != null)
+            {
+                var task = _tasks.FirstOrDefault(task => task.Id == taskId);
+                if (task != null)
+                {
+                    <div class="task-details information-pane">
+                        <TaskCard ShowDescription="true" Title="@task.Title" Description="@task.Description" AssignedTo="@task.AssignedToIds" StartDate="@task.StartDate" EndDate="@task.EndDate"/>
+                    </div>
+                }
+            }
     </div>
     
 }    

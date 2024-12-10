@@ -3,27 +3,38 @@
 @inject IUserService UserService
 @inject ITaskService TaskService
 
-
-<div class="task-card information-pane">
     <h3>@Title</h3>
-    <p><strong>Status:</strong> @Status</p>
-    <p><strong>Start Date:</strong> @StartDate</p>
-    <p><strong>End Date:</strong> @EndDate</p>
-    <p><strong>Assigned To:</strong></p>
-    <div class="assigned-to">
-        @foreach (var id in @AssignedTo)
-        {
-            // component that takes id and handles logic of displaying pfp and other info'
-            <UserViewer userId="@id"/>
-        }
-    </div>
-    @if(ShowDescription == true)
+    @if (ShowData == true)
     {
-        <p><strong>Description:</strong>@Description</p>
-    }
-</div>
+        <p><strong>Status:</strong> @Status</p>
+        <p><strong>Start Date:</strong> @StartDate</p>
+        <p><strong>End Date:</strong> @EndDate</p>
+        <p><strong>Assigned To:</strong></p>
+            <div class="assigned-to">
+                @foreach (var id in @AssignedTo)
+                {
+                // component that takes id and handles logic of displaying pfp and other info'
+                <UserViewer userId="@id"/>
+                }
+            }
 
-@code {
+        </div>
+    }
+    @if (ShowDescription == true)
+    {
+        <p><strong>Assigned To:</strong></p>
+        <div class="assigned-to">
+            @foreach (var id in @AssignedTo)
+            {
+                // component that takes id and handles logic of displaying pfp and other info'
+                <UserViewer userId="@id"/>
+            }
+        </div>
+    <p><strong>Description:</strong>@Description</p>
+    }
+    
+
+    @code {
     //Import parameters from the Model(?)
     [Parameter] public int taskId { get; set; }
     [Parameter] public string Title { get; set; }
@@ -34,5 +45,6 @@
     [Parameter] public List<int> AssignedTo { get; set; }
 
     [Parameter] public bool? ShowDescription { get; set; } = false;
-    
-}
+    [Parameter] public bool? ShowData { get; set; } = false;
+
+    }
