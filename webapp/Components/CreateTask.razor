@@ -1,119 +1,82 @@
 @page "/tasks"
-@using core.Models
 @using TaskStatus = core.Models.TaskStatus
+@using webapp.Components.Shared
 @using webapp.Service
-@inject ITaskService taskservice
-@inject IUserService userservice
+@using webapp.Service.LoginService
+@inject ITaskService TaskService
+@inject IUserService UserService
+@inject ILoginService LoginService
 
-<EditForm Model="NewTask" OnValidSubmit="CommitTask" class="card announcement-card" style="max-width: 800px; margin: 5px auto; border: none; ">
 
-    <h4 style="margin: 10px 0px 30px 0px">Opret Opgave</h4>
-    <div class="form-group">
-        <label for="TaskTitle">Opgave Titel</label>
-        <InputText id="TaskTitle" @bind-Value="NewTask.Title" class="form-control" placeholder="Indtast opgave titel"/>
-    </div>
+@if (currentUser?.Roles.Contains(UserRole.Administrator) == true)
+{
+    <EditForm Model="NewTask" OnValidSubmit="CommitTask" class="card announcement-card" style="max-width: 800px; margin: 5px auto; border: none;">
+        <h4 style="margin: 10px 30px">Opret Opgave</h4>
 
-    <div class="form-group">
-        <label for="TaskDescription">Beskrivelse</label>
-        <InputText id="TaskDescription" @bind-Value="NewTask.Description" class="form-control" placeholder="Indtast beskrivelse"/>
-    </div>
+        <FormInput TValue="string"
+                   Id="TaskTitle"
+                   Label="Opgave Titel"
+                   @bind-Value="NewTask.Title"
+                   Placeholder="Indtast opgave titel"/>
 
-    <div class="form-group">
-        <label for="StartDate">Startdato</label>
-        <InputDate id="StartDate" @bind-Value="NewTask.StartDate" class="form-control"/>
-    </div>
+        <FormInput TValue="string"
+                   Id="TaskDescription"
+                   Label="Beskrivelse"
+                   @bind-Value="NewTask.Description"
+                   Placeholder="Indtast beskrivelse"/>
 
-    <div class="form-group">
-        <label for="EndDate">Slutdato</label>
-        <InputDate id="EndDate" @bind-Value="NewTask.EndDate" class="form-control"/>
-    </div>
+        <FormInput TValue="DateTime"
+                   Id="StartDate"
+                   Label="Startdato"
+                   Type="date"
+                   @bind-Value="NewTask.StartDate"/>
 
-    <!-- Dropdown for Task Status -->
-    <div class="form-group">
-        <label for="TaskStatus">Status</label>
-        <select id="TaskStatus" class="form-control" @bind="NewTask.Status">
-            @foreach (var status in Enum.GetValues(typeof(TaskStatus)).Cast<TaskStatus>())
-            {
-                <option value="@status">@status</option>
-            }
-        </select>
-    </div>
+        <FormInput TValue="DateTime"
+                   Id="EndDate"
+                   Label="Slutdato"
+                   Type="date"
+                   @bind-Value="NewTask.EndDate"/>
 
-    <!-- Checkboxes for Users -->
-    <div class="form-group">
-        <label for="AssignedTo" style="margin-bottom: 15px">Tildel Medarbejdere</label>
-        <div>
-            @foreach (var user in UserList)
-            {
-            <div class="user-checkbox">
-                <input
-                    type="checkbox" 
-                    id="user_@user.Id"
-                    @onchange="() => ToggleUserSelection(user.Id)"
-                    checked="@SelectedUserIds.Contains(user.Id)"/>
-                <label for="user_@user.Id" style="font-size: 12px; font-weight: normal">@user.FirstName @user.LastName</label>
-            </div>
-            }
+        <EnumSelector TEnum="TaskStatus"
+                      Label="Status"
+                      @bind-Value="NewTask.Status"
+                      DefaultOption="Vælg status"/>
+
+        <UserSelector Label="Tildel Medarbejdere"
+                      SelectedUsersChanged="@(ids => NewTask.AssignedToIds = ids)"/>
+
+        <div class="form-group">
+            <button type="submit" class="btn btn-primary">Opret Opgave</button>
         </div>
-    </div>
-
-    <div class="form-group">
-        <button type="submit" class="btn btn-primary">Opret Opgave</button>
-    </div>
-</EditForm>
+    </EditForm>
 
 @code {
-    private TaskItem NewTask { get; set; } = new TaskItem(); // Uses the default values set in the model
-    private List<User> UserList { get; set; } = new();
-    private List<int> SelectedUserIds { get; set; } = new();
+    private TaskItem NewTask { get; set; } = new() { AssignedToIds = new List<int>() };
+    private User? currentUser;
+    
+    [Parameter]
+    public EventCallback OnTaskCreated { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
-        await LoadUsers();
-    }
-
-    private async Task LoadUsers()
-    {
-        UserList = await userservice.LoadUsers();
-    }
-
-    private void ToggleUserSelection(int userId)
-    {
-        if (SelectedUserIds.Contains(userId))
-        {
-            SelectedUserIds.Remove(userId);
-        }
-        else
-        {
-            SelectedUserIds.Add(userId);
-        }
+        currentUser = await LoginService.GetCurrentUser();
     }
 
     private async Task CommitTask()
     {
-        // Ensure valid dates and status before submission
-        if (NewTask.StartDate == default || NewTask.EndDate == default)
-        {
-            // Handle invalid dates
-            return;
-        }
-
         try
         {
-            // Assign selected user IDs to the task
-            NewTask.AssignedToIds = SelectedUserIds;
-
-            var isSuccess = await taskservice.CreateTaskAsync(NewTask);
-
+            var isSuccess = await TaskService.CreateTaskAsync(NewTask);
             if (isSuccess)
             {
-                NewTask = new TaskItem(); // Reset form
-                SelectedUserIds.Clear(); // Clear selected users
+                NewTask = new() { AssignedToIds = new List<int>() }; // Reset form with proper initialization
+                await OnTaskCreated.InvokeAsync();
             }
         }
         catch (Exception ex)
         {
-            // Handle error
+            Console.WriteLine($"Error creating task: {ex.Message}");
         }
     }
+}
 }

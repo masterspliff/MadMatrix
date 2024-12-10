@@ -1,0 +1,35 @@
+@using Microsoft.AspNetCore.Components
+
+<div class="modal fade" id="@ModalId" tabindex="-1" aria-labelledby="@($"{ModalId}Label")" aria-hidden="true">
+    <div class="modal-dialog @ModalSize">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                @ChildContent
+            </div>
+            @if (ShowFooter)
+            {
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary">Save changes</button>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public string ModalId { get; set; } = "";
+
+    [Parameter]
+    public string ModalSize { get; set; } = "modal-lg";
+
+    [Parameter]
+    public bool ShowFooter { get; set; } = false;
+
+    [Parameter]
+    public RenderFragment ChildContent { get; set; }
+}
