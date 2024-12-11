@@ -26,17 +26,24 @@
                    Placeholder="Indtast beskrivelse"/>
 
         <FormInput TValue="DateTime"
-                   Id="StartDate"
-                   Label="Startdato"
+                   Id="Date"
+                   Label="Dato"
                    Type="date"
-                   @bind-Value="NewTask.StartDate"/>
+                   @bind-Value="NewTask.Date"/>
 
-        <FormInput TValue="DateTime"
-                   Id="EndDate"
-                   Label="Slutdato"
-                   Type="date"
-                   @bind-Value="NewTask.EndDate"/>
+        <FormInput TValue="TimeOnly"
+                   Id="StartTime"
+                   Label="Starttidspunkt"
+                   Type="time"
+                   @bind-Value="NewTask.StartTime"/>
 
+        <FormInput TValue="TimeOnly"
+                   Id="EndTime"
+                   Label="Sluttidspunkt"
+                   Type="time"
+                   @bind-Value="NewTask.EndTime"/>
+
+        <!-- SET STATUS FOR TASK -->
         <div class="form-group">
             <label class="form-label">Status</label>
             <InputSelect class="form-control" @bind-Value="NewTask.Status">
@@ -48,6 +55,7 @@
             </InputSelect>
         </div>
 
+        <!-- SELECT WORKERS -->
         <div class="form-group">
             <label>Tildel Medarbejdere</label>
             @if (isLoading)

@@ -40,7 +40,14 @@ else
             @foreach (var task in _tasks)
             {
                 <div class="information-pane hover-effect" @onclick="() => OpenTask(task.Id)">
-                    <TaskCard ShowData="true" Title="@task.Title" Description="@task.Description" Status="@task.Status" AssignedTo="@task.AssignedToIds" StartDate="@task.StartDate" EndDate="@task.EndDate"/>
+                    <TaskCard ShowData="true" 
+                              Title="@task.Title" 
+                              Description="@task.Description" 
+                              Status="@task.Status" 
+                              AssignedTo="@task.AssignedToIds"
+                              Dato="@task.Date"
+                              StartTime="@task.StartTime" 
+                              EndTime="@task.EndTime"/>
                 </div>
             }
         </div>
@@ -60,7 +67,13 @@ else
                 if (task != null)
                 {
                     <div class="task-details information-pane">
-                        <TaskCard ShowDescription="true" Title="@task.Title" Description="@task.Description" AssignedTo="@task.AssignedToIds" StartDate="@task.StartDate" EndDate="@task.EndDate"/>
+                        <TaskCard ShowDescription="true" 
+                                  Title="@task.Title" 
+                                  Description="@task.Description" 
+                                  AssignedTo="@task.AssignedToIds" 
+                                  Dato="@task.Date"
+                                  StartTime="@task.StartTime" 
+                                  EndTime="@task.EndTime"/>
                     </div>
                 }
             }
