@@ -1,4 +1,5 @@
 @page "/tasks"
+@page "/tasks/edit/{Id:int}"
 @using TaskStatus = core.Models.TaskStatus
 @using webapp.Components.Shared
 @using webapp.Service
@@ -11,7 +12,7 @@
 @if (currentUser?.Roles.Contains(UserRole.Administrator) == true)
 {
     <EditForm Model="NewTask" OnValidSubmit="CommitTask" class="card announcement-card" style="max-width: 800px; margin: 5px auto; border: none;">
-        <h4 style="margin: 10px 30px">Opret Opgave</h4>
+        <h4 style="margin: 10px 30px">@(Id.HasValue ? "Rediger Opgave" : "Opret Opgave")</h4>
 
         <FormInput TValue="string"
                    Id="TaskTitle"
@@ -57,16 +58,37 @@
     [Parameter]
     public EventCallback OnTaskCreated { get; set; }
 
+    [Parameter]
+    public int? Id { get; set; }
+
     protected override async Task OnInitializedAsync()
     {
         currentUser = await LoginService.GetCurrentUser();
+        
+        if (Id.HasValue)
+        {
+            var task = await TaskService.GetTaskAsync(Id.Value);
+            if (task != null)
+            {
+                NewTask = task;
+            }
+        }
     }
 
     private async Task CommitTask()
     {
         try
         {
-            var isSuccess = await TaskService.CreateTaskAsync(NewTask);
+            bool isSuccess;
+            if (Id.HasValue)
+            {
+                isSuccess = await TaskService.EditTaskAsync(Id.Value, NewTask);
+            }
+            else
+            {
+                isSuccess = await TaskService.CreateTaskAsync(NewTask);
+            }
+
             if (isSuccess)
             {
                 NewTask = new() { AssignedToIds = new List<int>() }; // Reset form with proper initialization
@@ -75,7 +97,7 @@
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Error creating task: {ex.Message}");
+            Console.WriteLine($"Error {(Id.HasValue ? "updating" : "creating")} task: {ex.Message}");
         }
     }
 }

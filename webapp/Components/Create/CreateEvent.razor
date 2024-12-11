@@ -1,4 +1,5 @@
 @page "/create-event"
+@page "/events/edit/{Id:int}"
 @using core.Models
 @using webapp.Service
 @using webapp.Components.Shared
@@ -10,7 +11,7 @@
 @if (currentUser?.Roles.Contains(UserRole.Administrator) == true)
 {
     <EditForm Model="NewEvent" OnValidSubmit="CreateEventNow" class="card announcement-card">
-        <h4>Opret Event</h4>
+        <h4>@(Id.HasValue ? "Rediger Event" : "Opret Event")</h4>
 
         <FormInput TValue="string"
                    Id="Title"
@@ -73,22 +74,42 @@
     [Parameter]
     public EventCallback OnEventCreated { get; set; }
 
+    [Parameter]
+    public int? Id { get; set; }
+
     private IEnumerable<core.Models.Location> Locations { get; set; } = Enumerable.Empty<core.Models.Location>();
 
     protected override async Task OnInitializedAsync()
     {
         Locations = await LocationService.GetAllLocationsAsync();
         currentUser = await LoginService.GetCurrentUser();
+
+        if (Id.HasValue)
+        {
+            var eventItem = await EventService.GetEventByIdAsync(Id.Value);
+            if (eventItem != null)
+            {
+                NewEvent = eventItem;
+            }
+        }
+
         await base.OnInitializedAsync();
     }
 
     <!-- Calling method in Service to request the API to post new Event-->
     private async Task CreateEventNow()
     {
-
         try
         {
-            var isSuccess = await EventService.CreateEventAsync(NewEvent);
+            bool isSuccess;
+            if (Id.HasValue)
+            {
+                isSuccess = await EventService.UpdateEventAsync(Id.Value, NewEvent);
+            }
+            else
+            {
+                isSuccess = await EventService.CreateEventAsync(NewEvent);
+            }
 
             if (isSuccess)
             {
@@ -97,7 +118,7 @@
             }
             else
             {
-                errorMessage = "Failed to create event. Check details and try again.";
+                errorMessage = $"Failed to {(Id.HasValue ? "update" : "create")} event. Check details and try again.";
             }
         }
         catch (Exception ex)

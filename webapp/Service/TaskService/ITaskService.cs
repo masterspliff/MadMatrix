@@ -15,5 +15,8 @@ public interface ITaskService
     // Get Task based on id
     Task<TaskItem> GetTaskAsync(int taskid);
     
-    Task<List<TaskItem>> GetTasksByEventIdAsync(int eventId);  
+    Task<List<TaskItem>> GetTasksByEventIdAsync(int eventId);
+    
+    // Delete a task
+    Task<bool> DeleteTaskAsync(int id);
 }

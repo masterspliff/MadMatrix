@@ -10,40 +10,8 @@
 
 <div class="content">
     <Hero />
-    
-    <div class="link-content">
-        <button type="button" class="Create-Event-Box" data-bs-toggle="modal" data-bs-target="#eventModal">
-            Opret Event
-        </button>
-        <ModalWrapper ModalId="eventModal" ModalSize="modal-xl">
-            <CreateEvent/>
-        </ModalWrapper>
-
-        <button type="button" class="Create-Event-Box" data-bs-toggle="modal" data-bs-target="#taskModal">
-            Opret Opgave
-        </button>
-        
-        <ModalWrapper ModalId="taskModal" ModalSize="modal-xl" ShowFooter="true">
-            <CreateTask/>
-        </ModalWrapper>
-
-        <button type="button" class="Create-Event-Box" data-bs-toggle="modal" data-bs-target="#locationModal">
-            Oversigt over lokationer
-        </button>
-        
-        <ModalWrapper ModalId="locationModal">
-            <CreateLocation/>
-        </ModalWrapper>
-
-        <button type="button" class="Create-Event-Box" data-bs-toggle="modal" data-bs-target="#adminModal">
-            Administration Panel
-        </button>
-        
-        <ModalWrapper ModalId="adminModal" ModalSize="modal-xl">
-            <TestComponent/>
-        </ModalWrapper>
-
-    </div>
+    <DashboardGrid />
+    <ManageItems />
 </div>
 
 @code {
