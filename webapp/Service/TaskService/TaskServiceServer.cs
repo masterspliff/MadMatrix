@@ -52,7 +52,7 @@ public class TaskServiceServer : ITaskService
         throw new Exception("Could not load task");
     }
     
-    public async Task<List<TaskItem>> GetTasksByEventIdAsync(int eventId)
+    public async Task<List<TaskItem>> GetTasksByEventIdAsync(List<int> eventId)
     {
         var response = await _httpClient.GetAsync("task");
         if (response.IsSuccessStatusCode)

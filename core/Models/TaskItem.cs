@@ -7,11 +7,11 @@ namespace core.Models
         public string Description { get; set; } = string.Empty;
         public TaskStatus Status { get; set; } = TaskStatus.NotStarted; // Default to NotStarted
         
-        public DateTime Date { get; set; } // Represents the task's date
+        public DateTime Date { get; set; } = DateTime.Today;
 
         public TimeOnly StartTime { get; set; }
         public TimeOnly EndTime { get; set; }
-        public int? EventId { get; set; } // Optional, can be null
+        public List<int> EventIds { get; set; } // Optional, can be null
         public DateTime UpdatedAt { get; set; } = DateTime.Now; // Default to current date
         public List<int> AssignedToIds { get; set; } = new List<int>();     
     }
