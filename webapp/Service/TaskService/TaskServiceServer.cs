@@ -54,12 +54,20 @@ public class TaskServiceServer : ITaskService
     
     public async Task<List<TaskItem>> GetTasksByEventIdAsync(int eventId)
     {
-        var response = await _httpClient.GetAsync("task");
-        if (response.IsSuccessStatusCode)
+        try
         {
-            return await response.Content.ReadFromJsonAsync<List<TaskItem>>();
+            var response = await _httpClient.GetAsync("task");
+                    if (response.IsSuccessStatusCode)
+                    {
+                        return await response.Content.ReadFromJsonAsync<List<TaskItem>>();
+                    }
+                    throw new Exception("Could not load event tasks");
         }
-        throw new Exception("Could not load event tasks");
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error loading tasks: {ex.Message}");
+            return new List<TaskItem>();
+        }
     }
 
     public async Task<bool> DeleteTaskAsync(int id)

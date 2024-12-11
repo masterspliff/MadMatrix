@@ -11,7 +11,8 @@ namespace core.Models
 
         public TimeOnly StartTime { get; set; }
         public TimeOnly EndTime { get; set; }
-        public int? EventId { get; set; } // Optional, can be null
+        public List<int> EventIds { get; set; } // Optional, can be null
+        
         public DateTime UpdatedAt { get; set; } = DateTime.Now; // Default to current date
         public List<int> AssignedToIds { get; set; } = new List<int>();     
     }
