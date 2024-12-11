@@ -1,4 +1,4 @@
-﻿@page "/EventsOverviewPage"
+﻿@page "/eventsoverview"
 @using webapp.Service
 @inject IEventService EventService
 @inject NavigationManager NavigationManager
@@ -48,6 +48,6 @@ else
     
     private void NavigateToTasks(int EventId)
     {
-        NavigationManager.NavigateTo($"/EventViewerPage/{EventId}");
+        NavigationManager.NavigateTo($"/eventviewer/{EventId}");
     }
 }

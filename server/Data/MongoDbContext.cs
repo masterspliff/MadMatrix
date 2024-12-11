@@ -38,7 +38,7 @@ public class MongoDbContext // Define the MongoDB context class
 
     public IMongoClient Client => _client; // Public property to access the MongoDB client
     public IMongoDatabase Database => _database; // Public property to access the MongoDB database
-    public IMongoCollection<TaskEvent> Events => _database.GetCollection<TaskEvent>("EventsOverviewPage"); // Access the "EventsOverviewPage" collection
+    public IMongoCollection<TaskEvent> Events => _database.GetCollection<TaskEvent>("Events"); // Access the "Events" collection
     public IMongoCollection<Location> Locations => _database.GetCollection<Location>("Locations"); // Access the "Locations" collection
     public IMongoCollection<User> Users => _database.GetCollection<User>("Users"); // Access the "Users" collection
     public IMongoCollection<core.Models.TaskItem> Tasks => _database.GetCollection<core.Models.TaskItem>("Tasks"); // Access the "Tasks" collection
