@@ -19,8 +19,10 @@
 
         </div>
     }
+    
     @if (ShowDescription == true)
     {
+        
         <p><strong>Assigned To:</strong></p>
         <div class="assigned-to">
             @foreach (var id in @AssignedTo)
@@ -29,7 +31,7 @@
                 <UserViewer userId="@id"/>
             }
         </div>
-    <p><strong>Description:</strong>@Description</p>
+        <p><strong>Description:</strong>@((MarkupString)markdownHtml)</p>
     }
     
 
@@ -43,8 +45,21 @@
     [Parameter] public TimeOnly StartTime { get; set; }
     [Parameter] public TimeOnly EndTime { get; set; }
     [Parameter] public List<int> AssignedTo { get; set; }
-
+    // show/hide parameters
     [Parameter] public bool? ShowDescription { get; set; } = false;
     [Parameter] public bool? ShowData { get; set; } = false;
+
+    MarkdownEditor Markdown1; 
+    
+    string markdownHtml;
+    
+    protected override void OnInitialized()
+    {
+        //replaced by markdown from the database (description)
+        string markdownValue = Description;
+        markdownHtml = Markdig.Markdown.ToHtml(markdownValue ?? string.Empty);
+        base.OnInitialized();
+    }
+    
 
     }
