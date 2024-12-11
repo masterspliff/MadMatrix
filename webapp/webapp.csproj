@@ -16,9 +16,4 @@
       <ProjectReference Include="..\core\core.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <_ContentIncludedByDefault Remove="wwwroot\js\textScramble.js" />
-      <_ContentIncludedByDefault Remove="Components\delete\CalenderTable.razor" />
-    </ItemGroup>
-
 </Project>
