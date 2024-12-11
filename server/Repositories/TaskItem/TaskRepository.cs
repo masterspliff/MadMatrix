@@ -49,4 +49,11 @@ public class TaskRepository : ITaskRepository
         var filter = Builders<TaskItem>.Filter.Eq(e => e.Id, id);
         await _tasks.DeleteOneAsync(filter);
     }
+    
+    public async Task<IEnumerable<TaskItem>> GetTasksByEventIdsAsync(List<int> eventIds)
+    {
+        var filter = Builders<TaskItem>.Filter.AnyIn(t => t.EventIds, eventIds);
+        return await _tasks.Find(filter).ToListAsync();
+    }
+
 }

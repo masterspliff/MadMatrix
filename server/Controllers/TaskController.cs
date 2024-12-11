@@ -85,6 +85,19 @@ public class TaskController : ControllerBase
         return NoContent();
     }
     
-}
+    [HttpGet("byevents/{eventIds}")]
+    public async Task<ActionResult<IEnumerable<TaskItem>>> GetTasksByEventIds(string eventIds)
+    {
+        try
+        {
+            var eventIdList = eventIds.Split(',').Select(int.Parse).ToList();
+            var tasks = await _taskRepository.GetTasksByEventIdsAsync(eventIdList);
+            return Ok(tasks);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest($"Error getting tasks: {ex.Message}");
+        }
+    }
 
-// update function
+}
