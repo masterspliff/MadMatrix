@@ -11,53 +11,46 @@
     <EditForm Model="NewEvent" OnValidSubmit="CreateEventNow" class="card announcement-card">
         <h4>@(Id.HasValue ? "Rediger Event" : "Opret Event")</h4>
 
-        <FormInput TValue="string"
-                   Id="Title"
-                   Label="Titel"
-                   @bind-Value="NewEvent.Title"
-                   Placeholder="Indtast Titel"/>
+        <div class="form-group">
+            <label for="Title">Titel</label>
+            <InputText id="Title" class="form-control" @bind-Value="NewEvent.Title" placeholder="Indtast Titel" />
+        </div>
 
-        <FormInput TValue="DateTime"
-                   Id="Date"
-                   Label="Dato"
-                   Type="date"
-                   @bind-Value="NewEvent.DateForEvent"/>
+        <div class="form-group">
+            <label for="Date">Dato</label>
+            <InputDate id="Date" class="form-control" @bind-Value="NewEvent.DateForEvent" />
+        </div>
 
-        <FormInput TValue="int"
-                   Id="Location"
-                   Label="Lokation"
-                   Type="select"
-                   @bind-Value="NewEvent.LocationId"
-                   DefaultOption="Vælg Lokation">
-            @foreach (var location in Locations)
-            {
-                <option value="@location.Id">@location.Name</option>
-            }
-        </FormInput>
+        <div class="form-group">
+            <label for="Location">Lokation</label>
+            <InputSelect id="Location" class="form-control" @bind-Value="NewEvent.LocationId">
+                <option value="0">Vælg Lokation</option>
+                @foreach (var location in Locations)
+                {
+                    <option value="@location.Id">@location.Name</option>
+                }
+            </InputSelect>
+        </div>
 
-        <FormInput TValue="string"
-                   Id="FoodChoice"
-                   Label="Madvalg"
-                   @bind-Value="NewEvent.FoodChoices"
-                   Placeholder="Indtast madvalg"/>
+        <div class="form-group">
+            <label for="FoodChoice">Madvalg</label>
+            <InputText id="FoodChoice" class="form-control" @bind-Value="NewEvent.FoodChoices" placeholder="Indtast madvalg" />
+        </div>
 
-        <FormInput TValue="string"
-                   Id="SpecialRequest"
-                   Label="Særlige mad behov"
-                   @bind-Value="NewEvent.SpecialRequest"
-                   Placeholder="Indtast special ønsker til mad"/>
+        <div class="form-group">
+            <label for="SpecialRequest">Særlige mad behov</label>
+            <InputText id="SpecialRequest" class="form-control" @bind-Value="NewEvent.SpecialRequest" placeholder="Indtast special ønsker til mad" />
+        </div>
 
-        <FormInput TValue="string"
-                   Id="ByCustomer"
-                   Label="Kunde"
-                   @bind-Value="NewEvent.ByCustomer"
-                   Placeholder="Indtast kunde"/>
+        <div class="form-group">
+            <label for="ByCustomer">Kunde</label>
+            <InputText id="ByCustomer" class="form-control" @bind-Value="NewEvent.ByCustomer" placeholder="Indtast kunde" />
+        </div>
 
-        <FormInput TValue="int"
-                   Id="Participant"
-                   Label="Deltagere"
-                   Type="number"
-                   @bind-Value="NewEvent.Participants"/>
+        <div class="form-group">
+            <label for="Participant">Deltagere</label>
+            <InputNumber id="Participant" class="form-control" @bind-Value="NewEvent.Participants" />
+        </div>
 
         <div class="form-group">
             <button type="submit" class="btn btn-primary">Opret Event</button>

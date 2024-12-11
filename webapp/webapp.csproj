@@ -21,6 +21,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <Folder Include="Components\Edit\" />
       <Folder Include="Components\Shared\" />
     </ItemGroup>
 
