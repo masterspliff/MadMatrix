@@ -1,4 +1,4 @@
-﻿@page "/EventViewerPage/{EventId:int}"
+﻿@page "/eventviewer/{EventId:int}"
 @using webapp.Service
 @using webapp.Components
 @inject NavigationManager NavigationManager
@@ -12,7 +12,7 @@
         </a>
 
         <div class="d-flex align-items-center">
-            <button class="btn-eaa" @onclick="NavigateToEvents">EventsOverviewPage Overview</button> 
+            <button class="btn-eaa" @onclick="NavigateToEvents">EventsOverview Overview</button> 
         </div>
     </div>
 </div>
@@ -112,12 +112,12 @@ else
 
     private void NavigateToEvents()
     {
-        NavigationManager.NavigateTo("/EventsOverviewPage");
+        NavigationManager.NavigateTo("/eventsoverview");
     }
 
     private void OpenTask(int taskId)
     {
-        NavigationManager.NavigateTo($"/EventViewerPage/{EventId}?taskId={taskId}",forceLoad: false, true);
+        NavigationManager.NavigateTo($"/eventviewer/{EventId}?taskId={taskId}",forceLoad: false, true);
         // display task on right side of the screen
     }
     }
