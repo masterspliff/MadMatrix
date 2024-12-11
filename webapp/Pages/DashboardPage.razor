@@ -1,14 +1,12 @@
 @page "/dashboard"
-@using webapp.Components
+@using webapp.Components.Dashboard
 @using webapp.Service.LoginService
 @inject NavigationManager NavigationManager
 
-<Navbar />
-
 <div class="content">
     <HeroComponent />
-    <DashboardGrid />
-    <ManageItems />
+    <IconGridComponent />
+    <ManageItemsComponent />
 </div>
 
 @code {

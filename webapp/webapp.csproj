@@ -16,12 +16,4 @@
       <ProjectReference Include="..\core\core.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <_ContentIncludedByDefault Remove="wwwroot\js\textScramble.js" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="Components\Shared\" />
-    </ItemGroup>
-
 </Project>
