@@ -18,10 +18,7 @@
 
     <ItemGroup>
       <_ContentIncludedByDefault Remove="wwwroot\js\textScramble.js" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="Components\Shared\" />
+      <_ContentIncludedByDefault Remove="Components\delete\CalenderTable.razor" />
     </ItemGroup>
 
 </Project>

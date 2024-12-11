@@ -9,7 +9,7 @@
             <h4 class="alert-heading">You are logged in!</h4>
             <p>Welcome back.</p>
             <div class="d-flex gap-2 justify-content-center">
-                <button @onclick="@(() => navManager.NavigateTo("/dashboard"))" class="btn btn-success">Dashboard</button>
+                <button @onclick="@(() => navManager.NavigateTo("/dashboard"))" class="btn btn-success">DashboardPage</button>
                 <button @onclick="@(async () => await HandleLogout())" class="btn btn-outline-danger">Logout</button>
             </div>
         </div>
@@ -96,7 +96,6 @@
                 var user = await loginService.GetCurrentUser();
                 if (user != null)
                 {
-                    // Print out user propeties
                     Console.WriteLine($"User logged in successfully:");
                     Console.WriteLine($"ID: {user.Id}");
                     Console.WriteLine($"Name: {user.FirstName} {user.LastName}");
@@ -116,7 +115,7 @@
         catch (Exception ex)
         {
             errorText = "An error occurred during login. Please try again.";
-            Console.WriteLine($"Home error: {ex.Message}");
+            Console.WriteLine($"LoginPage error: {ex.Message}");
         }
         finally
         {

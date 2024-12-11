@@ -6,31 +6,27 @@
         <i class="bi bi-calendar-event dashboard-icon"></i>
         <h3 class="dashboard-title">Opret Event</h3>
     </div>
-    <ModalWrapper ModalId="eventModal" ModalSize="modal-xl">
+    
+    <ModalWrapperComponent ModalId="eventModal" ModalSize="modal-xl">
         <CreateEvent/>
-    </ModalWrapper>
+    </ModalWrapperComponent>
 
     <div class="dashboard-item" data-bs-toggle="modal" data-bs-target="#taskModal">
         <i class="bi bi-list-task dashboard-icon"></i>
         <h3 class="dashboard-title">Opret Opgave</h3>
     </div>
-    <ModalWrapper ModalId="taskModal" ModalSize="modal-xl" ShowFooter="true">
+    
+    <ModalWrapperComponent ModalId="taskModal" ModalSize="modal-xl" ShowFooter="true">
         <CreateTask/>
-    </ModalWrapper>
+    </ModalWrapperComponent>
 
     <div class="dashboard-item" data-bs-toggle="modal" data-bs-target="#locationModal">
         <i class="bi bi-geo-alt dashboard-icon"></i>
         <h3 class="dashboard-title">Oversigt over lokationer</h3>
     </div>
-    <ModalWrapper ModalId="locationModal">
+    
+    <ModalWrapperComponent ModalId="locationModal">
         <CreateLocation/>
-    </ModalWrapper>
-
-    <div class="dashboard-item" data-bs-toggle="modal" data-bs-target="#adminModal">
-        <i class="bi bi-gear dashboard-icon"></i>
-        <h3 class="dashboard-title">Administration Panel</h3>
-    </div>
-    <ModalWrapper ModalId="adminModal" ModalSize="modal-xl">
-        <AdminComponent/>
-    </ModalWrapper>
+    </ModalWrapperComponent>
+    
 </div>
