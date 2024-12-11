@@ -1,0 +1,140 @@
+@using core.Models
+@using TaskStatus = core.Models.TaskStatus
+@using webapp.Service
+@inject ITaskService TaskService
+
+<EditForm Model="EditedTask" OnValidSubmit="SaveEdit" class="card" style="max-width: 800px; margin: auto; padding: 20px;">
+
+    <h4 class="text-center">Rediger Opgave</h4>
+
+    <!-- TASK TITLE FIELD -->
+    <div class="form-group">
+        <label for="TaskTitle">Opgave Titel</label>
+        <InputText id="TaskTitle" class="form-control" @bind-Value="EditedTask.Title" placeholder="Indtast opgave titel" />
+    </div>
+
+    <!-- TASK DESCRIPTION FIELD -->
+    <div class="form-group">
+        <label for="TaskDescription">Beskrivelse</label>
+        <InputText id="TaskDescription" class="form-control" @bind-Value="EditedTask.Description" placeholder="Indtast beskrivelse" />
+    </div>
+
+    <!-- TASK DATE FIELD -->
+    <div class="form-group">
+        <label for="Date">Dato</label>
+        <InputDate id="Date" class="form-control" @bind-Value="EditedTask.Date" />
+    </div>
+
+    <!-- TASK START TIME FIELD -->
+    <div class="form-group">
+        <label for="StartTime">Starttidspunkt</label>
+        <input id="StartTime" type="time" class="form-control" value="@startTimeOnlyValue" @onchange="HandleStartTimeChange" />
+    </div>
+
+    <!-- TASK END TIME FIELD -->
+    <div class="form-group">
+        <label for="EndTime">Sluttidspunkt</label>
+        <input id="EndTime" type="time" class="form-control" value="@endTimeOnlyValue" @onchange="HandleEndTimeChange" />
+    </div>
+
+    <!-- TASK STATUS FIELD -->
+    <div class="form-group">
+        <label class="form-label">Status</label>
+        <InputSelect id="TaskStatus" class="form-control" @bind-Value="EditedTask.Status">
+            <option value="">Vælg status</option>
+            @foreach (var status in Enum.GetValues(typeof(TaskStatus)))
+            {
+                <option value="@status">@status</option>
+            }
+        </InputSelect>
+    </div>
+
+    <!-- BUTTONS -->
+    <div class="form-group text-center mt-4">
+        <button type="button" class="btn btn-secondary me-2" data-bs-dismiss="modal">Annuller</button>
+        <button type="submit" class="btn btn-primary" data-bs-dismiss="modal">Gem Ændringer</button>
+    </div>
+
+</EditForm>
+
+@code {
+    [Parameter]
+    public int TaskId { get; set; }
+
+    private TaskItem EditedTask { get; set; } = new();
+
+    protected override async Task OnParametersSetAsync()
+    {
+        try
+        {
+            var task = await TaskService.GetTaskAsync(TaskId);
+            if (task != null)
+            {
+                EditedTask = task;
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error loading task: {ex.Message}");
+        }
+    }
+
+    [Parameter]
+    public EventCallback OnSaveCompleted { get; set; }
+
+    private async Task SaveEdit()
+    {
+        try
+        {
+            var success = await TaskService.EditTaskAsync(TaskId, EditedTask);
+            if (success)
+            {
+                await OnSaveCompleted.InvokeAsync();
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error saving task: {ex.Message}");
+        }
+    }
+
+    private string? startTimeOnlyValue
+    {
+        get => EditedTask.StartTime.ToString("HH:mm");
+        set
+        {
+            if (value != null && TimeOnly.TryParse(value, out var parsedTime))
+            {
+                EditedTask.StartTime = parsedTime;
+            }
+        }
+    }
+
+    private void HandleStartTimeChange(ChangeEventArgs args)
+    {
+        if (args.Value is string timeValue && TimeOnly.TryParse(timeValue, out var parsedTime))
+        {
+            EditedTask.StartTime = parsedTime;
+        }
+    }
+
+    private string? endTimeOnlyValue
+    {
+        get => EditedTask.EndTime.ToString("HH:mm");
+        set
+        {
+            if (value != null && TimeOnly.TryParse(value, out var parsedTime))
+            {
+                EditedTask.EndTime = parsedTime;
+            }
+        }
+    }
+
+    private void HandleEndTimeChange(ChangeEventArgs args)
+    {
+        if (args.Value is string timeValue && TimeOnly.TryParse(timeValue, out var parsedTime))
+        {
+            EditedTask.EndTime = parsedTime;
+        }
+    }
+}

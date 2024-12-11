@@ -1,121 +1,85 @@
 @page "/create-event"
-@page "/events/edit/{Id:int}"
 @using webapp.Service
-@using webapp.Service.LoginService
 @inject IEventService EventService
 @inject ILocationService LocationService
-@inject ILoginService LoginService
 
-@if (currentUser?.Roles.Contains(UserRole.Administrator) == true)
-{
-    <EditForm Model="NewEvent" OnValidSubmit="CreateEventNow" class="card announcement-card">
-        <h4>@(Id.HasValue ? "Rediger Event" : "Opret Event")</h4>
+<EditForm Model="NewEvent" OnValidSubmit="CreateEventNow" class="card" style="max-width: 800px; margin: auto; padding: 20px;">
 
-        <div class="form-group">
-            <label for="Title">Titel</label>
-            <InputText id="Title" class="form-control" @bind-Value="NewEvent.Title" placeholder="Indtast Titel" />
-        </div>
+    <h4 class="text-center">Opret Event</h4>
 
-        <div class="form-group">
-            <label for="Date">Dato</label>
-            <InputDate id="Date" class="form-control" @bind-Value="NewEvent.DateForEvent" />
-        </div>
+    <div class="form-group">
+        <label for="Title">Titel</label>
+        <InputText id="Title" class="form-control" @bind-Value="NewEvent.Title" placeholder="Indtast Titel" />
+    </div>
 
-        <div class="form-group">
-            <label for="Location">Lokation</label>
-            <InputSelect id="Location" class="form-control" @bind-Value="NewEvent.LocationId">
-                <option value="0">Vælg Lokation</option>
-                @foreach (var location in Locations)
-                {
-                    <option value="@location.Id">@location.Name</option>
-                }
-            </InputSelect>
-        </div>
+    <div class="form-group">
+        <label for="Date">Dato</label>
+        <InputDate id="Date" class="form-control" @bind-Value="NewEvent.DateForEvent" />
+    </div>
 
-        <div class="form-group">
-            <label for="FoodChoice">Madvalg</label>
-            <InputText id="FoodChoice" class="form-control" @bind-Value="NewEvent.FoodChoices" placeholder="Indtast madvalg" />
-        </div>
+    <div class="form-group">
+        <label for="Location">Lokation</label>
+        <InputSelect id="Location" class="form-control" @bind-Value="NewEvent.LocationId">
+            <option value="0">Vælg Lokation</option>
+            @foreach (var location in Locations)
+            {
+            <option value="@location.Id">@location.Name</option>
+            }
+        </InputSelect>
+    </div>
 
-        <div class="form-group">
-            <label for="SpecialRequest">Særlige mad behov</label>
-            <InputText id="SpecialRequest" class="form-control" @bind-Value="NewEvent.SpecialRequest" placeholder="Indtast special ønsker til mad" />
-        </div>
+    <div class="form-group">
+        <label for="FoodChoice">Madvalg</label>
+        <InputText id="FoodChoice" class="form-control" @bind-Value="NewEvent.FoodChoices" placeholder="Indtast madvalg" />
+    </div>
 
-        <div class="form-group">
-            <label for="ByCustomer">Kunde</label>
-            <InputText id="ByCustomer" class="form-control" @bind-Value="NewEvent.ByCustomer" placeholder="Indtast kunde" />
-        </div>
+    <div class="form-group">
+        <label for="SpecialRequest">Særlige mad behov</label>
+        <InputText id="SpecialRequest" class="form-control" @bind-Value="NewEvent.SpecialRequest" placeholder="Indtast special ønsker til mad" />
+    </div>
 
-        <div class="form-group">
-            <label for="Participant">Deltagere</label>
-            <InputNumber id="Participant" class="form-control" @bind-Value="NewEvent.Participants" />
-        </div>
+    <div class="form-group">
+        <label for="ByCustomer">Kunde</label>
+        <InputText id="ByCustomer" class="form-control" @bind-Value="NewEvent.ByCustomer" placeholder="Indtast kunde" />
+    </div>
 
-        <div class="form-group">
-            <button type="submit" class="btn btn-primary">Opret Event</button>
-        </div>
-    </EditForm>
+    <div class="form-group">
+        <label for="Participant">Deltagere</label>
+        <InputNumber id="Participant" class="form-control" @bind-Value="NewEvent.Participants" />
+    </div>
+
+    <div class="form-group text-center mt-4">
+        <button type="submit" class="btn btn-primary">Opret Event</button>
+    </div>
+
+</EditForm>
 
 @code {
     private TaskEvent NewEvent = new TaskEvent();
-    private string errorMessage = string.Empty;
-    private User? currentUser;
-    
+    private IEnumerable<Location> Locations = Enumerable.Empty<Location>();
     [Parameter]
     public EventCallback OnEventCreated { get; set; }
-
-    [Parameter]
-    public int? Id { get; set; }
-
-    private IEnumerable<core.Models.Location> Locations { get; set; } = Enumerable.Empty<core.Models.Location>();
 
     protected override async Task OnInitializedAsync()
     {
         Locations = await LocationService.GetAllLocationsAsync();
-        currentUser = await LoginService.GetCurrentUser();
-
-        if (Id.HasValue)
-        {
-            var eventItem = await EventService.GetEventByIdAsync(Id.Value);
-            if (eventItem != null)
-            {
-                NewEvent = eventItem;
-            }
-        }
-
-        await base.OnInitializedAsync();
     }
 
-    <!-- Calling method in Service to request the API to post new Event-->
     private async Task CreateEventNow()
     {
         try
         {
-            bool isSuccess;
-            if (Id.HasValue)
-            {
-                isSuccess = await EventService.UpdateEventAsync(Id.Value, NewEvent);
-            }
-            else
-            {
-                isSuccess = await EventService.CreateEventAsync(NewEvent);
-            }
-
+            var isSuccess = await EventService.CreateEventAsync(NewEvent);
             if (isSuccess)
             {
                 NewEvent = new TaskEvent();
-                await OnEventCreated.InvokeAsync();
-            }
-            else
-            {
-                errorMessage = $"Failed to {(Id.HasValue ? "update" : "create")} event. Check details and try again.";
+                await OnEventCreated.InvokeAsync(); // Trigger the callback when the event is successfully created
             }
         }
         catch (Exception ex)
         {
-            errorMessage = $"An error occurred: {ex.Message}";
+            Console.WriteLine($"Error creating event: {ex.Message}");
         }
     }
-}
+
 }

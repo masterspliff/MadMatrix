@@ -10,4 +10,6 @@ public interface ITaskRepository
     Task<TaskItem> CreateAsync(TaskItem entity);
     Task UpdateAsync(TaskItem entity);
     Task DeleteAsync(int id);
+    Task<IEnumerable<TaskItem>> GetTasksByEventIdsAsync(List<int> eventIds);
+
 }

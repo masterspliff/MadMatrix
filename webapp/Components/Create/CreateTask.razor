@@ -1,5 +1,4 @@
 @page "/tasks"
-@page "/tasks/edit/{Id:int}"
 @using TaskStatus = core.Models.TaskStatus
 @using webapp.Service
 @using webapp.Service.LoginService
@@ -8,274 +7,251 @@
 @inject ILoginService LoginService
 @inject IEventService EventService
 
-@if (currentUser?.Roles.Contains(UserRole.Administrator) == true)
-{
     <!-- BEGIN FORM SECTION -->
-<EditForm Model="NewTask" OnValidSubmit="CommitTask" class="card announcement-card" style="max-width: 800px; margin: 5px auto;">
+    <EditForm Model="NewTask" OnValidSubmit="CommitTask" class="card announcement-card" style="max-width: 800px; margin: 5px auto;">
 
-    <!-- TITLE HEADER -->
-    <h4 class="text-center">@((Id.HasValue) ? "Rediger Opgave" : "Opret Opgave")</h4>
+        <!-- TITLE HEADER -->
+        <h4 class="text-center">Opret Opgave</h4>
 
-    <!-- TASK TITLE FIELD -->
-    <div class="form-group">
-        <label for="TaskTitle">Opgave Titel</label>
-        <InputText id="TaskTitle"
-                   class="form-control"
-                   @bind-Value="NewTask.Title"
-                   placeholder="Indtast opgave titel" />
-    </div>
+        <!-- TASK TITLE FIELD -->
+        <div class="form-group">
+            <label for="TaskTitle">Opgave Titel</label>
+            <InputText id="TaskTitle"
+                       class="form-control"
+                       @bind-Value="NewTask.Title"
+                       placeholder="Indtast opgave titel" />
+        </div>
 
-    <!-- TASK DESCRIPTION FIELD -->
-    <div class="form-group">
-        <label for="TaskDescription">Beskrivelse</label>
-        <InputText id="TaskDescription"
-                   class="form-control"
-                   @bind-Value="NewTask.Description"
-                   placeholder="Indtast beskrivelse" />
-    </div>
+        <!-- TASK DESCRIPTION FIELD -->
+        <div class="form-group">
+            <label for="TaskDescription">Beskrivelse</label>
+            <InputText id="TaskDescription"
+                       class="form-control"
+                       @bind-Value="NewTask.Description"
+                       placeholder="Indtast beskrivelse" />
+        </div>
 
-    <!-- TASK DATE FIELD -->
-    <div class="form-group">
-        <label for="Date">Dato</label>
-        <InputDate @bind-Value="NewTask.Date" class="form-control" id="Date" />
-    </div>
+        <!-- TASK DATE FIELD -->
+        <div class="form-group">
+            <label for="Date">Dato</label>
+            <InputDate @bind-Value="NewTask.Date" class="form-control" id="Date" />
+        </div>
 
-    <!-- TASK START TIME FIELD -->
-    <div class="form-group">
-        <label for="StartTime">Starttidspunkt</label>
-        <input id="StartTime" type="time" class="form-control"
-               value="@startTimeOnlyValue"
-               @onchange="HandleStartTimeChange" />
-    </div>
+        <!-- TASK START TIME FIELD -->
+        <div class="form-group">
+            <label for="StartTime">Starttidspunkt</label>
+            <input id="StartTime" type="time" class="form-control"
+                   value="@startTimeOnlyValue"
+                   @onchange="HandleStartTimeChange" />
+        </div>
 
-    <!-- TASK END TIME FIELD -->
-    <div class="form-group">
-        <label for="EndTime">Sluttidspunkt</label>
-        <input id="EndTime" type="time" class="form-control"
-               value="@endTimeOnlyValue"
-               @onchange="HandleEndTimeChange" />
-    </div>
+        <!-- TASK END TIME FIELD -->
+        <div class="form-group">
+            <label for="EndTime">Sluttidspunkt</label>
+            <input id="EndTime" type="time" class="form-control"
+                   value="@endTimeOnlyValue"
+                   @onchange="HandleEndTimeChange" />
+        </div>
 
-    <!-- TASK STATUS FIELD -->
-    <div class="form-group">
-        <label class="form-label">Status</label>
-        <InputSelect class="form-control" @bind-Value="NewTask.Status">
-            <option value="">Vælg status</option>
-            @foreach (var status in Enum.GetValues(typeof(TaskStatus)))
+        <!-- TASK STATUS FIELD -->
+        <div class="form-group">
+            <label class="form-label">Status</label>
+            <InputSelect class="form-control" @bind-Value="NewTask.Status">
+                <option value="">Vælg status</option>
+                @foreach (var status in Enum.GetValues(typeof(TaskStatus)))
+                {
+                    <option value="@status">@status</option>
+                }
+            </InputSelect>
+        </div>
+
+        <!-- FILTER USERS BY COMPETENCY -->
+        <div class="form-group" style="border: 1px solid #ddd; padding: 10px;">
+            <label>Vælg Kompetencer for medarbejdere</label>
+            @if (isLoading)
             {
-            <option value="@status">@status</option>
+                <div>Loading users...</div>
             }
-        </InputSelect>
-    </div>
-
-    <!-- FILTER USERS BY COMPETENCY -->
-    <div class="form-group" style="border: 1px solid #ddd; padding: 10px;">
-        <label>Vælg Kompetencer for medarbejdere</label>
-        @if (isLoading)
-        {
-        <div>Loading users...</div>
-        }
-        else
-        {
-        @foreach (var competency in Competencies)
-        {
-        <div class="form-check">
-            <input type="checkbox" class="form-check-input" @onchange="@(e => ToggleCompetencyFilter(competency))" id="@($"competency_{competency}")" />
-            <label class="form-check-label" for="@($"competency_{competency}")">@competency</label>
+            else
+            {
+                @foreach (var competency in Competencies)
+                {
+                    <div class="form-check">
+                        <input type="checkbox" class="form-check-input" @onchange="@(e => ToggleCompetencyFilter(competency))" id="@($"competency_{competency}")" />
+                        <label class="form-check-label" for="@($"competency_{competency}")">@competency</label>
+                    </div>
+                }
+            }
         </div>
-        }
-        }
-    </div>
 
-    <!-- ASSIGN WORKERS BASED ON SELECTED COMPETENCY -->
-    <div class="form-group" style="border: 1px solid #ddd; padding: 10px;">
-        <label>Tildel Medarbejdere</label>
-        @if (isLoading)
-        {
-        <div>Loading users...</div>
-        }
-        else
-        {
-        @foreach (var user in _users.Where(u => u.Competencies.Intersect(SelectedCompetencies).Any()))
-        {
-        <div class="form-check">
-            <input type="checkbox" class="form-check-input" @onchange="@(e => ToggleUserSelection(user.Id))" checked="@(NewTask.AssignedToIds.Contains(user.Id))" id="@($"user_{user.Id}")" />
-            <label class="form-check-label" for="@($"user_{user.Id}")">@user.FirstName @user.LastName</label>
+        <!-- ASSIGN WORKERS BASED ON SELECTED COMPETENCY -->
+        <div class="form-group" style="border: 1px solid #ddd; padding: 10px;">
+            <label>Tildel Medarbejdere</label>
+            @if (isLoading)
+            {
+                <div>Loading users...</div>
+            }
+            else
+            {
+                @foreach (var user in _users.Where(u => u.Competencies.Intersect(SelectedCompetencies).Any()))
+                {
+                    <div class="form-check">
+                        <input type="checkbox" class="form-check-input" @onchange="@(e => ToggleUserSelection(user.Id))" checked="@(NewTask.AssignedToIds.Contains(user.Id))" id="@($"user_{user.Id}")" />
+                        <label class="form-check-label" for="@($"user_{user.Id}")">@user.FirstName @user.LastName</label>
+                    </div>
+                }
+            }
         </div>
-        }
-        }
-    </div>
 
-    <!-- SELECT EVENTS (MULTIPLE EVENTS SELECTION) -->
-    <div class="form-group" style="border: 1px solid #ddd; padding: 10px;">
-        <label>Vælg Events</label>
-        @if (isLoading)
-        {
-        <div>Loading events...</div>
-        }
-        else
-        {
-        @foreach (var eventItem in _events)
-        {
-        <div class="form-check">
-            <input type="checkbox" class="form-check-input" @onchange="@(e => ToggleEventSelection(eventItem.Id))" checked="@(NewTask.EventIds.Contains(eventItem.Id))" id="@($"event_{eventItem.Id}")" />
-            <label class="form-check-label" for="@($"event_{eventItem.Id}")">@eventItem.Title</label>
+        <!-- SELECT EVENTS (MULTIPLE EVENTS SELECTION) -->
+        <div class="form-group" style="border: 1px solid #ddd; padding: 10px;">
+            <label>Vælg Events</label>
+            @if (isLoading)
+            {
+                <div>Loading events...</div>
+            }
+            else
+            {
+                @foreach (var eventItem in _events)
+                {
+                    <div class="form-check">
+                        <input type="checkbox" class="form-check-input" @onchange="@(e => ToggleEventSelection(eventItem.Id))" checked="@(NewTask.EventIds.Contains(eventItem.Id))" id="@($"event_{eventItem.Id}")" />
+                        <label class="form-check-label" for="@($"event_{eventItem.Id}")">@eventItem.Title</label>
+                    </div>
+                }
+            }
         </div>
-        }
-        }
-    </div>
 
-    <!-- SUBMIT BUTTON -->
-    <div class="form-group text-center">
-        <button type="submit" class="btn btn-primary">Opret Opgave</button>
-    </div>
+        <!-- SUBMIT BUTTON -->
+        <div class="form-group text-center">
+            <button type="submit" class="btn btn-primary">Opret Opgave</button>
+        </div>
 
-</EditForm>
-<!-- END FORM SECTION -->
-}
+    </EditForm>
 
 @code {
-private TaskItem NewTask { get; set; } = new() { AssignedToIds = new List<int>(), EventIds = new List<int>() };
-private User? currentUser;
-private List<User> _users = new();
-private List<TaskEvent> _events = new();
-private bool isLoading = true;
+    private TaskItem NewTask { get; set; } = new() { AssignedToIds = new List<int>(), EventIds = new List<int>() };
+    private User? currentUser;
+    private List<User> _users = new();
+    private List<TaskEvent> _events = new();
+    private bool isLoading = true;
 
-private List<Competency> Competencies = Enum.GetValues(typeof(Competency)).Cast<Competency>().ToList();
-private List<Competency> SelectedCompetencies = new();
+    private List<Competency> Competencies = Enum.GetValues(typeof(Competency)).Cast<Competency>().ToList();
+    private List<Competency> SelectedCompetencies = new();
 
-[Parameter]
-public EventCallback OnTaskCreated { get; set; }
+    [Parameter]
+    public EventCallback OnTaskCreated { get; set; }
 
-[Parameter]
-public int? Id { get; set; }
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            isLoading = true;
+            currentUser = await LoginService.GetCurrentUser();
+            _users = await UserService.LoadUsers();
+            _events = await EventService.GetAllEventsAsync();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error loading data: {ex.Message}");
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
 
-protected override async Task OnInitializedAsync()
-{
-try
-{
-isLoading = true;
-currentUser = await LoginService.GetCurrentUser();
-_users = await UserService.LoadUsers();
-_events = await EventService.GetAllEventsAsync();
-if (Id.HasValue)
-{
-var task = await TaskService.GetTaskAsync(Id.Value);
-if (task != null)
-{
-NewTask = task;
-}
-}
-}
-catch (Exception ex)
-{
-Console.WriteLine($"Error loading data: {ex.Message}");
-}
-finally
-{
-isLoading = false;
-}
-}
+    private async Task CommitTask()
+    {
+        try
+        {
+            var isSuccess = await TaskService.CreateTaskAsync(NewTask);
 
-private async Task CommitTask()
-{
-try
-{
-bool isSuccess;
-if (Id.HasValue)
-{
-isSuccess = await TaskService.EditTaskAsync(Id.Value, NewTask);
-}
-else
-{
-isSuccess = await TaskService.CreateTaskAsync(NewTask);
-}
+            if (isSuccess)
+            {
+                NewTask = new() { AssignedToIds = new List<int>(), EventIds = new List<int>() };
+                await OnTaskCreated.InvokeAsync();
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error creating task: {ex.Message}");
+        }
+    }
 
-if (isSuccess)
-{
-NewTask = new() { AssignedToIds = new List<int>(), EventIds = new List<int>() };
-await OnTaskCreated.InvokeAsync();
-}
-}
-catch (Exception ex)
-{
-Console.WriteLine($"Error {(Id.HasValue ? "updating" : "creating")} task: {ex.Message}");
-}
-}
+    private void ToggleCompetencyFilter(Competency competency)
+    {
+        if (SelectedCompetencies.Contains(competency))
+        {
+            SelectedCompetencies.Remove(competency);
+        }
+        else
+        {
+            SelectedCompetencies.Add(competency);
+        }
+    }
 
-private void ToggleCompetencyFilter(Competency competency)
-{
-if (SelectedCompetencies.Contains(competency))
-{
-SelectedCompetencies.Remove(competency);
-}
-else
-{
-SelectedCompetencies.Add(competency);
-}
-}
+    private void ToggleUserSelection(int userId)
+    {
+        if (NewTask.AssignedToIds.Contains(userId))
+        {
+            NewTask.AssignedToIds.Remove(userId);
+        }
+        else
+        {
+            NewTask.AssignedToIds.Add(userId);
+        }
+    }
 
-private void ToggleUserSelection(int userId)
-{
-if (NewTask.AssignedToIds.Contains(userId))
-{
-NewTask.AssignedToIds.Remove(userId);
-}
-else
-{
-NewTask.AssignedToIds.Add(userId);
-}
-}
+    private void ToggleEventSelection(int eventId)
+    {
+        if (NewTask.EventIds.Contains(eventId))
+        {
+            NewTask.EventIds.Remove(eventId);
+        }
+        else
+        {
+            NewTask.EventIds.Add(eventId);
+        }
+    }
 
-private void ToggleEventSelection(int eventId)
-{
-if (NewTask.EventIds.Contains(eventId))
-{
-NewTask.EventIds.Remove(eventId);
-}
-else
-{
-NewTask.EventIds.Add(eventId);
-}
-}
+    private string? startTimeOnlyValue
+    {
+        get => NewTask.StartTime.ToString("HH:mm");
+        set
+        {
+            if (value != null && TimeOnly.TryParse(value, out var parsedTime))
+            {
+                NewTask.StartTime = parsedTime;
+            }
+        }
+    }
 
-private string? startTimeOnlyValue
-{
-get => NewTask.StartTime.ToString("HH:mm");
-set
-{
-if (value != null && TimeOnly.TryParse(value, out var parsedTime))
-{
-NewTask.StartTime = parsedTime;
-}
-}
-}
+    private void HandleStartTimeChange(ChangeEventArgs args)
+    {
+        if (args.Value is string timeValue && TimeOnly.TryParse(timeValue, out var parsedTime))
+        {
+            NewTask.StartTime = parsedTime;
+        }
+    }
 
-private void HandleStartTimeChange(ChangeEventArgs args)
-{
-if (args.Value is string timeValue && TimeOnly.TryParse(timeValue, out var parsedTime))
-{
-NewTask.StartTime = parsedTime;
-}
-}
+    private string? endTimeOnlyValue
+    {
+        get => NewTask.EndTime.ToString("HH:mm");
+        set
+        {
+            if (value != null && TimeOnly.TryParse(value, out var parsedTime))
+            {
+                NewTask.EndTime = parsedTime;
+            }
+        }
+    }
 
-private string? endTimeOnlyValue
-{
-get => NewTask.EndTime.ToString("HH:mm");
-set
-{
-if (value != null && TimeOnly.TryParse(value, out var parsedTime))
-{
-NewTask.EndTime = parsedTime;
-}
-}
-}
-
-private void HandleEndTimeChange(ChangeEventArgs args)
-{
-if (args.Value is string timeValue && TimeOnly.TryParse(timeValue, out var parsedTime))
-{
-NewTask.EndTime = parsedTime;
-}
-}
+    private void HandleEndTimeChange(ChangeEventArgs args)
+    {
+        if (args.Value is string timeValue && TimeOnly.TryParse(timeValue, out var parsedTime))
+        {
+            NewTask.EndTime = parsedTime;
+        }
+    }
 }
