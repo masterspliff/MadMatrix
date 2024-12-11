@@ -9,7 +9,7 @@
             <h4 class="alert-heading">You are logged in!</h4>
             <p>Welcome back.</p>
             <div class="d-flex gap-2 justify-content-center">
-                <button @onclick="@(() => navManager.NavigateTo("/dashboard"))" class="btn btn-success">DashboardPage</button>
+                <button @onclick="@(() => navManager.NavigateTo("/dashboard"))" class="btn btn-success">Dashboard</button>
                 <button @onclick="@(async () => await HandleLogout())" class="btn btn-outline-danger">Logout</button>
             </div>
         </div>
