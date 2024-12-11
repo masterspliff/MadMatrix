@@ -1,8 +1,8 @@
 using System.Collections.Generic;                                                                                                                                                                                                                                                                                                                                          
  using System.Linq;                                                                                                                                                                                                                                                                                                                                                         
  using System.Threading.Tasks;                                                                                                                                                                                                                                                                                                                                              
- using core.Models; // Ensure this matches the namespace of TaskItem                                                                                                                                                                                                                                                                                                        
- using webapp.Service; // Adjust the namespace as needed                                                                                                                                                                                                                                                                                                                    
+ using core.Models;                                                                                                                                                                                                                                                                                                    
+ using webapp.Service;                                                                                                                                                                                                                                                                                                                  
                                                                                                                                                                                                                                                                                                                                                                             
  public class TaskServiceInMemory : ITaskService                                                                                                                                                                                                                                                                                                                            
  {                                                                                                                                                                                                                                                                                                                                                                          
@@ -44,4 +44,15 @@ using System.Collections.Generic;
          var tasksForEvent = _tasks.Where(t => t.EventId == eventId).ToList();                                                                                                                                                                                                                                                                                           
          return Task.FromResult(tasksForEvent);                                                                                                                                                                                                                                                                                                                          
      }    
+
+     public Task<bool> DeleteTaskAsync(int id)
+     {
+         var task = _tasks.FirstOrDefault(t => t.Id == id);
+         if (task != null)
+         {
+             _tasks.Remove(task);
+             return Task.FromResult(true);
+         }
+         return Task.FromResult(false);
+     }
  } 

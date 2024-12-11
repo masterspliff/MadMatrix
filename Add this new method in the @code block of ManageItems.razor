@@ -1,0 +1,5 @@
+    private void NavigateToEdit(Item item)
+    {
+        var route = item.IsEvent ? $"/events/edit/{item.Id}" : $"/tasks/edit/{item.Id}";
+        NavigationManager.NavigateTo(route);
+    }

@@ -35,4 +35,16 @@ public class EventService : IEventService
         }
         throw new Exception("Could not fetch event");
     }
+
+    public async Task<bool> DeleteEventAsync(int id)
+    {
+        var response = await _httpClient.DeleteAsync($"event/{id}");
+        return response.IsSuccessStatusCode;
+    }
+
+    public async Task<bool> UpdateEventAsync(int id, TaskEvent taskEvent)
+    {
+        var response = await _httpClient.PutAsJsonAsync($"event/{id}", taskEvent);
+        return response.IsSuccessStatusCode;
+    }
 }

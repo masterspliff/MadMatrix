@@ -1,59 +1,32 @@
 @page "/dashboard"
+@using webapp.Components.Create
 @using webapp.Components
+
 @using Microsoft.AspNetCore.Components
 @using webapp.Service.LoginService
 @inject NavigationManager NavigationManager
 
 <Navbar />
 
-<ModalWrapper ModalId="profileModal">
-    <EditProfile />
-</ModalWrapper>
-
-
 <div class="content">
     <Hero />
-    
-    <div class="link-content">
-        <button type="button" class="Create-Event-Box" data-bs-toggle="modal" data-bs-target="#eventModal">
-            Opret Event
-        </button>
-        <ModalWrapper ModalId="eventModal" ModalSize="modal-xl">
-            <CreateEvent/>
-        </ModalWrapper>
-
-        <button type="button" class="Create-Event-Box" data-bs-toggle="modal" data-bs-target="#taskModal">
-            Opret Opgave
-        </button>
-        
-        <ModalWrapper ModalId="taskModal" ModalSize="modal-xl" ShowFooter="true">
-            <CreateTask/>
-        </ModalWrapper>
-
-        <button type="button" class="Create-Event-Box" data-bs-toggle="modal" data-bs-target="#locationModal">
-            Oversigt over lokationer
-        </button>
-        
-        <ModalWrapper ModalId="locationModal">
-            <CreateLocation/>
-        </ModalWrapper>
-
-    </div>
+    <DashboardGrid />
+    <ManageItems />
 </div>
 
 @code {
-[Inject]
-private ILoginService LoginService { get; set; }
+    [Inject]
+    private ILoginService LoginService { get; set; }
 
-protected override async Task OnInitializedAsync()
-{
-// Check if user is authenticated
-if (!await LoginService.IsLoggedIn())
-{
-Navigation.NavigateTo("/");
-}
-}
+        protected override async Task OnInitializedAsync()
+            {
+                // Check if user is authenticated
+                if (!await LoginService.IsLoggedIn())
+                {
+                    Navigation.NavigateTo("/");
+                }
+            }
 
-[Inject] private NavigationManager Navigation { get; set; } // Dependency injection af NavigationManager til at håndtere navigation                               
-
-} 
+            // Dependency injection af NavigationManager til at håndtere navigation  
+    [Inject] private NavigationManager Navigation { get; set; }                              
+    } 
