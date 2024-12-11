@@ -1,5 +1,6 @@
 @page "/"
 @using webapp.Components
+@using webapp.Components.Create
 @using webapp.Service.LoginService
 @inject ILoginService LoginService
 
@@ -28,7 +29,7 @@
     
     @if (!showRegister)
     {
-        <LoginOle Target="dashboard"/>
+        <LoginComponent Target="dashboard"/>
 
         <div class="text-center mt-3">
             <p>

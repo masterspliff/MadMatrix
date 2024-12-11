@@ -1,6 +1,4 @@
-@using core.Models
 @using webapp.Service
-@using webapp.Components.Shared
 @using webapp.Service.LoginService
 @inject ILocationService LocationService
 @inject ILoginService LoginService
@@ -47,9 +45,7 @@
             </div>
         </div>
     </EditForm>
-
-    <ErrorDisplay Message="@errorMessage"/>
-
+    
 @code {
     private Location locationModel = new() { Id = 0, Name = string.Empty };
     private string errorMessage = string.Empty;

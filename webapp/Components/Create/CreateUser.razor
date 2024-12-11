@@ -45,10 +45,12 @@
             var competency = competencies.GetValue(i)!;
             var index = i; // Capture index for binding checkbox state                                                                                                                                                                                                                                                                                                     
             <div class="Compentency-checkbox">
+                
                 <!-- Checkbox for each competency -->
                 <InputCheckbox class="form-check-input"
                                @bind-Value="competencyValues[index]"
                                id="@($"competency_{competency}")"/>
+                
                 <label class="form-check-label" for="@($"competency_{competency}")">
                     @competency <!-- Display competency name -->
                 </label>

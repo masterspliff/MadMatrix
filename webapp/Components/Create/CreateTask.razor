@@ -1,7 +1,6 @@
 @page "/tasks"
 @page "/tasks/edit/{Id:int}"
 @using TaskStatus = core.Models.TaskStatus
-@using webapp.Components.Shared
 @using webapp.Service
 @using webapp.Service.LoginService
 @inject ITaskService TaskService
@@ -38,13 +37,39 @@
                    Type="date"
                    @bind-Value="NewTask.EndDate"/>
 
-        <EnumSelector TEnum="TaskStatus"
-                      Label="Status"
-                      @bind-Value="NewTask.Status"
-                      DefaultOption="Vælg status"/>
+        <div class="form-group">
+            <label class="form-label">Status</label>
+            <InputSelect class="form-control" @bind-Value="NewTask.Status">
+                <option value="">Vælg status</option>
+                @foreach (var status in Enum.GetValues(typeof(TaskStatus)))
+                {
+                    <option value="@status">@status</option>
+                }
+            </InputSelect>
+        </div>
 
-        <UserSelector Label="Tildel Medarbejdere"
-                      SelectedUsersChanged="@(ids => NewTask.AssignedToIds = ids)"/>
+        <div class="form-group">
+            <label>Tildel Medarbejdere</label>
+            @if (isLoading)
+            {
+                <div>Loading users...</div>
+            }
+            else
+            {
+                @foreach (var user in _users)
+                {
+                    <div class="form-check">
+                        <input type="checkbox" class="form-check-input"
+                               @onchange="@(e => ToggleUserSelection(user.Id))"
+                               checked="@(NewTask.AssignedToIds.Contains(user.Id))"
+                               id="@($"user_{user.Id}")"/>
+                        <label class="form-check-label" for="@($"user_{user.Id}")">
+                            @user.FirstName @user.LastName
+                        </label>
+                    </div>
+                }
+            }
+        </div>
 
         <div class="form-group">
             <button type="submit" class="btn btn-primary">Opret Opgave</button>
@@ -54,6 +79,9 @@
 @code {
     private TaskItem NewTask { get; set; } = new() { AssignedToIds = new List<int>() };
     private User? currentUser;
+    private List<User> _users = new();
+    private bool isLoading = true;
+
     
     [Parameter]
     public EventCallback OnTaskCreated { get; set; }
@@ -63,15 +91,28 @@
 
     protected override async Task OnInitializedAsync()
     {
-        currentUser = await LoginService.GetCurrentUser();
-        
-        if (Id.HasValue)
+        try
         {
-            var task = await TaskService.GetTaskAsync(Id.Value);
-            if (task != null)
+            isLoading = true;
+            currentUser = await LoginService.GetCurrentUser();
+            _users = await UserService.LoadUsers();
+            
+            if (Id.HasValue)
             {
-                NewTask = task;
+                var task = await TaskService.GetTaskAsync(Id.Value);
+                if (task != null)
+                {
+                    NewTask = task;
+                }
             }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error loading data");
+        }
+        finally
+        {
+            isLoading = false;
         }
     }
 
@@ -100,5 +141,17 @@
             Console.WriteLine($"Error {(Id.HasValue ? "updating" : "creating")} task: {ex.Message}");
         }
     }
+    private void ToggleUserSelection(int userId)
+    {
+        if (NewTask.AssignedToIds.Contains(userId))
+        {
+            NewTask.AssignedToIds.Remove(userId);
+        }
+        else
+        {
+            NewTask.AssignedToIds.Add(userId);
+        }
+    }
 }
+
 }

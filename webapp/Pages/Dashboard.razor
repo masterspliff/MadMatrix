@@ -1,15 +1,12 @@
 @page "/dashboard"
-@using webapp.Components.Create
 @using webapp.Components
-
-@using Microsoft.AspNetCore.Components
 @using webapp.Service.LoginService
 @inject NavigationManager NavigationManager
 
 <Navbar />
 
 <div class="content">
-    <Hero />
+    <HeroComponent />
     <DashboardGrid />
     <ManageItems />
 </div>
