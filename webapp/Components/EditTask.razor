@@ -1,5 +1,6 @@
 @page "/edittask/{taskid}"
 @using webapp.Service
+@using webapp.Components.Create
 @inject ITaskService taskservice
 @inject IUserService userservice
 
@@ -13,22 +14,22 @@
 <EditForm Model="UpdateTaskItem" OnValidSubmit="UpdateTask" class="card task-card" style="max-width: 800px; margin: 0 auto;">
     <div class="form-group">
         <label for="TaskTitle">Opgave Titel</label>
-        <InputText id="TaskTitle" @bind="UpdateTaskItem.Title" class="form-control" placeholder="Indtast opgave titel" />
+        <InputText id="TaskTitle" @bind-Value="UpdateTaskItem.Title" class="form-control" placeholder="Indtast opgave titel" />
     </div>
 
     <div class="form-group">
         <label for="TaskDate">Dato</label>
-        <InputDate id="TaskDate" @bind="UpdateTaskItem.Date" TValue="DateTime" class="form-control" />
+        <InputDate id="TaskDate" @bind-Value="UpdateTaskItem.Date" TValue="DateTime" class="form-control" />
     </div>
 
     <div class="form-group">
         <label for="StartTime">Starttidspunkt</label>
-        <FormInput TValue="TimeOnly" Type="time" Id="StartTime" @bind="UpdateTaskItem.StartTime" />
+        <FormInput TValue="TimeOnly" Type="time" Id="StartTime" @bind-Value="UpdateTaskItem.StartTime" />
     </div>
 
     <div class="form-group">
         <label for="EndTime">Sluttidspunkt</label>
-        <FormInput TValue="TimeOnly" Type="time" Id="EndTime" @bind="UpdateTaskItem.EndTime" />
+        <FormInput TValue="TimeOnly" Type="time" Id="EndTime" @bind-Value="UpdateTaskItem.EndTime" />
     </div>
 
     <button type="submit" class="btn btn-primary">Opdater Opgave</button>

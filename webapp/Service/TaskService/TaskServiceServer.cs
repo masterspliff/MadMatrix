@@ -28,7 +28,7 @@ public class TaskServiceServer : ITaskService
     {
         try 
         {
-            var response = await _httpClient.GetAsync("api/task");
+            var response = await _httpClient.GetAsync("task");
             response.EnsureSuccessStatusCode();
             var tasks = await response.Content.ReadFromJsonAsync<List<TaskItem>>();
             return tasks ?? new List<TaskItem>();
