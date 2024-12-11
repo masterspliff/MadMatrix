@@ -37,12 +37,15 @@ namespace server.Repositories.Login
 
         public User? ValidateUser(LoginDto loginRequest)
         {
+            Console.WriteLine($"Validating user: {loginRequest.Email}");
+            
             var user = users.FirstOrDefault(u => 
                 u.Email == loginRequest.Email && 
                 u.Password == loginRequest.Password);
 
+            Console.WriteLine($"User found: {user != null}");
+            
             // No timestamp updates needed
-
             return user;
         }
     }

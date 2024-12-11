@@ -6,17 +6,17 @@
 <!-- Form for creating a new user -->
 
 <div class="container mt-4">
-    <h3>Create New User</h3>
+    <h3>Opret ny bruger</h3>
     <EditForm Model="@registerModel" OnValidSubmit="@HandleValidSubmit">
         <DataAnnotationsValidator />
         <ValidationSummary />
         <div class="mb-3">
-            <label for="firstName" class="form-label">First Name</label>
+            <label for="firstName" class="form-label">Fornavn</label>
             <InputText id="firstName" class="form-control" @bind-Value="registerModel.FirstName" />
             <ValidationMessage For="@(() => registerModel.FirstName)" />
         </div>
         <div class="mb-3">
-            <label for="lastName" class="form-label">Last Name</label>
+            <label for="lastName" class="form-label">Efternavn</label>
             <InputText id="lastName" class="form-control" @bind-Value="registerModel.LastName" />
             <ValidationMessage For="@(() => registerModel.LastName)" />
         </div>
@@ -26,37 +26,39 @@
             <ValidationMessage For="@(() => registerModel.Email)" />
         </div>
         <div class="mb-3">
-            <label for="password" class="form-label">Password</label>
+            <label for="password" class="form-label">Adgangskode</label>
             <InputText id="password" type="password" class="form-control" @bind-Value="registerModel.Password" />
             <ValidationMessage For="@(() => registerModel.Password)" />
         </div>
         <div class="mb-3">
-            <label for="phoneNumber" class="form-label">Phone Number</label>
+            <label for="phoneNumber" class="form-label">Telefonnummer</label>
             <InputText id="phoneNumber" class="form-control" @bind-Value="registerModel.PhoneNumber" />
             <ValidationMessage For="@(() => registerModel.PhoneNumber)" />
         </div>
         <div class="mb-3">
-            <label class="form-label">Competencies</label>
+            <label class="form-label">Kompetencer</label>
             @{
-                // Generate checkboxes for all enum values of Competency
-                var competencies = Enum.GetValues(typeof(Competency));
-                for (int i = 0; i < competencies.Length; i++)
-                {
-                    var competency = competencies.GetValue(i)!;
-                    var index = i; // Capture index for binding checkbox state
-                    <div class="form-check">
-                        <!-- Checkbox for each competency -->
-                        <InputCheckbox class="form-check-input"
-                                       @bind-Value="competencyValues[index]"
-                                       id="@($"competency_{competency}")"/>
-                        <label class="form-check-label" for="@($"competency_{competency}")">
-                            @competency <!-- Display competency name -->
-                        </label>
-                    </div>
-                }
+            // Generate checkboxes for all enum values of Competency                                                                                                                                                                                                                                                                                                           
+            var competencies = Enum.GetValues(typeof(Competency));
+            for (int i = 0; i < competencies.Length; i++)
+            {
+            var competency = competencies.GetValue(i)!;
+            var index = i; // Capture index for binding checkbox state                                                                                                                                                                                                                                                                                                     
+            <div class="Compentency-checkbox">
+                
+                <!-- Checkbox for each competency -->
+                <InputCheckbox class="form-check-input"
+                               @bind-Value="competencyValues[index]"
+                               id="@($"competency_{competency}")"/>
+                
+                <label class="form-check-label" for="@($"competency_{competency}")">
+                    @competency <!-- Display competency name -->
+                </label>
+            </div>
+            }
             }
         </div>
-        <button type="submit" class="btn btn-primary">Create User</button>
+        <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 20px; margin-bottom: 20px">Opret konto</button>
     </EditForm>
     
     @if (!string.IsNullOrEmpty(errorMessage))

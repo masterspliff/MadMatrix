@@ -1,0 +1,128 @@
+@page "/create-event"
+@page "/events/edit/{Id:int}"
+@using webapp.Service
+@using webapp.Service.LoginService
+@inject IEventService EventService
+@inject ILocationService LocationService
+@inject ILoginService LoginService
+
+@if (currentUser?.Roles.Contains(UserRole.Administrator) == true)
+{
+    <EditForm Model="NewEvent" OnValidSubmit="CreateEventNow" class="card announcement-card">
+        <h4>@(Id.HasValue ? "Rediger Event" : "Opret Event")</h4>
+
+        <FormInput TValue="string"
+                   Id="Title"
+                   Label="Titel"
+                   @bind-Value="NewEvent.Title"
+                   Placeholder="Indtast Titel"/>
+
+        <FormInput TValue="DateTime"
+                   Id="Date"
+                   Label="Dato"
+                   Type="date"
+                   @bind-Value="NewEvent.DateForEvent"/>
+
+        <FormInput TValue="int"
+                   Id="Location"
+                   Label="Lokation"
+                   Type="select"
+                   @bind-Value="NewEvent.LocationId"
+                   DefaultOption="Vælg Lokation">
+            @foreach (var location in Locations)
+            {
+                <option value="@location.Id">@location.Name</option>
+            }
+        </FormInput>
+
+        <FormInput TValue="string"
+                   Id="FoodChoice"
+                   Label="Madvalg"
+                   @bind-Value="NewEvent.FoodChoices"
+                   Placeholder="Indtast madvalg"/>
+
+        <FormInput TValue="string"
+                   Id="SpecialRequest"
+                   Label="Særlige mad behov"
+                   @bind-Value="NewEvent.SpecialRequest"
+                   Placeholder="Indtast special ønsker til mad"/>
+
+        <FormInput TValue="string"
+                   Id="ByCustomer"
+                   Label="Kunde"
+                   @bind-Value="NewEvent.ByCustomer"
+                   Placeholder="Indtast kunde"/>
+
+        <FormInput TValue="int"
+                   Id="Participant"
+                   Label="Deltagere"
+                   Type="number"
+                   @bind-Value="NewEvent.Participants"/>
+
+        <div class="form-group">
+            <button type="submit" class="btn btn-primary">Opret Event</button>
+        </div>
+    </EditForm>
+
+@code {
+    private TaskEvent NewEvent = new TaskEvent();
+    private string errorMessage = string.Empty;
+    private User? currentUser;
+    
+    [Parameter]
+    public EventCallback OnEventCreated { get; set; }
+
+    [Parameter]
+    public int? Id { get; set; }
+
+    private IEnumerable<core.Models.Location> Locations { get; set; } = Enumerable.Empty<core.Models.Location>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        Locations = await LocationService.GetAllLocationsAsync();
+        currentUser = await LoginService.GetCurrentUser();
+
+        if (Id.HasValue)
+        {
+            var eventItem = await EventService.GetEventByIdAsync(Id.Value);
+            if (eventItem != null)
+            {
+                NewEvent = eventItem;
+            }
+        }
+
+        await base.OnInitializedAsync();
+    }
+
+    <!-- Calling method in Service to request the API to post new Event-->
+    private async Task CreateEventNow()
+    {
+        try
+        {
+            bool isSuccess;
+            if (Id.HasValue)
+            {
+                isSuccess = await EventService.UpdateEventAsync(Id.Value, NewEvent);
+            }
+            else
+            {
+                isSuccess = await EventService.CreateEventAsync(NewEvent);
+            }
+
+            if (isSuccess)
+            {
+                NewEvent = new TaskEvent();
+                await OnEventCreated.InvokeAsync();
+            }
+            else
+            {
+                errorMessage = $"Failed to {(Id.HasValue ? "update" : "create")} event. Check details and try again.";
+            }
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"An error occurred: {ex.Message}";
+        }
+    }
+}
+}

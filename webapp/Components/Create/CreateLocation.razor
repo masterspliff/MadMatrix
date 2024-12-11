@@ -1,69 +1,66 @@
-@using core.Models
 @using webapp.Service
-@using webapp.Components.Shared
+@using webapp.Service.LoginService
 @inject ILocationService LocationService
+@inject ILoginService LoginService
 
-<h3>Location Management</h3>
+@if (currentUser?.Roles.Contains(UserRole.Administrator) == true)
+{
+    <EditForm Model="@locationModel" OnValidSubmit="HandleCreateLocation" class="card">
+        <h3>Lokation adminstration</h3>
 
-@* 
-    This component uses FormInput with different TValue types:
-    - TValue="string" for the location name text input
-    - TValue="int" for the location selection dropdown
+        <div class="row">
+            <div class="col-md-6">
+                <h4>Opret Lokation</h4>
+                <FormInput TValue="string"
+                           Id="locationName"
+                           Label="Lokation navn"
+                           @bind-Value="locationModel.Name"
+                           Placeholder="Navngiv lokationens navn"/>
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary">Opret Location</button>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <h4>Slet Location</h4>
+                <FormInput TValue="int"
+                           Id="locationDelete"
+                           Label="Vælg lokation"
+                           Type="select"
+                           @bind-Value="selectedLocationId"
+                           DefaultOption="Vælg ønskede lokation for at slette">
+                    @foreach (var location in locationsList)
+                    {
+                        <option value="@location.Id">@location.Name</option>
+                    }
+                </FormInput>
+                <div class="form-group">
+                    <button type="button"
+                            class="btn btn-danger"
+                            @onclick="HandleDeleteLocation"
+                            disabled="@(selectedLocationId == 0)">
+                        Slet lokation
+                    </button>
+                </div>
+            </div>
+        </div>
+    </EditForm>
     
-    The generic FormInput component handles type conversion and validation automatically,
-    making the form handling type-safe and reducing boilerplate code.
-*@
-
-<EditForm Model="@locationModel" OnValidSubmit="HandleCreateLocation" class="card location-card p-3">
-    <div class="row">
-        <div class="col-md-6">
-            <h4>Create Location</h4>
-            <FormInput TValue="string"
-                Id="locationName" 
-                Label="Location Name" 
-                Type="text" 
-                @bind-Value="locationModel.Name" 
-                Placeholder="Enter location name" />
-            <div class="form-group">
-                <button type="submit" class="btn btn-primary">Create Location</button>
-            </div>
-        </div>
-
-        <div class="col-md-6">
-            <h4>Delete Location</h4>
-            <FormInput TValue="int"
-                Id="locationDelete" 
-                Label="Select Location" 
-                Type="select" 
-                @bind-Value="selectedLocationId" 
-                DefaultOption="Select a location to delete...">
-                @foreach (var location in locationsList)
-                {
-                    <option value="@location.Id">@location.Name</option>
-                }
-            </FormInput>
-            <div class="form-group">
-                <button type="button" class="btn btn-danger" @onclick="HandleDeleteLocation" disabled="@(selectedLocationId == 0)">
-                    Delete Selected Location
-                </button>
-            </div>
-        </div>
-    </div>
-</EditForm>
-
-<ErrorDisplay Message="@errorMessage" />
-
 @code {
     private Location locationModel = new() { Id = 0, Name = string.Empty };
     private string errorMessage = string.Empty;
     private IEnumerable<Location> locationsList = Array.Empty<Location>();
     private int selectedLocationId;
+    private User? currentUser;
 
     [Parameter]
     public EventCallback OnLocationCreated { get; set; }
 
-    protected override async Task OnInitializedAsync() => 
+    protected override async Task OnInitializedAsync()
+    {
+        currentUser = await LoginService.GetCurrentUser();
         await RefreshLocations();
+    }
 
     private async Task RefreshLocations() => 
         locationsList = await LocationService.GetAllLocationsAsync();
@@ -114,4 +111,6 @@
             errorMessage = $"An error occurred: {ex.Message}";
         }
     }
+}
+
 }

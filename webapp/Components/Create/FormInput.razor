@@ -17,6 +17,12 @@
 
     @switch (Type?.ToLower())
     {
+        case "time":
+            <input id="@Id" type="time" class="form-control" 
+                   value="@timeOnlyValue"
+                   @onchange="HandleTimeChange" />
+            break;
+            
         case "select":
             <InputSelect id="@Id" class="form-control" Value="@Value" ValueChanged="@(async (TValue val) => await ValueChanged.InvokeAsync(val))" ValueExpression="@(() => Value)">
                 @if (!string.IsNullOrEmpty(DefaultOption))
@@ -79,6 +85,26 @@
             {
                 // If conversion fails, don't update the value
             }
+        }
+    }
+    
+    private string? timeOnlyValue
+    {
+        get => Value is TimeOnly time ? time.ToString("HH:mm") : null;
+        set
+        {
+            if (value != null && TimeOnly.TryParse(value, out var parsedTime))
+            {
+                ValueChanged.InvokeAsync((TValue)(object)parsedTime); // Safe cast to TValue
+            }
+        }
+    }
+
+    private void HandleTimeChange(ChangeEventArgs args)
+    {
+        if (args.Value is string timeValue && TimeOnly.TryParse(timeValue, out var parsedTime))
+        {
+            ValueChanged.InvokeAsync((TValue)(object)parsedTime); // Update Value with TimeOnly
         }
     }
 }

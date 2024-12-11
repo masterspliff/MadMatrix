@@ -1,5 +1,6 @@
 using System.Net.Http.Json;
 using core.Models;
+using webapp.Service.LoginService;
 
 namespace webapp.Service;
 
@@ -23,14 +24,21 @@ public class UserService : IUserService
         throw new Exception($"Registration failed: {error}");
     }
 
+    private readonly ILoginService _loginService;
+    
+    public UserService(HttpClient httpClient, ILoginService loginService)
+    {
+        _httpClient = httpClient;
+        _loginService = loginService;
+    }
+
     public async Task<User> LoginUser(LoginDto loginDto)
     {
-        var response = await _httpClient.PostAsJsonAsync("user/login", loginDto);
-        if (response.IsSuccessStatusCode)
+        var success = await _loginService.Login(loginDto.Email, loginDto.Password);
+        if (success)
         {
-            return await response.Content.ReadFromJsonAsync<User>();
+            return await _loginService.GetCurrentUser() ?? throw new Exception("Login failed");
         }
-        
         throw new Exception("Invalid email or password");
     }
     

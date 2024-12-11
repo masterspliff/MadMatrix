@@ -14,15 +14,14 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddAuthentication();
 builder.Services.AddAuthorization();
 
-// Add CORS
+// Configure the CORS policy
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowAll", builder =>
-    {
-        builder.AllowAnyOrigin()
-               .AllowAnyHeader()
-               .AllowAnyMethod();
-    });
+    options.AddPolicy("AllowAll",
+        builder => builder
+            .AllowAnyOrigin()
+            .AllowAnyMethod()
+            .AllowAnyHeader());
 });
 
 // Check MongoDB password before starting server
@@ -56,8 +55,18 @@ builder.Services.AddScoped<ILocationRepository, LocationRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<ITaskRepository, TaskRepository>();
 
-// Register Login repositories
-builder.Services.AddScoped<ILoginRepository, LoginRepositoryMongoDB>();
+// Register Login repositories based on environment
+// Change the value inside appsettings.Development.json for either local og online
+// true = use memory
+// false = use mongodb
+if (builder.Configuration.GetValue<bool>("UseInMemoryDatabase"))
+{
+    builder.Services.AddScoped<ILoginRepository, LoginRepositoryInMemory>();
+}
+else
+{
+    builder.Services.AddScoped<ILoginRepository, LoginRepositoryMongoDB>();
+}
 
 // Register HTTP client services
 builder.Services.AddHttpClient();
@@ -78,10 +87,13 @@ if (app.Environment.IsDevelopment())
 
 app.UseCors("AllowAll");
 
+// Disable HTTPS redirection for all environments temporarily while we debug
+
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller}/{action=Index}/{id?}");

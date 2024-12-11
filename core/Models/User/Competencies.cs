@@ -10,5 +10,5 @@
      Chef, // = 2                                                                                                                                                                                          
      Cashier, // = 3                                                                                                                                                                                       
      Cleaning, // = 4                                                                                                                                                                                      
-     EventLeader // = 5                                                                                                                                                                                    
+     EventLeader // = 5 
  }     

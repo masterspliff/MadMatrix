@@ -1,151 +1,29 @@
 @page "/dashboard"
 @using webapp.Components
-@inject NavigationManager NavigationManager
-@using Microsoft.AspNetCore.Components
 @using webapp.Service.LoginService
+@inject NavigationManager NavigationManager
 
- <div class="top-row ps-3 navbar navbar-dark custom-navbar" style="border: 1px solid #ffffff; border-radius: 5px;">                                                    
-     <div class="container-fluid d-flex justify-content-between">                                                                                                      
-         <a class="navbar-brand text-black d-flex align-items-center" href="">                                                                                         
-             <span style="font-size: 1.25rem; color: white; font-weight: bold; padding-left: 0rem !important; ">MAD.EAAA</span>                                                                       
-         </a>                                                                                                                                                          
-                                                                                                                                                                       
-         <div class="d-flex align-items-center">                                                                                                                       
-             <button class="btn-eaa" @onclick="@(async () => await HandleLogout())">Log ud</button> <!-- Knap til at logge ud -->                                                             
-         </div>                                                                                                                                                        
-     </div>                                                                                                                                                            
- </div>                                                                                                                                                                
-                                                                                                                                                                       
- <div class="content">                                                                                                                                                 
-                                                                                                                                                                       
-     <div id="news" class="news-box">                                                                                                                                  
-         <h1>NYHEDER</h1> <!-- Overskrift for nyhedssektionen -->                                                                                                      
-         <p>Kantinens nye app! Velkommen</p> <!-- Beskrivelse af nyheder -->                                                                                           
-         <p>                                                                                                                                                           
-             EAAA-kantinens nye app gør det nemt at planlægge events, booke arrangementer og                                                                           
-             skabe overblik over kommende aktiviteter. En praktisk løsning, der bringer struktur                                                                       
-             og bekvemmelighed til dine planer.                                                                                                                        
-         </p>                                                                                                                                                          
-     </div>
+<Navbar />
 
-     <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#myModal">
-         Open Modal
-     </button>
+<div class="content">
+    <HeroComponent />
+    <DashboardGrid />
+    <ManageItems />
+</div>
 
-     <!-- The Modal -->
-     <div class="modal fade" id="myModal" tabindex="-1" aria-labelledby="myModalLabel" aria-hidden="true">
-         <div class="modal-dialog modal-xl">
-             <div class="modal-content">
-                 <div class="modal-header">
-                     <h5 class="modal-title" id="myModalLabel">Modal Title</h5>
-                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                 </div>
-                 <div class="modal-body">
-                     <!-- Modal content goes here -->
-                     ...
-                 </div>
-                 <div class="modal-footer">
-                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                     <button type="button" class="btn btn-primary">Save changes</button>
-                 </div>
-             </div>
-         </div>
-     </div>
-     
+@code {
+    [Inject]
+    private ILoginService LoginService { get; set; }
 
-     <div>                       
-         <div class="employee-content">
-             <div class="box"></div>
-             <div class="box"></div>
-             <div class="box"></div>
-             <div class="box"></div>
-         </div>
-         
-         <button class="btn-ToggleCreate" @onclick="ToggleCreateEvent">Toggle Create Event</button> <!-- Knap til at vise/skjule CreateEvent-komponenten -->
-         <button class="btn-ToggleCreate" @onclick="ToggleCreateTask">Toggle Create Task</button> <!-- Knap til at vise/skjule CreateTask-komponenten -->
-         <button class="btn-ToggleCreate" @onclick="ToggleCreateLocation">Toggle Create Location</button> <!-- Knap til at vise/skjule CreateLocation-komponenten -->
-         <button class="btn-ToggleCreate" @onclick="ToggleTestDisplay">Toggle Test Display</button> <!-- Knap til at vise/skjule Testdisplay-komponenten -->
-         <button class="btn-ToggleCreate" @onclick="NavigateToEvents">Events</button> 
+        protected override async Task OnInitializedAsync()
+            {
+                // Check if user is authenticated
+                if (!await LoginService.IsLoggedIn())
+                {
+                    Navigation.NavigateTo("/");
+                }
+            }
 
-
-         @* Vis komponenterne baseret på tilstanden *@                                                                                                                 
-         @if (showCreateEvent)                                                                                                                                         
-         {                                                                                                                                                             
-             <CreateEvent /> <!-- Viser CreateEvent-komponenten, hvis showCreateEvent er sand -->                                                                      
-         }                                                                                                                                                             
-                                                                                                                                                                       
-         @if (showCreateTask)                                                                                                                                          
-         {                                                                                                                                                             
-             <CreateTask /> <!-- Viser CreateTask-komponenten, hvis showCreateTask er sand -->                                                                         
-         }
-
-         @if (showCreateLocation)
-         {
-             <CreateLocation /> <!-- Viser CreateLocation-komponenten, hvis showCreateLocation er sand -->
-         }
-         @if (showTestDisplay)
-         {
-            <TaskDisplay /> <!-- Viser CreateLocation-komponenten, hvis showCreateLocation er sand -->
-         }
-     </div>                                                                                                                                                            
-                                                                                                                                                                       
- </div>
-
-<ListingsEmployee/>
-
-@code {                                                                                                                                                               
-     // Tilstande til at styre synligheden af CreateEvent og CreateTask komponenterne                                                                                  
-     private bool showCreateEvent = false;                                                                                                                             
-     private bool showCreateTask = false;
-     private bool showCreateLocation = false;
-     private bool showTestDisplay = false;
-
-     [Inject] 
-     private ILoginService LoginService { get; set; }
-
-     protected override async Task OnInitializedAsync()
-     {
-         // Check if user is authenticated
-         if (!await LoginService.IsLoggedIn())
-         {
-             Navigation.NavigateTo("/");
-         }
-     }
-                                                                                                                                                                       
-     // Metode til at skifte synligheden af CreateEvent-komponenten                                                                                                    
-     private void ToggleCreateEvent()                                                                                                                                  
-     {                                                                                                                                                                 
-         showCreateEvent = !showCreateEvent;                                                                                                                           
-     }                                                                                                                                                                 
-                                                                                                                                                                       
-     // Metode til at skifte synligheden af CreateTask-komponenten                                                                                                     
-     private void ToggleCreateTask()                                                                                                                                   
-     {                                                                                                                                                                 
-         showCreateTask = !showCreateTask;                                                                                                                             
-     }   
-     
-     // Metode til at skifte synligheden af CreateEvent-komponenten                                                                                                     
-     private void ToggleCreateLocation()                                                                                                                                                                                                             
-     {                                                                                                                                                                                                                                               
-         showCreateLocation = !showCreateLocation;                                                                                                                                                                                                   
-     }   
-     
-     private void ToggleTestDisplay()                                                                                                                                  
-     {               
-         showTestDisplay = !showTestDisplay;
-     }           
-     
-     private void NavigateToEvents()
-     {
-         NavigationManager.NavigateTo("/Events");
-     }
-                                                                                                                                                                       
-     [Inject] private NavigationManager Navigation { get; set; } // Dependency injection af NavigationManager til at håndtere navigation                               
-                                                                                                                                                                       
-     // Metode til at håndtere logout-logik                                                                                                                            
-     private async Task HandleLogout()                                                                                                                                       
-     {                                                                                                                                                                 
-         await LoginService.Logout();
-         Navigation.NavigateTo("/");                                                                                                                                   
-     }                                                                                                                                                                 
- } 
+            // Dependency injection af NavigationManager til at håndtere navigation  
+    [Inject] private NavigationManager Navigation { get; set; }                              
+    } 

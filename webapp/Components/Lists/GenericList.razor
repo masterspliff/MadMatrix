@@ -1,0 +1,19 @@
+@typeparam TItem
+
+@foreach (var item in Items ?? Enumerable.Empty<TItem>())
+{
+    <button class="list-group-item list-group-item-action" @onclick="() => OnItemSelected.InvokeAsync(item)">
+        @ItemTemplate(item)
+    </button>
+}
+
+@code {
+    [Parameter]
+    public IEnumerable<TItem> Items { get; set; }
+
+    [Parameter]
+    public EventCallback<TItem> OnItemSelected { get; set; }
+
+    [Parameter]
+    public RenderFragment<TItem> ItemTemplate { get; set; }
+}

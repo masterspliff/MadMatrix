@@ -5,9 +5,6 @@ public interface ITaskService
 {
     // Create a new Task
     Task<bool> CreateTaskAsync(TaskItem newTaskItem);
-    Task<List<TaskItem>> LoadTask();
-    Task<List<TaskItem>> GetTasksByEventIdAsync(int eventId);
-
     
     // Update existing Task
     Task<bool> EditTaskAsync(int id, TaskItem updateTaskItem);
@@ -17,5 +14,9 @@ public interface ITaskService
 
     // Get Task based on id
     Task<TaskItem> GetTaskAsync(int taskid);
-
+    
+    Task<List<TaskItem>> GetTasksByEventIdAsync(int eventId);
+    
+    // Delete a task
+    Task<bool> DeleteTaskAsync(int id);
 }

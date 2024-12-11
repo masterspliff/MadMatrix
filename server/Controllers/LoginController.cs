@@ -18,12 +18,16 @@ public class LoginController : ControllerBase
     [HttpPost]
     public IActionResult Login([FromBody] LoginDto loginRequest)
     {
+        Console.WriteLine($"Login attempt for email: {loginRequest.Email}");
+        
         var user = _loginRepository.ValidateUser(loginRequest);
         if (user != null)
         {
+            Console.WriteLine("Login successful");
             return Ok(user);
         }
         
+        Console.WriteLine("Login failed - invalid credentials");
         return Unauthorized(new { message = "Invalid credentials" });
     }
 }
