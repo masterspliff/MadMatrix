@@ -7,8 +7,8 @@
     @if (ShowData == true)
     {
         <p><strong>Status:</strong> @Status</p>
-        <p><strong>Start Date:</strong> @StartDate</p>
-        <p><strong>End Date:</strong> @EndDate</p>
+        <p><strong>Start Date:</strong> @StartTime</p>
+        <p><strong>End Date:</strong> @EndTime</p>
         <p><strong>Assigned To:</strong></p>
             <div class="assigned-to">
                 @foreach (var id in @AssignedTo)
@@ -40,8 +40,9 @@
     [Parameter] public string Title { get; set; }
     [Parameter] public string Description { get; set; }
     [Parameter] public TaskStatus Status { get; set; }
-    [Parameter] public DateTime StartDate { get; set; }
-    [Parameter] public DateTime EndDate { get; set; }
+    [Parameter] public DateTime Dato { get; set; }
+    [Parameter] public TimeOnly StartTime { get; set; }
+    [Parameter] public TimeOnly EndTime { get; set; }
     [Parameter] public List<int> AssignedTo { get; set; }
 
     [Parameter] public bool? ShowDescription { get; set; } = false;
