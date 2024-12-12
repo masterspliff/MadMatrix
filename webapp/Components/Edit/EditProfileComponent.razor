@@ -9,9 +9,17 @@
 <h3>Profiloversigt</h3>
 
 <div class="edit-profile-form">
-    @if (user != null)
+    @if (isLoading)
     {
-    <EditForm EditContext="@editContext" OnValidSubmit="HandleValidSubmit">
+        <div class="text-center">
+            <div class="spinner-border" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+        </div>
+    }
+    else if (user != null && editContext != null)
+    {
+        <EditForm EditContext="@editContext" OnValidSubmit="HandleValidSubmit">
         <DataAnnotationsValidator />
         <ValidationSummary />
 
@@ -53,34 +61,43 @@
 </div>
 
 @code {
-private User user;
+private User? user;
 private bool isEditable = false;
-private string saveMessage;
-private EditContext editContext;
+private string saveMessage = "";
+private EditContext? editContext;
+private bool isLoading = true;
 
 [Inject]
 private IUserService userService { get; set; }
 
 protected override async Task OnInitializedAsync()
 {
-try
-{
-user = await loginService.GetCurrentUser();
-if (user == null)
-{
-// Redirect to dashboard if no user data is found
-navManager.NavigateTo("/dashboard");
-}
-else
-{
-editContext = new EditContext(user);
-}
-}
-catch (Exception ex)
-{
-// Handle errors, e.g., log or show an error message
-saveMessage = "Fejl under indlæsning af brugerdata.";
-}
+    try
+    {
+        isLoading = true;
+        StateHasChanged();
+        
+        user = await loginService.GetCurrentUser();
+        if (user == null)
+        {
+            // Redirect to dashboard if no user data is found
+            navManager.NavigateTo("/dashboard");
+            return;
+        }
+        
+        editContext = new EditContext(user);
+    }
+    catch (Exception ex)
+    {
+        // Handle errors, e.g., log or show an error message
+        saveMessage = "Fejl under indlæsning af brugerdata.";
+        Console.WriteLine($"Error loading user data: {ex.Message}");
+    }
+    finally 
+    {
+        isLoading = false;
+        StateHasChanged();
+    }
 }
 
 private async Task HandleValidSubmit()

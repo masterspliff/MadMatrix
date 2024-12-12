@@ -47,7 +47,9 @@ else
                               AssignedTo="@task.AssignedToIds"
                               Dato="@task.Date"
                               StartTime="@task.StartTime" 
-                              EndTime="@task.EndTime"/>
+                              EndTime="@task.EndTime"
+                              taskId="@task.Id"
+                              OnTaskStatusUpdated="HandleTaskStatusUpdated"/>
                 </div>
             }
         </div>
@@ -73,7 +75,10 @@ else
                                   AssignedTo="@task.AssignedToIds" 
                                   Dato="@task.Date"
                                   StartTime="@task.StartTime" 
-                                  EndTime="@task.EndTime"/>
+                                  EndTime="@task.EndTime"
+                                  Status="@task.Status"
+                                  taskId="@task.Id"
+                                  OnTaskStatusUpdated="HandleTaskStatusUpdated"/>
                     </div>
                 }
             }
@@ -93,6 +98,15 @@ else
     private TaskEvent? _currentEvent;
     private List<TaskItem> _tasks = new();
     
+    private async Task HandleTaskStatusUpdated((int taskId, core.Models.TaskStatus newStatus) update)
+    {
+        var taskToUpdate = _tasks.FirstOrDefault(t => t.Id == update.taskId);
+        if (taskToUpdate != null)
+        {
+            taskToUpdate.Status = update.newStatus;
+            StateHasChanged();
+        }
+    }
 
     protected override async Task OnInitializedAsync()
     {
@@ -110,8 +124,6 @@ else
             _tasks = await TaskService.GetTasksByEventIdAsync(eventIds);
         }
     }
-
-
 
     private void NavigateToEvents()
     {

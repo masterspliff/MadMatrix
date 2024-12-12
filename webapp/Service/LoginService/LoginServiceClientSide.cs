@@ -9,44 +9,11 @@ public class LoginServiceClientSide : ILoginService
     public event EventHandler AuthStateChanged;
     private readonly HttpClient _http;
     private readonly ILocalStorageService _localStorage;
-    private readonly LoginMode _mode;
     
-    private readonly List<User> _demoUsers = new()
-    {
-        new User 
-        { 
-            Id = 1,
-            FirstName = "Demo",
-            LastName = "Admin",
-            Email = "admin@demo.com",
-            Password = "demo",
-            Roles = new List<UserRole> { UserRole.Administrator }
-        },
-        new User 
-        { 
-            Id = 2,
-            FirstName = "Demo",
-            LastName = "Worker",
-            Email = "worker@demo.com",
-            Password = "demo",
-            Roles = new List<UserRole> { UserRole.CoWorker }
-        },
-        new User 
-        { 
-            Id = 3,
-            FirstName = "Demo",
-            LastName = "Manager",
-            Email = "manager@demo.com",
-            Password = "demo",
-            Roles = new List<UserRole> { UserRole.Manager }
-        }
-    };
-    
-    public LoginServiceClientSide(ILocalStorageService localStorage, HttpClient http, LoginMode mode = LoginMode.Online)
+    public LoginServiceClientSide(ILocalStorageService localStorage, HttpClient http)
     {
         _localStorage = localStorage;
         _http = http;
-        _mode = mode;
     }
 
     public async Task<User?> GetCurrentUser()
@@ -55,15 +22,6 @@ public class LoginServiceClientSide : ILoginService
     }
 
     public async Task<bool> Login(string username, string password)
-    {
-        if (_mode == LoginMode.Demo)
-        {
-            return await DemoLogin(username, password);
-        }
-        return await OnlineLogin(username, password);
-    }
-
-    private async Task<bool> OnlineLogin(string username, string password)
     {
         var loginDto = new LoginDto 
         { 
@@ -80,20 +38,6 @@ public class LoginServiceClientSide : ILoginService
                 await _localStorage.SetItemAsync("user", user);
                 return true;
             }
-        }
-        return false;
-    }
-
-    private async Task<bool> DemoLogin(string username, string password)
-    {
-        var user = _demoUsers.FirstOrDefault(u => 
-            u.Email == username && 
-            u.Password == password);
-
-        if (user != null)
-        {
-            await _localStorage.SetItemAsync("user", user);
-            return true;
         }
         return false;
     }

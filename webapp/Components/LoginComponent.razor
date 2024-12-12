@@ -107,7 +107,7 @@
                     Console.WriteLine($"Roles: {string.Join(", ", user.Roles)}");
                     Console.WriteLine($"Competencies: {string.Join(", ", user.Competencies)}");
                 }
-                navManager.NavigateTo(Target);
+                navManager.NavigateTo(Target, true); // true forces page refresh
             }
             else
             {
