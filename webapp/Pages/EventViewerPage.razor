@@ -104,7 +104,10 @@ else
         }
         else
         {
-            //_tasks = await TaskService.GetTasksByEventIdAsync(EventId);//
+            // Create a list with just this event's ID
+            var eventIds = new List<int> { EventId };
+
+            _tasks = await TaskService.GetTasksByEventIdAsync(eventIds);
         }
     }
 

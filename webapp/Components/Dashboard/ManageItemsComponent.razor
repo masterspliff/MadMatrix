@@ -36,7 +36,7 @@
 </table>
 
 
-<ModalWrapper ModalId="deleteModal" ModalSize="modal-dialog" ShowFooter="false">
+<ModalWrapperComponent ModalId="deleteModal" ModalSize="modal-dialog" ShowFooter="false">
     <div class="p-3">
         <h5 class="modal-title mb-3">Er du sikker?</h5>
         <p>
@@ -48,9 +48,9 @@
             <button class="btn btn-danger ms-2" @onclick="DeleteSelectedItem" data-bs-dismiss="modal">Slet</button>
         </div>
     </div>
-</ModalWrapper>
+</ModalWrapperComponent>
 
-<ModalWrapper ModalId="editModal" ModalSize="modal-dialog" ShowFooter="false">
+<ModalWrapperComponent ModalId="editModal" ModalSize="modal-dialog" ShowFooter="false">
     @if (SelectedItem != null)
     {
         @if (SelectedItem.IsEvent)
@@ -62,7 +62,7 @@
             <EditTaskComponent TaskId="@SelectedItem.Id" OnSaveCompleted="RefreshData" />
         }
     }
-</ModalWrapper>
+</ModalWrapperComponent>
 
 @code {
     private List<TaskItem> Tasks { get; set; } = new();
