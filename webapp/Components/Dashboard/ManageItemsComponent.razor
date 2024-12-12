@@ -4,14 +4,41 @@
 @inject ITaskService TaskService
 @inject IEventService EventService
 
-<h2 class="text-2xl font-bold mb-4">Administrer Opgaver og events</h2>
+<div class="manage-container">
+    <h2 class="text-2xl font-bold mb-4">Administrer Opgaver og events</h2>
 
-<table class="table">
+    <div class="search-filter-container">
+        <div class="search-box">
+            <input type="text" 
+                   class="form-control" 
+                   placeholder="Søg efter titel..." 
+                   @bind="SearchTerm" 
+                   @bind:event="oninput" />
+        </div>
+    </div>
+
+    <div class="table-container">
+        <table class="custom-table">
     <thead>
         <tr>
-            <th>Type</th>
+            <th>
+                Type
+                <select class="form-select form-select-sm d-inline-block w-auto ms-2" @bind="SelectedFilter">
+                    <option value="all">Alle</option>
+                    <option value="task">Opgaver</option>
+                    <option value="event">Events</option>
+                </select>
+            </th>
             <th>Titel</th>
-            <th>Dato</th>
+            <th>
+                Dato
+                <select class="form-select form-select-sm d-inline-block w-auto ms-2" @bind="DateFilter">
+                    <option value="all">Alle datoer</option>
+                    <option value="today">I dag</option>
+                    <option value="week">Denne uge</option>
+                    <option value="month">Denne måned</option>
+                </select>
+            </th>
             <th>Handling</th>
         </tr>
     </thead>
@@ -19,21 +46,27 @@
         @foreach (var item in GetCombinedItems())
         {
             <tr>
-                <td>@item.Type</td>
-                <td>@item.Title</td>
-                <td>@(item.Date.ToString("yyyy-MM-dd"))</td>
                 <td>
-                    <button class="btn btn-primary btn-sm me-2" data-bs-toggle="modal" data-bs-target="#editModal" @onclick="() => ShowEditDialog(item)">
-                        ✏️
+                    <span class="status-badge @(item.IsEvent ? "status-event" : "status-task")">
+                        @item.Type
+                    </span>
+                </td>
+                <td>@item.Title</td>
+                <td>@(item.Date.ToString("dd/MM/yyyy"))</td>
+                <td class="action-buttons">
+                    <button class="btn-edit" data-bs-toggle="modal" data-bs-target="#editModal" @onclick="() => ShowEditDialog(item)">
+                        ✏️ Rediger
                     </button>
-                    <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteModal" @onclick="() => ShowDeleteDialog(item)">
-                        🗑
+                    <button class="btn-delete" data-bs-toggle="modal" data-bs-target="#deleteModal" @onclick="() => ShowDeleteDialog(item)">
+                        🗑 Slet
                     </button>
                 </td>
             </tr>
         }
     </tbody>
-</table>
+        </table>
+    </div>
+</div>
 
 
 <ModalWrapperComponent ModalId="deleteModal" ModalSize="modal-dialog" ShowFooter="false">
@@ -53,13 +86,13 @@
 <ModalWrapperComponent ModalId="editModal" ModalSize="modal-dialog" ShowFooter="false">
     @if (SelectedItem != null)
     {
-        @if (SelectedItem.IsEvent)
+        @if (SelectedItem.Value.IsEvent)
         {
-            <EditEventComponent Id="@SelectedItem.Id" OnSaveCompleted="RefreshData" />
+            <EditEventComponent Id="@SelectedItem.Value.Id" OnSaveCompleted="RefreshData" />
         }
         else
         {
-            <EditTaskComponent TaskId="@SelectedItem.Id" OnSaveCompleted="RefreshData" />
+            <EditTaskComponent TaskId="@SelectedItem.Value.Id" OnSaveCompleted="RefreshData" />
         }
     }
 </ModalWrapperComponent>
@@ -67,7 +100,7 @@
 @code {
     private List<TaskItem> Tasks { get; set; } = new();
     private List<TaskEvent> Events { get; set; } = new();
-    private Item? SelectedItem;
+    private (int Id, string Type, string Title, DateTime Date, bool IsEvent)? SelectedItem;
 
     protected override async Task OnInitializedAsync()
     {
@@ -83,39 +116,66 @@
         Events = eventsResult.ToList();
     }
 
-    private List<Item> GetCombinedItems()
+    private string SearchTerm { get; set; } = "";
+    private string SelectedFilter { get; set; } = "all";
+    private string DateFilter { get; set; } = "all";
+
+    private List<(int Id, string Type, string Title, DateTime Date, bool IsEvent)> GetCombinedItems()
     {
-        var items = new List<Item>();
+        var items = new List<(int Id, string Type, string Title, DateTime Date, bool IsEvent)>();
 
         // Add tasks
-        items.AddRange(Tasks.Select(t => new Item
-        {
-            Id = t.Id,
-            Type = "Opgave",
-            Title = t.Title,
-            Date = t.Date,
-            IsEvent = false
-        }));
+        items.AddRange(Tasks.Select(t => (
+            t.Id,
+            Type: "Opgave",
+            t.Title,
+            t.Date,
+            IsEvent: false
+        )));
 
         // Add events
-        items.AddRange(Events.Select(e => new Item
+        items.AddRange(Events.Select(e => (
+            e.Id,
+            Type: "Event",
+            e.Title,
+            Date: e.DateForEvent,
+            IsEvent: true
+        )));
+
+        // Apply type filter
+        items = SelectedFilter switch
         {
-            Id = e.Id,
-            Type = "Event",
-            Title = e.Title,
-            Date = e.DateForEvent,
-            IsEvent = true
-        }));
+            "task" => items.Where(i => !i.IsEvent).ToList(),
+            "event" => items.Where(i => i.IsEvent).ToList(),
+            _ => items
+        };
+
+        // Apply date filter
+        items = DateFilter switch
+        {
+            "today" => items.Where(i => i.Date.Date == DateTime.Today).ToList(),
+            "week" => items.Where(i => i.Date.Date >= DateTime.Today && 
+                                     i.Date.Date <= DateTime.Today.AddDays(7)).ToList(),
+            "month" => items.Where(i => i.Date.Month == DateTime.Today.Month && 
+                                      i.Date.Year == DateTime.Today.Year).ToList(),
+            _ => items
+        };
+
+        // Apply search filter
+        if (!string.IsNullOrWhiteSpace(SearchTerm))
+        {
+            items = items.Where(i => i.Title.Contains(SearchTerm, StringComparison.OrdinalIgnoreCase)).ToList();
+        }
 
         return items.OrderBy(i => i.Date).ToList();
     }
 
-    private void ShowDeleteDialog(Item item)
+    private void ShowDeleteDialog((int Id, string Type, string Title, DateTime Date, bool IsEvent) item)
     {
         SelectedItem = item;
     }
 
-    private void ShowEditDialog(Item item)
+    private void ShowEditDialog((int Id, string Type, string Title, DateTime Date, bool IsEvent) item)
     {
         SelectedItem = item;
     }
@@ -127,13 +187,13 @@
         try
         {
             bool success;
-            if (SelectedItem.IsEvent)
+            if (SelectedItem.Value.IsEvent)
             {
-                success = await EventService.DeleteEventAsync(SelectedItem.Id);
+                success = await EventService.DeleteEventAsync(SelectedItem.Value.Id);
             }
             else
             {
-                success = await TaskService.DeleteTaskAsync(SelectedItem.Id);
+                success = await TaskService.DeleteTaskAsync(SelectedItem.Value.Id);
             }
 
             if (success)
@@ -145,14 +205,5 @@
         {
             Console.WriteLine($"Error deleting item: {ex.Message}");
         }
-    }
-
-    private class Item
-    {
-        public int Id { get; set; }
-        public string Type { get; set; } = string.Empty;
-        public string Title { get; set; } = string.Empty;
-        public DateTime Date { get; set; }
-        public bool IsEvent { get; set; }
     }
 }
