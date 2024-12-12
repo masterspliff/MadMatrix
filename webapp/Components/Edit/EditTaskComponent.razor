@@ -2,6 +2,8 @@
 @using TaskStatus = core.Models.TaskStatus
 @using webapp.Service
 @inject ITaskService TaskService
+@inject IUserService UserService
+@inject IEventService EventService
 
 <EditForm Model="EditedTask" OnValidSubmit="SaveEdit" class="card" style="max-width: 800px; margin: auto; padding: 20px;">
 
@@ -44,9 +46,28 @@
             <option value="">Vælg status</option>
             @foreach (var status in Enum.GetValues(typeof(TaskStatus)))
             {
-                <option value="@status">@status</option>
+            <option value="@status">@status</option>
             }
         </InputSelect>
+    </div>
+
+    <!-- ASSIGN WORKERS BASED ON SELECTED COMPETENCY -->
+    <div class="form-group" style="border: 1px solid #ddd; padding: 10px;">
+        <label>Tildel Medarbejdere</label>
+        @if (isLoading)
+        {
+        <div>Loading users...</div>
+        }
+        else
+        {
+        @foreach (var user in _users)
+        {
+        <div class="form-check">
+            <input type="checkbox" class="form-check-input" @onchange="@(e => ToggleUserSelection(user.Id))" checked="@(EditedTask.AssignedToIds.Contains(user.Id))" id="@($"user_{user.Id}")" />
+            <label class="form-check-label" for="@($"user_{user.Id}")">@user.FirstName @user.LastName</label>
+        </div>
+        }
+        }
     </div>
 
     <!-- BUTTONS -->
@@ -57,84 +78,104 @@
 
 </EditForm>
 
-@code {
-    [Parameter]
-    public int TaskId { get; set; }
-
-    private TaskItem EditedTask { get; set; } = new();
-
-    protected override async Task OnParametersSetAsync()
-    {
-        try
-        {
-            var task = await TaskService.GetTaskAsync(TaskId);
-            if (task != null)
-            {
-                EditedTask = task;
-            }
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Error loading task: {ex.Message}");
-        }
-    }
-
-    [Parameter]
-    public EventCallback OnSaveCompleted { get; set; }
-
-    private async Task SaveEdit()
-    {
-        try
-        {
-            var success = await TaskService.EditTaskAsync(TaskId, EditedTask);
-            if (success)
-            {
-                await OnSaveCompleted.InvokeAsync();
-            }
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Error saving task: {ex.Message}");
-        }
-    }
-
-    private string? startTimeOnlyValue
-    {
-        get => EditedTask.StartTime.ToString("HH:mm");
-        set
-        {
-            if (value != null && TimeOnly.TryParse(value, out var parsedTime))
-            {
-                EditedTask.StartTime = parsedTime;
-            }
-        }
-    }
-
-    private void HandleStartTimeChange(ChangeEventArgs args)
-    {
-        if (args.Value is string timeValue && TimeOnly.TryParse(timeValue, out var parsedTime))
-        {
-            EditedTask.StartTime = parsedTime;
-        }
-    }
-
-    private string? endTimeOnlyValue
-    {
-        get => EditedTask.EndTime.ToString("HH:mm");
-        set
-        {
-            if (value != null && TimeOnly.TryParse(value, out var parsedTime))
-            {
-                EditedTask.EndTime = parsedTime;
-            }
-        }
-    }
-
-    private void HandleEndTimeChange(ChangeEventArgs args)
-    {
-        if (args.Value is string timeValue && TimeOnly.TryParse(timeValue, out var parsedTime))
-        {
-            EditedTask.EndTime = parsedTime;
-        }
-    }
-}
+@code {                                                                                                                                                                                                                                                                                                                                                                    
+     [Parameter]                                                                                                                                                                                                                                                                                                                                                            
+     public int TaskId { get; set; }                                                                                                                                                                                                                                                                                                                                        
+                                                                                                                                                                                                                                                                                                                                                                            
+     private TaskItem EditedTask { get; set; } = new() { AssignedToIds = new List<int>() };                                                                                                                                                                                                                                                                                 
+     private List<User> _users = new();                                                                                                                                                                                                                                                                                                                                     
+     private bool isLoading = true;                                                                                                                                                                                                                                                                                                                                         
+                                                                                                                                                                                                                                                                                                                                                                            
+     protected override async Task OnParametersSetAsync()                                                                                                                                                                                                                                                                                                                   
+     {                                                                                                                                                                                                                                                                                                                                                                      
+         try                                                                                                                                                                                                                                                                                                                                                                
+         {                                                                                                                                                                                                                                                                                                                                                                  
+             isLoading = true;                                                                                                                                                                                                                                                                                                                                              
+             var task = await TaskService.GetTaskAsync(TaskId);                                                                                                                                                                                                                                                                                                             
+             if (task != null)                                                                                                                                                                                                                                                                                                                                              
+             {                                                                                                                                                                                                                                                                                                                                                              
+                 EditedTask = task;                                                                                                                                                                                                                                                                                                                                         
+             }                                                                                                                                                                                                                                                                                                                                                              
+             _users = await UserService.LoadUsers();                                                                                                                                                                                                                                                                                                                        
+         }                                                                                                                                                                                                                                                                                                                                                                  
+         catch (Exception ex)                                                                                                                                                                                                                                                                                                                                               
+         {                                                                                                                                                                                                                                                                                                                                                                  
+             Console.WriteLine($"Error loading task: {ex.Message}");                                                                                                                                                                                                                                                                                                        
+         }                                                                                                                                                                                                                                                                                                                                                                  
+         finally                                                                                                                                                                                                                                                                                                                                                            
+         {                                                                                                                                                                                                                                                                                                                                                                  
+             isLoading = false;                                                                                                                                                                                                                                                                                                                                             
+         }                                                                                                                                                                                                                                                                                                                                                                  
+     }                                                                                                                                                                                                                                                                                                                                                                      
+                                                                                                                                                                                                                                                                                                                                                                            
+     [Parameter]                                                                                                                                                                                                                                                                                                                                                            
+     public EventCallback OnSaveCompleted { get; set; }                                                                                                                                                                                                                                                                                                                     
+                                                                                                                                                                                                                                                                                                                                                                            
+     private async Task SaveEdit()                                                                                                                                                                                                                                                                                                                                          
+     {                                                                                                                                                                                                                                                                                                                                                                      
+         try                                                                                                                                                                                                                                                                                                                                                                
+         {                                                                                                                                                                                                                                                                                                                                                                  
+             var success = await TaskService.EditTaskAsync(TaskId, EditedTask);                                                                                                                                                                                                                                                                                             
+             if (success)                                                                                                                                                                                                                                                                                                                                                   
+             {                                                                                                                                                                                                                                                                                                                                                              
+                 await OnSaveCompleted.InvokeAsync();                                                                                                                                                                                                                                                                                                                       
+             }                                                                                                                                                                                                                                                                                                                                                              
+         }                                                                                                                                                                                                                                                                                                                                                                  
+         catch (Exception ex)                                                                                                                                                                                                                                                                                                                                               
+         {                                                                                                                                                                                                                                                                                                                                                                  
+             Console.WriteLine($"Error saving task: {ex.Message}");                                                                                                                                                                                                                                                                                                         
+         }                                                                                                                                                                                                                                                                                                                                                                  
+     }                                                                                                                                                                                                                                                                                                                                                                      
+                                                                                                                                                                                                                                                                                                                                                                            
+     private string? startTimeOnlyValue                                                                                                                                                                                                                                                                                                                                     
+     {                                                                                                                                                                                                                                                                                                                                                                      
+         get => EditedTask.StartTime.ToString("HH:mm");                                                                                                                                                                                                                                                                                                                     
+         set                                                                                                                                                                                                                                                                                                                                                                
+         {                                                                                                                                                                                                                                                                                                                                                                  
+             if (value != null && TimeOnly.TryParse(value, out var parsedTime))                                                                                                                                                                                                                                                                                             
+             {                                                                                                                                                                                                                                                                                                                                                              
+                 EditedTask.StartTime = parsedTime;                                                                                                                                                                                                                                                                                                                         
+             }                                                                                                                                                                                                                                                                                                                                                              
+         }                                                                                                                                                                                                                                                                                                                                                                  
+     }                                                                                                                                                                                                                                                                                                                                                                      
+                                                                                                                                                                                                                                                                                                                                                                            
+     private void HandleStartTimeChange(ChangeEventArgs args)                                                                                                                                                                                                                                                                                                               
+     {                                                                                                                                                                                                                                                                                                                                                                      
+         if (args.Value is string timeValue && TimeOnly.TryParse(timeValue, out var parsedTime))                                                                                                                                                                                                                                                                            
+         {                                                                                                                                                                                                                                                                                                                                                                  
+             EditedTask.StartTime = parsedTime;                                                                                                                                                                                                                                                                                                                             
+         }                                                                                                                                                                                                                                                                                                                                                                  
+     }                                                                                                                                                                                                                                                                                                                                                                      
+                                                                                                                                                                                                                                                                                                                                                                            
+     private string? endTimeOnlyValue                                                                                                                                                                                                                                                                                                                                       
+     {                                                                                                                                                                                                                                                                                                                                                                      
+         get => EditedTask.EndTime.ToString("HH:mm");                                                                                                                                                                                                                                                                                                                       
+         set                                                                                                                                                                                                                                                                                                                                                                
+         {                                                                                                                                                                                                                                                                                                                                                                  
+             if (value != null && TimeOnly.TryParse(value, out var parsedTime))                                                                                                                                                                                                                                                                                             
+             {                                                                                                                                                                                                                                                                                                                                                              
+                 EditedTask.EndTime = parsedTime;                                                                                                                                                                                                                                                                                                                           
+             }                                                                                                                                                                                                                                                                                                                                                              
+         }                                                                                                                                                                                                                                                                                                                                                                  
+     }                                                                                                                                                                                                                                                                                                                                                                      
+                                                                                                                                                                                                                                                                                                                                                                            
+     private void HandleEndTimeChange(ChangeEventArgs args)                                                                                                                                                                                                                                                                                                                 
+     {                                                                                                                                                                                                                                                                                                                                                                      
+         if (args.Value is string timeValue && TimeOnly.TryParse(timeValue, out var parsedTime))                                                                                                                                                                                                                                                                            
+         {                                                                                                                                                                                                                                                                                                                                                                  
+             EditedTask.EndTime = parsedTime;                                                                                                                                                                                                                                                                                                                               
+         }                                                                                                                                                                                                                                                                                                                                                                  
+     }                                                                                                                                                                                                                                                                                                                                                                      
+                                                                                                                                                                                                                                                                                                                                                                            
+     private void ToggleUserSelection(int userId)                                                                                                                                                                                                                                                                                                                           
+     {                                                                                                                                                                                                                                                                                                                                                                      
+         if (EditedTask.AssignedToIds.Contains(userId))                                                                                                                                                                                                                                                                                                                     
+         {                                                                                                                                                                                                                                                                                                                                                                  
+             EditedTask.AssignedToIds.Remove(userId);                                                                                                                                                                                                                                                                                                                       
+         }                                                                                                                                                                                                                                                                                                                                                                  
+         else                                                                                                                                                                                                                                                                                                                                                               
+         {                                                                                                                                                                                                                                                                                                                                                                  
+             EditedTask.AssignedToIds.Add(userId);                                                                                                                                                                                                                                                                                                                          
+         }                                                                                                                                                                                                                                                                                                                                                                  
+     }                                                                                                                                                                                                                                                                                                                                                                      
+ } } 

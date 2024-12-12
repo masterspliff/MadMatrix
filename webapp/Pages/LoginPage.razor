@@ -8,34 +8,41 @@
     
     @if (currentUser != null)
     {
-        <div class="alert alert-info">
-            <h4 class="alert-heading">Du er allerrede logget ind</h4>
+        <div class="alert alert-info" style="margin-left: 30px; margin-right: 30px;">
+            <h4 class="alert-heading">Du er allerede logget ind</h4>
             <p>Du er logget ind som,
-            @if (currentUser.Roles.Contains(UserRole.Administrator))
-            {
-                <span>administrator</span>
-            }
-            else if (currentUser.Roles.Contains(UserRole.Manager))
-            {
-                <span>kantineleder</span>
-            }
-            else if (currentUser.Roles.Contains(UserRole.CoWorker))
-            {
-                <span>medarbejder</span>
+                @if (currentUser.Roles.Contains(UserRole.Administrator))
+                {
+                    <span>administrator</span>
+                }
+                else if (currentUser.Roles.Contains(UserRole.Manager))
+                {
+                    <span>kantineleder</span>
+                }
+                else if (currentUser.Roles.Contains(UserRole.CoWorker))
+                {
+                    <span>medarbejder</span>
 
-            }
+                }
             </p>
+            <a href="/dashboard" class="btn btn-primary" style="margin-top: 10px;">Gå til forside</a>
         </div>
     }
     
     @if (!showRegister)
     {
         <LoginComponent Target="dashboard"/>
+        <div class="text-center mt-3">
+            <p>
+                Endnu ingen konto?
+                <a @onclick="ToggleRegister" class="text-primary" style="cursor: pointer;">Opret dig her</a>
+            </p>
+        </div>
     }
     else
     {
-        <div class="mb-3">
-            <button class="btn btn-link" @onclick="ToggleRegister" style="width: 125px; height: 50px; border-radius: 5px; background-color: #0c63e4; color: white; font-size: 10px">← Tilbage til login</button>
+        <div class="mb-3" style="width: 100%; margin-right: 30px; margin-left: 30px">
+            <button class="btn btn-linzk" @onclick="ToggleRegister" style="width: 15%; height: 40px; border-radius: 5px; background-color: #0c63e4; color: white; font-size: 11px">← Tilbage til login</button>
         </div>
         <CreateUser/>
     }

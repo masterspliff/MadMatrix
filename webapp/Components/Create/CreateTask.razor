@@ -7,14 +7,14 @@
 @inject IEventService EventService
 
     <!-- BEGIN FORM SECTION -->
-    <EditForm Model="NewTask" OnValidSubmit="CommitTask" class="card announcement-card" style="max-width: 800px; margin: 5px auto;">
+    <EditForm Model="NewTask" OnValidSubmit="CommitTask" class="card announcement-card" style="margin: 5px auto; border: none; box-shadow: none">
 
-        <!-- TITLE HEADER -->
-        <h4 class="text-center">Opret Opgave</h4>
+        <div style="width: 100%">
+            <h4 class="text-left" style="margin-bottom: 10px">Opret Opgave</h4>
 
         <!-- TASK TITLE FIELD -->
         <div class="form-group">
-            <label for="TaskTitle">Opgave Titel</label>
+            <label for="TaskTitle" class="form-label">Opgave Titel</label>
             <InputText id="TaskTitle"
                        class="form-control"
                        @bind-Value="NewTask.Title"
@@ -23,7 +23,7 @@
 
         <!-- TASK DESCRIPTION FIELD -->
         <div class="form-group">
-            <label for="TaskDescription">Beskrivelse</label>
+            <label for="TaskDescription" class="form-label">Beskrivelse</label>
             <InputText id="TaskDescription"
                        class="form-control"
                        @bind-Value="NewTask.Description"
@@ -32,13 +32,13 @@
 
         <!-- TASK DATE FIELD -->
         <div class="form-group">
-            <label for="Date">Dato</label>
+            <label for="Date" class="form-label">Dato</label>
             <InputDate @bind-Value="NewTask.Date" class="form-control" id="Date" />
         </div>
 
         <!-- TASK START TIME FIELD -->
         <div class="form-group">
-            <label for="StartTime">Starttidspunkt</label>
+            <label for="StartTime" class="form-label">Starttidspunkt</label>
             <input id="StartTime" type="time" class="form-control"
                    value="@startTimeOnlyValue"
                    @onchange="HandleStartTimeChange" />
@@ -46,7 +46,7 @@
 
         <!-- TASK END TIME FIELD -->
         <div class="form-group">
-            <label for="EndTime">Sluttidspunkt</label>
+            <label for="EndTime" class="form-label">Sluttidspunkt</label>
             <input id="EndTime" type="time" class="form-control"
                    value="@endTimeOnlyValue"
                    @onchange="HandleEndTimeChange" />
@@ -65,8 +65,8 @@
         </div>
 
         <!-- FILTER USERS BY COMPETENCY -->
-        <div class="form-group" style="border: 1px solid #ddd; padding: 10px;">
-            <label>Vælg Kompetencer for medarbejdere</label>
+        <label style="font-weight: bold; margin-bottom: 10px; margin-top: 10px">Vælg Kompetencer for medarbejdere</label>
+        <div class="form-worker" style="border: 1px solid #f4f4f4; padding: 10px;">
             @if (isLoading)
             {
                 <div>Loading users...</div>
@@ -84,8 +84,8 @@
         </div>
 
         <!-- ASSIGN WORKERS BASED ON SELECTED COMPETENCY -->
-        <div class="form-group" style="border: 1px solid #ddd; padding: 10px;">
-            <label>Tildel Medarbejdere</label>
+        <label style="font-weight: bold; margin-bottom: 10px; margin-top: 10px">Tildel Medarbejdere</label>
+        <div class="form-worker" style="border: 1px solid #ececec; padding: 10px; border-radius: 5px; background-color: lightgrey">
             @if (isLoading)
             {
                 <div>Loading users...</div>
@@ -103,8 +103,8 @@
         </div>
 
         <!-- SELECT EVENTS (MULTIPLE EVENTS SELECTION) -->
-        <div class="form-group" style="border: 1px solid #ddd; padding: 10px;">
-            <label>Vælg Events</label>
+        <label style="font-weight: bold; margin-bottom: 10px; margin-top: 10px;" >Vælg Events</label>
+        <div class="form-worker" style="border: 1px solid #ddd; padding: 10px;">
             @if (isLoading)
             {
                 <div>Loading events...</div>
@@ -120,12 +120,9 @@
                 }
             }
         </div>
-
-        <!-- SUBMIT BUTTON -->
-        <div class="form-group text-center">
-            <button type="submit" class="btn btn-primary">Opret Opgave</button>
+        <button type="submit" class="btn btn-primary" style="margin-top: 20px; width: 100%">Opret Opgave</button>
+        
         </div>
-
     </EditForm>
 
 @code {
