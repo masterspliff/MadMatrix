@@ -76,4 +76,16 @@ public class UserService : IUserService
         }
     }
     
+    public async Task<bool> AddEventsToUserAsync(int userId, List<int> eventIds)
+    {
+        var response = await _httpClient.PutAsJsonAsync($"user/{userId}/add-events", eventIds);
+
+        if (!response.IsSuccessStatusCode)
+        {
+            Console.WriteLine($"Failed to assign events to user {userId}: {response.StatusCode}");
+        }
+
+        return response.IsSuccessStatusCode;
+    }
+    
 }

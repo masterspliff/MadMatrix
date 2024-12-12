@@ -168,6 +168,18 @@
 
             if (isSuccess)
             {
+                // Assign selected events to each user
+                foreach (var userId in NewTask.AssignedToIds)
+                {
+                    var eventAssignmentSuccess = await UserService.AddEventsToUserAsync(userId, NewTask.EventIds);
+
+                    if (!eventAssignmentSuccess)
+                    {
+                        Console.WriteLine($"Failed to assign events to user {userId}");
+                    }
+                }
+
+                // Reset the form after successful submission
                 NewTask = new() { AssignedToIds = new List<int>(), EventIds = new List<int>() };
                 await OnTaskCreated.InvokeAsync();
             }
@@ -177,6 +189,8 @@
             Console.WriteLine($"Error creating task: {ex.Message}");
         }
     }
+
+
 
     private void ToggleCompetencyFilter(Competency competency)
     {
@@ -251,6 +265,18 @@
         if (args.Value is string timeValue && TimeOnly.TryParse(timeValue, out var parsedTime))
         {
             NewTask.EndTime = parsedTime;
+        }
+    }
+    
+    private async void AddEventToUser(int userId, List<int> EventIds)
+    {
+        try
+        {
+            await UserService.AddEventsToUserAsync(userId, EventIds);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error adding event to user: {ex.Message}");
         }
     }
 }

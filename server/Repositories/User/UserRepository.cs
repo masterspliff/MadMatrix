@@ -68,4 +68,21 @@ public class UserRepository : IUserRepository
         // Delete the document matching the filter
         await _users.DeleteOneAsync(filter);
     }
+    
+    // In UserRepository.cs
+
+    public async Task AddEventsToUserAsync(int userId, List<int> eventIds)
+    {
+        var user = await _users.Find(u => u.Id == userId).FirstOrDefaultAsync(); // Find the user by ID
+        if (user == null)
+        {
+            throw new KeyNotFoundException($"User with ID {userId} not found."); // Throw exception if user not found
+        }
+
+        // Merge the new events with existing ones, ensuring no duplicates
+        user.EventIds = user.EventIds.Union(eventIds).ToList(); 
+
+        await _users.ReplaceOneAsync(u => u.Id == userId, user); // Update the user in the database
+    }
+
 }

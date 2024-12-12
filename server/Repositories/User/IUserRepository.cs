@@ -10,4 +10,5 @@ public interface IUserRepository
     Task<User> CreateAsync(User entity);
     Task UpdateAsync(User entity);
     Task DeleteAsync(int id);
+    Task AddEventsToUserAsync(int userId, List<int> eventIds);
 }

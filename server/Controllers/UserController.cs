@@ -119,4 +119,32 @@ public class UserController : ControllerBase
         await _userRepository.DeleteAsync(id); // Delete the user from the database
         return NoContent(); // Return a 204 No Content status on successful deletion
     }
+    
+    [HttpPut("{userId}/add-events")]
+    public async Task<IActionResult> AddEventsToUser(int userId, [FromBody] List<int> eventIds)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState); // Return bad request if the model state is invalid
+        }
+
+        try
+        {
+            // Call the repository method to add events to the user
+            await _userRepository.AddEventsToUserAsync(userId, eventIds);
+
+            return NoContent(); // Return 204 No Content if successful
+        }
+        catch (KeyNotFoundException ex)
+        {
+            return NotFound(ex.Message); // Return 404 if the user was not found
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error updating user {userId}: {ex.Message}"); // Log the exception for debugging
+            return StatusCode(500, "An error occurred while updating the user's events."); // Return 500 for internal errors
+        }
+    }
+
+
 }
