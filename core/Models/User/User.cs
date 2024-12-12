@@ -49,6 +49,7 @@ public class User
     
     public List<UserRole> Roles { get; set; } = new();
     public List<Competency> Competencies { get; set; } = new();
+    public List<int> EventIds { get; set; } = new();
 
     // Add list of events to assign user
     // public List<Events> Events ....
