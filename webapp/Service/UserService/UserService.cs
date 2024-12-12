@@ -66,4 +66,14 @@ public class UserService : IUserService
         throw new Exception("User not found");
     }
     
+    public async Task UpdateUser(User user)
+    {
+        var response = await _httpClient.PutAsJsonAsync($"user/{user.Id}", user);
+        if (!response.IsSuccessStatusCode)
+        {
+            var error = await response.Content.ReadAsStringAsync();
+            throw new Exception($"Update failed: {error}");
+        }
+    }
+    
 }
