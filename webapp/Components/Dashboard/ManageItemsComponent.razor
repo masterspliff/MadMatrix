@@ -164,7 +164,7 @@
             items = items.Where(i => i.Title.Contains(SearchTerm, StringComparison.OrdinalIgnoreCase)).ToList();
         }
 
-        return items.OrderBy(i => i.Date).ToList();
+        return items.OrderByDescending(i => i.Date).ToList();
     }
 
     private void ShowDeleteDialog((int Id, string Type, string Title, DateTime Date, bool IsEvent) item)
