@@ -2,15 +2,8 @@
 @inject ILoginService loginService
 @inject NavigationManager navManager
 
-<div class="container mt-4">
     @if (isLoggedIn)
     {
-        <div class="alert alert-success text-center" role="alert">
-            <div class="d-flex gap-2 justify-content-center">
-                <button @onclick="@(() => navManager.NavigateTo("/dashboard"))" class="btn btn-success">Forside</button>
-                <button @onclick="@(async () => await HandleLogout())" class="btn btn-outline-danger">Log ud</button>
-            </div>
-        </div>
     }
     else
     {
@@ -21,7 +14,7 @@
             </div>
         }
         <div style="justify-content: center; align-items: center; width: 100%; box-shadow: none">                                                                                                                                                                                                                                                                                  
-            <div class="card" style="max-width: 50%; margin: auto; border: none; display: block; margin-top: 15%; ">   
+            <div class="card" style="max-width: 50%; margin: auto; border: none; display: block; margin-top: 10%; ">   
                 <h3 class="text-center mb-4">Login</h3>
             
                 <div class="mb-3">
@@ -50,7 +43,6 @@
             </div>
         </div>
     }
-</div>
 
 @code {
     private string username = "";
