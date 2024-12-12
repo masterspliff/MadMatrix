@@ -107,4 +107,5 @@ public class LoginServiceClientSide : ILoginService
     {
         await _localStorage.RemoveItemAsync("user");
     }
+    
 }
