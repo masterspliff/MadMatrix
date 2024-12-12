@@ -25,26 +25,31 @@
             <CreateEvent/>
         </ModalWrapperComponent>
 
-        <div class="dashboard-item admin-item" data-bs-toggle="modal" data-bs-target="#taskModal">
-            <div class="admin-badge">Admin</div>
-            <i class="bi bi-list-task dashboard-icon"></i>
-            <h3 class="dashboard-title">Opret Opgave</h3>
-        </div>
-
-        <ModalWrapperComponent ModalId="taskModal" ModalSize="modal-xl" ShowFooter="true">
-            <CreateTask/>
-        </ModalWrapperComponent>
-
         <div class="dashboard-item admin-item" data-bs-toggle="modal" data-bs-target="#locationModal">
             <div class="admin-badge">Admin</div>
             <i class="bi bi-geo-alt dashboard-icon"></i>
             <h3 class="dashboard-title">Oversigt over lokationer</h3>
         </div>
-
+        
         <ModalWrapperComponent ModalId="locationModal">
             <CreateLocation/>
         </ModalWrapperComponent>
     }
+    
+    else if (currentUser?.Roles.Contains(UserRole.Manager) == true)
+
+    {
+        <div class="dashboard-item admin-item" data-bs-toggle="modal" data-bs-target="#taskModal">
+            <div class="admin-badge">Kantineleder</div>
+            <i class="bi bi-list-task dashboard-icon"></i>
+            <h3 class="dashboard-title">Opret Opgave</h3>
+            </div>
+
+            <ModalWrapperComponent ModalId="taskModal" ModalSize="modal-xl" ShowFooter="true">
+            <CreateTask/>
+            </ModalWrapperComponent>
+    }
+    
 
 </div>
 

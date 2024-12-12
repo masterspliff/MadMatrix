@@ -9,34 +9,28 @@
     @if (currentUser != null)
     {
         <div class="alert alert-info">
+            <h4 class="alert-heading">Du er allerrede logget ind</h4>
+            <p>Du er logget ind som,
             @if (currentUser.Roles.Contains(UserRole.Administrator))
             {
-                <span>Administrator</span>
-                <!-- COMPONENTS HERE -->
+                <span>administrator</span>
             }
             else if (currentUser.Roles.Contains(UserRole.Manager))
             {
-                <span>Manager</span>
-                <!-- COMPONENTS HERE -->
+                <span>kantineleder</span>
             }
             else if (currentUser.Roles.Contains(UserRole.CoWorker))
             {
-                <span>Medarbejder</span>
-                <!-- COMPONENTS HERE -->
+                <span>medarbejder</span>
+
             }
+            </p>
         </div>
     }
     
     @if (!showRegister)
     {
         <LoginComponent Target="dashboard"/>
-
-        <div class="text-center mt-3">
-            <p>
-                Ingen konto endnu?
-                <a @onclick="ToggleRegister" class="text-primary" style="cursor: pointer;">Opret her</a>
-            </p>
-        </div>
     }
     else
     {
