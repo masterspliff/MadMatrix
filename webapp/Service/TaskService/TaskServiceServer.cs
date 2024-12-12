@@ -80,6 +80,13 @@ public class TaskServiceServer : ITaskService
         var response = await _httpClient.DeleteAsync($"task/{id}");
         return response.IsSuccessStatusCode;
     }
+    
+    
+    public async Task<bool> UpdateTaskStatus(int taskId, TaskStatus status)
+    {
+        var response = await _httpClient.PutAsJsonAsync($"/tasks/{taskId}", status);
+        return response.IsSuccessStatusCode;
+    }
 
 }
 
