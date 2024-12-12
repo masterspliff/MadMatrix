@@ -2,10 +2,11 @@
 @inject IEventService EventService
 @inject ILocationService LocationService
 
-<EditForm Model="NewEvent" OnValidSubmit="CreateEventNow" class="card" style="max-width: 800px; margin: auto; padding: 20px;">
+<EditForm Model="NewEvent" OnValidSubmit="CreateEventNow" class="card" style="margin: 5px auto; border: none; box-shadow: none">
 
-    <h4 class="text-center">Opret Event</h4>
-
+    <h4 class="text-left" style="margin-bottom: 10px">Opret Event</h4>
+    
+<div style="width: 100%">
     <div class="form-group">
         <label for="Title">Titel</label>
         <InputText id="Title" class="form-control" @bind-Value="NewEvent.Title" placeholder="Indtast Titel" />
@@ -48,9 +49,9 @@
     </div>
 
     <div class="form-group text-center mt-4">
-        <button type="submit" class="btn btn-primary">Opret Event</button>
+        <button type="submit" class="btn btn-primary" style="width: 100%">Opret Event</button>
     </div>
-
+</div>
 </EditForm>
 
 @code {
