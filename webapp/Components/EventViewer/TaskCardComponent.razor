@@ -30,10 +30,21 @@
             }
         </div>
     <p><strong>Description:</strong>@Description</p>
-    }
     
+<div>
+    <label for="taskStatusDropdown"><strong>Status:</strong></label>
+    <select id="taskStatusDropdown" @bind="Status">
+        @foreach (var status in Enum.GetValues(typeof(TaskStatus)).Cast<TaskStatus>())
+        {
+        <option value="@status">@status</option>
+        }
+    </select>
 
-    @code {
+</div>
+
+
+
+@code {
     //Import parameters from the Model(?)
     [Parameter] public int taskId { get; set; }
     [Parameter] public string Title { get; set; }
@@ -46,4 +57,26 @@
     [Parameter] public bool? ShowDescription { get; set; } = false;
     [Parameter] public bool? ShowData { get; set; } = false;
 
+    
+    
+    private async Task OnStatusChanged(ChangeEventArgs e)
+    {
+        if (Enum.TryParse<TaskStatus>(e.Value?.ToString(), out var newStatus))
+        {
+            Status = newStatus;
+            var success = await TaskService.UpdateTaskStatus(taskId, Status);
+
+            if (success)
+            {
+                Console.WriteLine($"Task {taskId} status updated to {Status}");
+            }
+            else
+            {
+                Console.WriteLine($"Failed to update task {taskId}");
+            }
+        }
+    }
+
+
+}
     }
