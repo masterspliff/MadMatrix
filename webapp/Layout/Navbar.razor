@@ -1,5 +1,6 @@
 @using webapp.Service.LoginService
-@using webapp.Components
+@using webapp.Components.Dashboard
+@using webapp.Components.Edit
 @inject NavigationManager NavigationManager
 @inject ILoginService LoginService
 
@@ -10,8 +11,11 @@
         </a>
 
         <div class="d-flex align-items-center">
-            <button class="btn-profile" data-bs-toggle="modal" data-bs-target="#profileModal">Min Profil</button>
-            <button class="btn-eaa" @onclick="HandleLogout">Log ud</button>
+            @if (isUserLoggedIn)
+            {
+                <button class="btn-profile" data-bs-toggle="modal" data-bs-target="#profileModal">Min Profil</button>
+                <button class="btn-eaa" @onclick="HandleLogout">Log ud</button>
+            }
         </div>
     </div>
 </div>
@@ -24,6 +28,26 @@
     private async Task HandleLogout()
     {
         await LoginService.Logout();
-        NavigationManager.NavigateTo("/");
+        isUserLoggedIn = false;
+        NavigationManager.NavigateTo("/", true);
+    }
+
+    private bool isUserLoggedIn;
+
+    protected override async Task OnInitializedAsync()
+    {
+        isUserLoggedIn = await LoginService.IsLoggedIn();
+        LoginService.AuthStateChanged += HandleAuthStateChanged;
+    }
+
+    private async void HandleAuthStateChanged(object sender, EventArgs e)
+    {
+        isUserLoggedIn = await LoginService.IsLoggedIn();
+        await InvokeAsync(StateHasChanged);
+    }
+
+    public void Dispose()
+    {
+        LoginService.AuthStateChanged -= HandleAuthStateChanged;
     }
 }

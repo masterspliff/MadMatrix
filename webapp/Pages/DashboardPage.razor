@@ -2,6 +2,7 @@
 @using webapp.Components.Dashboard
 @using webapp.Service.LoginService
 @inject NavigationManager NavigationManager
+@inject ILoginService LoginService
 
 <div class="content">
     <HeroComponent />
@@ -10,18 +11,12 @@
 </div>
 
 @code {
-    [Inject]
-    private ILoginService LoginService { get; set; }
-
-        protected override async Task OnInitializedAsync()
-            {
-                // Check if user is authenticated
-                if (!await LoginService.IsLoggedIn())
-                {
-                    Navigation.NavigateTo("/");
-                }
-            }
-
-            // Dependency injection af NavigationManager til at håndtere navigation  
-    [Inject] private NavigationManager Navigation { get; set; }                              
-    } 
+    protected override async Task OnInitializedAsync()
+    {
+        // Check if user is authenticated
+        if (!await LoginService.IsLoggedIn())
+        {
+            NavigationManager.NavigateTo("/");
+        }
+    }
+}

@@ -3,6 +3,9 @@ namespace webapp.Service.LoginService;
 
 public interface ILoginService
 {
+    // Auth state changed event
+    event EventHandler AuthStateChanged;
+
     // If a user is logged in, the user will be returned.
     // If no user is logged in, null will be returned
     Task<User?> GetCurrentUser();
@@ -16,4 +19,7 @@ public interface ILoginService
 
     // Log out the current user
     Task Logout();
+
+    // Notify subscribers that auth state has changed
+    Task NotifyAuthStateChanged();
 }

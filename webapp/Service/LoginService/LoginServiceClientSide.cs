@@ -6,6 +6,7 @@ namespace webapp.Service.LoginService;
 
 public class LoginServiceClientSide : ILoginService
 {
+    public event EventHandler AuthStateChanged;
     private readonly HttpClient _http;
     private readonly ILocalStorageService _localStorage;
     private readonly LoginMode _mode;
@@ -106,5 +107,12 @@ public class LoginServiceClientSide : ILoginService
     public async Task Logout()
     {
         await _localStorage.RemoveItemAsync("user");
+        await NotifyAuthStateChanged();
+    }
+
+    public async Task NotifyAuthStateChanged()
+    {
+        AuthStateChanged?.Invoke(this, EventArgs.Empty);
+        await Task.CompletedTask;
     }
 }

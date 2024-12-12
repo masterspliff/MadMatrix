@@ -72,6 +72,7 @@
     private async Task HandleLogout()
     {
         await loginService.Logout();
+        await loginService.NotifyAuthStateChanged();
         isLoggedIn = false;
         StateHasChanged();
     }
@@ -93,6 +94,7 @@
             if (success)
             {
                 isLoggedIn = true;
+                await loginService.NotifyAuthStateChanged();
                 var user = await loginService.GetCurrentUser();
                 if (user != null)
                 {
