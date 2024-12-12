@@ -4,7 +4,7 @@ public class TaskEvent
 {
     public int Id { get; set; }
     public string Title { get; set; } = string.Empty;
-    public DateTime DateForEvent { get; set; }
+    public DateTime DateForEvent { get; set; } = DateTime.Today;
     public int LocationId { get; set; } 
     public string ByCustomer { get; set; }
     public string FoodChoices { get; set; }
