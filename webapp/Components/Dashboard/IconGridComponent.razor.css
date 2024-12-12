@@ -38,3 +38,31 @@
     font-size: 1.2rem;
     color: #333;
 }
+
+
+.admin-item {
+    background: #f8f9fa;
+    border: 2px solid #0d6efd;
+    position: relative;
+}
+
+.admin-badge {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    background: #0d6efd;
+    color: white;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: bold;
+}
+
+.admin-item .dashboard-icon {
+    color: #0d6efd;
+}
+
+.admin-item:hover {
+    background: #e9ecef;
+}
+

@@ -1,0 +1,63 @@
+@using webapp.Components.Create
+@using webapp.Components
+@using webapp.Service.LoginService
+@using Microsoft.AspNetCore.Components
+@inject ILoginService LoginService
+@inject NavigationManager NavigationManager
+
+
+<div class="dashboard-grid">
+    <!-- Regular user feature -->
+    <div class="dashboard-item" @onclick='() => NavigateToEvents()'>
+        <i class="bi bi-calendar2-week dashboard-icon"></i>
+        <h3 class="dashboard-title">Event Oversigt</h3>
+    </div>
+
+    @if (currentUser?.Roles.Contains(UserRole.Administrator) == true)
+    {
+        <div class="dashboard-item admin-item" data-bs-toggle="modal" data-bs-target="#eventModal">
+            <div class="admin-badge">Admin</div>
+            <i class="bi bi-calendar-event dashboard-icon"></i>
+            <h3 class="dashboard-title">Opret Event</h3>
+        </div>
+
+        <ModalWrapperComponent ModalId="eventModal" ModalSize="modal-xl">
+            <CreateEvent/>
+        </ModalWrapperComponent>
+
+        <div class="dashboard-item admin-item" data-bs-toggle="modal" data-bs-target="#taskModal">
+            <div class="admin-badge">Admin</div>
+            <i class="bi bi-list-task dashboard-icon"></i>
+            <h3 class="dashboard-title">Opret Opgave</h3>
+        </div>
+
+        <ModalWrapperComponent ModalId="taskModal" ModalSize="modal-xl" ShowFooter="true">
+            <CreateTask/>
+        </ModalWrapperComponent>
+
+        <div class="dashboard-item admin-item" data-bs-toggle="modal" data-bs-target="#locationModal">
+            <div class="admin-badge">Admin</div>
+            <i class="bi bi-geo-alt dashboard-icon"></i>
+            <h3 class="dashboard-title">Oversigt over lokationer</h3>
+        </div>
+
+        <ModalWrapperComponent ModalId="locationModal">
+            <CreateLocation/>
+        </ModalWrapperComponent>
+    }
+
+</div>
+
+@code {
+    private User? currentUser;
+
+    protected override async Task OnInitializedAsync()
+    {
+        currentUser = await LoginService.GetCurrentUser();
+    }
+
+    private void NavigateToEvents()
+    {
+        NavigationManager.NavigateTo("/eventsoverview");
+    }
+}

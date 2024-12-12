@@ -1,0 +1,102 @@
+@using webapp.Service
+@using core.Models
+@inject IEventService EventService
+@inject ILocationService LocationService
+@inject NavigationManager NavigationManager
+
+<EditForm Model="EditedEvent" OnValidSubmit="SaveEdit" class="card" style="max-width: 800px; margin: auto; padding: 20px;">
+
+    <h4 class="text-center">Rediger Event</h4>
+
+    <div class="form-group">
+        <label for="Title">Titel</label>
+        <InputText id="Title" class="form-control" @bind-Value="EditedEvent.Title" placeholder="Indtast Titel" />
+    </div>
+
+    <div class="form-group">
+        <label for="Date">Dato</label>
+        <InputDate id="Date" class="form-control" @bind-Value="EditedEvent.DateForEvent" />
+    </div>
+
+    <div class="form-group">
+        <label for="Location">Lokation</label>
+        <InputSelect id="Location" class="form-control" @bind-Value="EditedEvent.LocationId">
+            <option value="0">Vælg Lokation</option>
+            @foreach (var location in Locations)
+            {
+                <option value="@location.Id">@location.Name</option>
+            }
+        </InputSelect>
+    </div>
+
+    <div class="form-group">
+        <label for="FoodChoice">Madvalg</label>
+        <InputText id="FoodChoice" class="form-control" @bind-Value="EditedEvent.FoodChoices" placeholder="Indtast madvalg" />
+    </div>
+
+    <div class="form-group">
+        <label for="SpecialRequest">Særlige mad behov</label>
+        <InputText id="SpecialRequest" class="form-control" @bind-Value="EditedEvent.SpecialRequest" placeholder="Indtast special ønsker til mad" />
+    </div>
+
+    <div class="form-group">
+        <label for="ByCustomer">Kunde</label>
+        <InputText id="ByCustomer" class="form-control" @bind-Value="EditedEvent.ByCustomer" placeholder="Indtast kunde" />
+    </div>
+
+    <div class="form-group">
+        <label for="Participant">Deltagere</label>
+        <InputNumber id="Participant" class="form-control" @bind-Value="EditedEvent.Participants" />
+    </div>
+
+    <div class="form-group text-center mt-4">
+        <button type="button" class="btn btn-secondary me-2" data-bs-dismiss="modal">Annuller</button>
+        <button type="submit" class="btn btn-primary">Gem Ændringer</button>
+    </div>
+
+</EditForm>
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+
+    private TaskEvent EditedEvent = new TaskEvent();
+    private IEnumerable<core.Models.Location> Locations = Enumerable.Empty<core.Models.Location>();
+
+    protected override async Task OnParametersSetAsync()
+    {
+        Locations = await LocationService.GetAllLocationsAsync();
+        try
+        {
+            var eventItem = await EventService.GetEventByIdAsync(Id);
+            if (eventItem != null)
+            {
+                EditedEvent = eventItem;
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error loading event: {ex.Message}");
+        }
+    }
+
+
+    [Parameter]
+    public EventCallback OnSaveCompleted { get; set; }
+
+    private async Task SaveEdit()
+    {
+        try
+        {
+            var isSuccess = await EventService.UpdateEventAsync(Id, EditedEvent);
+            if (isSuccess)
+            {
+                await OnSaveCompleted.InvokeAsync();
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error saving event: {ex.Message}");
+        }
+    }
+}

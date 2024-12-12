@@ -96,7 +96,6 @@
                 var user = await loginService.GetCurrentUser();
                 if (user != null)
                 {
-                    // Print out user propeties
                     Console.WriteLine($"User logged in successfully:");
                     Console.WriteLine($"ID: {user.Id}");
                     Console.WriteLine($"Name: {user.FirstName} {user.LastName}");
@@ -116,7 +115,7 @@
         catch (Exception ex)
         {
             errorText = "An error occurred during login. Please try again.";
-            Console.WriteLine($"Home error: {ex.Message}");
+            Console.WriteLine($"LoginPage error: {ex.Message}");
         }
         finally
         {

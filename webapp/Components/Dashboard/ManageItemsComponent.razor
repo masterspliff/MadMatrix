@@ -1,11 +1,10 @@
-@page "/manage-items"
 @using core.Models
 @using webapp.Service
+@using webapp.Components.Edit
 @inject ITaskService TaskService
 @inject IEventService EventService
-@inject NavigationManager NavigationManager
 
-<h2 class="text-2xl font-bold mb-4">Administrer Opgaver og Events</h2>
+<h2 class="text-2xl font-bold mb-4">Administrer Opgaver og events</h2>
 
 <table class="table">
     <thead>
@@ -24,10 +23,10 @@
                 <td>@item.Title</td>
                 <td>@(item.Date.ToString("yyyy-MM-dd"))</td>
                 <td>
-                    <button class="btn btn-primary btn-sm me-2" @onclick="() => NavigateToEdit(item)">
+                    <button class="btn btn-primary btn-sm me-2" data-bs-toggle="modal" data-bs-target="#editModal" @onclick="() => ShowEditDialog(item)">
                         ✏️
                     </button>
-                    <button class="btn btn-danger btn-sm" @onclick="() => ShowDeleteDialog(item)">
+                    <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteModal" @onclick="() => ShowDeleteDialog(item)">
                         🗑
                     </button>
                 </td>
@@ -37,41 +36,38 @@
 </table>
 
 
-@if (ShowDialog)
-{
-    <div class="modal show d-block" tabindex="-1" role="dialog">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Er du sikker?</h5>
-                    <button type="button" class="close" aria-label="Close" @onclick="CloseDialog">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <p>
-                        Denne handling kan ikke fortrydes. Dette vil permanent slette 
-                        "@SelectedItem?.Type.ToLower()"en "@SelectedItem?.Title".
-                    </p>
-                </div>
-                <div class="modal-footer">
-                    <button class="btn btn-secondary" @onclick="CloseDialog">Annuller</button>
-                    <button class="btn btn-danger" @onclick="DeleteSelectedItem">Slet</button>
-                </div>
-            </div>
+<ModalWrapperComponent ModalId="deleteModal" ModalSize="modal-dialog" ShowFooter="false">
+    <div class="p-3">
+        <h5 class="modal-title mb-3">Er du sikker?</h5>
+        <p>
+            Denne handling kan ikke fortrydes. Dette vil permanent slette 
+            "@SelectedItem?.Type.ToLower()"en "@SelectedItem?.Title".
+        </p>
+        <div class="mt-4 text-end">
+            <button class="btn btn-secondary" data-bs-dismiss="modal">Annuller</button>
+            <button class="btn btn-danger ms-2" @onclick="DeleteSelectedItem" data-bs-dismiss="modal">Slet</button>
         </div>
     </div>
-    <div class="modal-backdrop show"></div>
-}
+</ModalWrapperComponent>
+
+<ModalWrapperComponent ModalId="editModal" ModalSize="modal-dialog" ShowFooter="false">
+    @if (SelectedItem != null)
+    {
+        @if (SelectedItem.IsEvent)
+        {
+            <EditEventComponent Id="@SelectedItem.Id" OnSaveCompleted="RefreshData" />
+        }
+        else
+        {
+            <EditTaskComponent TaskId="@SelectedItem.Id" OnSaveCompleted="RefreshData" />
+        }
+    }
+</ModalWrapperComponent>
 
 @code {
     private List<TaskItem> Tasks { get; set; } = new();
     private List<TaskEvent> Events { get; set; } = new();
-    private bool ShowDialog = false;
-    private bool IsEditDialogVisible = false;
     private Item? SelectedItem;
-    private string EditTitle = string.Empty;
-    private DateTime EditDate = DateTime.Now;
 
     protected override async Task OnInitializedAsync()
     {
@@ -82,7 +78,7 @@
     {
         var tasksResult = await TaskService.LoadAllTask();
         Tasks = tasksResult.ToList();
-        
+
         var eventsResult = await EventService.GetAllEventsAsync();
         Events = eventsResult.ToList();
     }
@@ -90,20 +86,20 @@
     private List<Item> GetCombinedItems()
     {
         var items = new List<Item>();
-        
+
         // Add tasks
-        items.AddRange(Tasks.Select(t => new Item 
-        { 
+        items.AddRange(Tasks.Select(t => new Item
+        {
             Id = t.Id,
             Type = "Opgave",
             Title = t.Title,
             Date = t.Date,
             IsEvent = false
         }));
-        
+
         // Add events
-        items.AddRange(Events.Select(e => new Item 
-        { 
+        items.AddRange(Events.Select(e => new Item
+        {
             Id = e.Id,
             Type = "Event",
             Title = e.Title,
@@ -117,15 +113,12 @@
     private void ShowDeleteDialog(Item item)
     {
         SelectedItem = item;
-        ShowDialog = true;
     }
 
-    private void CloseDialog()
+    private void ShowEditDialog(Item item)
     {
-        ShowDialog = false;
-        SelectedItem = null;
+        SelectedItem = item;
     }
-
 
     private async Task DeleteSelectedItem()
     {
@@ -152,16 +145,7 @@
         {
             Console.WriteLine($"Error deleting item: {ex.Message}");
         }
-        
-        CloseDialog();
     }
-
-    private void NavigateToEdit(Item item)
-    {
-        var route = item.IsEvent ? $"/events/edit/{item.Id}" : $"/tasks/edit/{item.Id}";
-        NavigationManager.NavigateTo(route);
-    }
-
 
     private class Item
     {

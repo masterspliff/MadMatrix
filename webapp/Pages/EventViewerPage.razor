@@ -1,6 +1,6 @@
-﻿@page "/EventViewer/{EventId:int}"
+@page "/eventviewer/{EventId:int}"
 @using webapp.Service
-@using webapp.Components
+@using webapp.Components.EventViewer
 @inject NavigationManager NavigationManager
 @inject IEventService EventService
 @inject ITaskService TaskService
@@ -12,7 +12,7 @@
         </a>
 
         <div class="d-flex align-items-center">
-            <button class="btn-eaa" @onclick="NavigateToEvents">Events Overview</button> 
+            <button class="btn-eaa" @onclick="NavigateToEvents">EventsOverview</button> 
         </div>
     </div>
 </div>
@@ -40,7 +40,7 @@ else
             @foreach (var task in _tasks)
             {
                 <div class="information-pane hover-effect" @onclick="() => OpenTask(task.Id)">
-                    <TaskCard ShowData="true" 
+                    <TaskCardComponent ShowData="true" 
                               Title="@task.Title" 
                               Description="@task.Description" 
                               Status="@task.Status" 
@@ -67,7 +67,7 @@ else
                 if (task != null)
                 {
                     <div class="task-details information-pane">
-                        <TaskCard ShowDescription="true" 
+                        <TaskCardComponent ShowDescription="true" 
                                   Title="@task.Title" 
                                   Description="@task.Description" 
                                   AssignedTo="@task.AssignedToIds" 
@@ -104,7 +104,10 @@ else
         }
         else
         {
-            //_tasks = await TaskService.GetTasksByEventIdAsync(EventId);//
+            // Create a list with just this event's ID
+            var eventIds = new List<int> { EventId };
+
+            _tasks = await TaskService.GetTasksByEventIdAsync(eventIds);
         }
     }
 
@@ -112,12 +115,12 @@ else
 
     private void NavigateToEvents()
     {
-        NavigationManager.NavigateTo("/Events");
+        NavigationManager.NavigateTo("/eventsoverview");
     }
 
     private void OpenTask(int taskId)
     {
-        NavigationManager.NavigateTo($"/EventViewer/{EventId}?taskId={taskId}",forceLoad: false, true);
+        NavigationManager.NavigateTo($"/eventviewer/{EventId}?taskId={taskId}",forceLoad: false, true);
         // display task on right side of the screen
     }
     }
