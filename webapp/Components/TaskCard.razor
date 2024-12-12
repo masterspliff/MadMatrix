@@ -1,4 +1,5 @@
-﻿@using webapp.Service
+﻿@using System.Reflection.Metadata
+@using webapp.Service
 @using TaskStatus = core.Models.TaskStatus
 @inject IUserService UserService
 @inject ITaskService TaskService
@@ -32,7 +33,18 @@
     <p><strong>Description:</strong>@Description</p>
     }
     
+<div>
+    <label for="taskStatusDropdown"><strong>Status:</strong></label>
+    <select id="taskStatusDropdown" @bind="Status">
+        @foreach (var status in Enum.GetValues(typeof(TaskStatus)).Cast<TaskStatus>())
+        {
+        <option value="@status">@status</option>
+        }
+    </select>
 
+</div>
+
+    
     @code {
     //Import parameters from the Model(?)
     [Parameter] public int taskId { get; set; }
@@ -46,5 +58,15 @@
 
     [Parameter] public bool? ShowDescription { get; set; } = false;
     [Parameter] public bool? ShowData { get; set; } = false;
+    
+    private async Task OnStatusChanged(ChangeEventArgs e)
+    {
+        // Assuming TaskService has a method to update the task status.
+        await TaskService.UpdateTaskStatus(taskId, Status);
 
+        // Optional: Add logic to refresh or notify the user
+        Console.WriteLine($"Task {taskId} status updated to {Status}");
+    }
+        
+    }
     }

@@ -55,4 +55,15 @@ using System.Collections.Generic;
          }
          return Task.FromResult(false);
      }
+     public Task<bool> UpdateTaskStatus(int taskId, core.Models.TaskStatus status)
+     {
+         var task = _tasks.FirstOrDefault(t => t.Id == taskId);
+         if (task != null)
+         {
+             task.Status = status;
+             return Task.FromResult(true);
+         }
+         return Task.FromResult(false);
+     }
+
  } 

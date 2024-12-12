@@ -12,7 +12,7 @@ builder.RootComponents.Add<HeadOutlet>("head::after");
 // Listening on the server port (5267)
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("http://localhost:5267/") });
 builder.Services.AddScoped<IUserService, UserService>();
-builder.Services.AddScoped<ITaskService, TaskServiceServer>();
+builder.Services.AddScoped<ITaskService, TaskServiceInMemory>();
 builder.Services.AddScoped<IEventService, EventService>();
 builder.Services.AddScoped<ILocationService, LocationService>();
 

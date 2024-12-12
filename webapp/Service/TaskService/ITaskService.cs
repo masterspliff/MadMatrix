@@ -19,4 +19,7 @@ public interface ITaskService
     
     // Delete a task
     Task<bool> DeleteTaskAsync(int id);
+    
+    // update a task
+    Task<bool> UpdateTaskStatus(int taskId, TaskStatus status);
 }
