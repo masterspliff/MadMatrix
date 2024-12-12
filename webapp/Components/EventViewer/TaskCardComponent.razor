@@ -29,18 +29,18 @@
                 <UserViewerComponent userId="@id"/>
             }
         </div>
-    <p><strong>Description:</strong>@Description</p>
-    
-<div>
-    <label for="taskStatusDropdown"><strong>Status:</strong></label>
-    <select id="taskStatusDropdown" @bind="Status">
-        @foreach (var status in Enum.GetValues(typeof(TaskStatus)).Cast<TaskStatus>())
-        {
-        <option value="@status">@status</option>
-        }
-    </select>
+        <p><strong>Description:</strong>@Description</p>
 
-</div>
+        <div>
+            <label for="taskStatusDropdown"><strong>Status:</strong></label>
+            <select id="taskStatusDropdown" value="@_localStatus" @onchange="OnStatusChanged">
+                @foreach (var status in Enum.GetValues(typeof(TaskStatus)).Cast<TaskStatus>())
+                {
+                    <option value="@status">@status</option>
+                }
+            </select>
+
+        </div>
 
 
 
@@ -50,6 +50,19 @@
     [Parameter] public string Title { get; set; }
     [Parameter] public string Description { get; set; }
     [Parameter] public TaskStatus Status { get; set; }
+    [Parameter] public EventCallback<TaskStatus> StatusChanged { get; set; }
+    [Parameter] public EventCallback<(int taskId, core.Models.TaskStatus newStatus)> OnTaskStatusUpdated { get; set; }
+    private TaskStatus _localStatus;
+
+    protected override void OnInitialized()
+    {
+        _localStatus = Status;
+    }
+
+    protected override void OnParametersSet()
+    {
+        _localStatus = Status;
+    }
     [Parameter] public DateTime Dato { get; set; }
     [Parameter] public TimeOnly StartTime { get; set; }
     [Parameter] public TimeOnly EndTime { get; set; }
@@ -63,20 +76,26 @@
     {
         if (Enum.TryParse<TaskStatus>(e.Value?.ToString(), out var newStatus))
         {
-            Status = newStatus;
-            var success = await TaskService.UpdateTaskStatus(taskId, Status);
+            _localStatus = newStatus; // Update local status immediately
+            StateHasChanged();
+
+            var success = await TaskService.UpdateTaskStatus(taskId, newStatus);
 
             if (success)
             {
-                Console.WriteLine($"Task {taskId} status updated to {Status}");
+                Status = newStatus;
+                await StatusChanged.InvokeAsync(newStatus);
+                await OnTaskStatusUpdated.InvokeAsync((taskId, newStatus));
+                Console.WriteLine($"Task {taskId} status updated to {newStatus}");
             }
             else
             {
+                _localStatus = Status; // Revert local status on failure
                 Console.WriteLine($"Failed to update task {taskId}");
+                StateHasChanged();
             }
         }
     }
-
-
 }
+
     }
