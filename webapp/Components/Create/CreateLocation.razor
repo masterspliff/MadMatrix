@@ -5,25 +5,23 @@
 
 @if (currentUser?.Roles.Contains(UserRole.Administrator) == true)
 {
-    <EditForm Model="@locationModel" OnValidSubmit="HandleCreateLocation" class="card">
-        <h3>Lokation adminstration</h3>
+    <EditForm Model="@locationModel" OnValidSubmit="HandleCreateLocation" class="card" style="margin: 5px auto; border: none; box-shadow: none">
+        <h3 style="margin-bottom: 20px;">Lokation adminstration</h3>
 
         <div class="row">
-            <div class="col-md-6">
-                <h4>Opret Lokation</h4>
+            <div>
                 <div class="form-group">
-                    <label for="locationName">Lokation navn</label>
+                    <label for="locationName" style="font-weight: bold;">Opret Lokation</label>
                     <InputText id="locationName" class="form-control" @bind-Value="locationModel.Name" placeholder="Navngiv lokationens navn" />
                 </div>
                 <div class="form-group">
-                    <button type="submit" class="btn btn-primary">Opret Location</button>
+                    <button type="submit" class="btn btn-primary" style="margin-bottom: 50px; margin-top: 10px; width: 100%">Opret Location</button>
                 </div>
             </div>
 
-            <div class="col-md-6">
-                <h4>Slet Location</h4>
+            <div>
                 <div class="form-group">
-                    <label for="locationDelete">Vælg lokation</label>
+                    <label for="locationDelete" style="font-weight: bold;">Slet lokation</label>
                     <InputSelect id="locationDelete" class="form-control" @bind-Value="selectedLocationId">
                         <option value="0">Vælg ønskede lokation for at slette</option>
                         @foreach (var location in locationsList)
@@ -36,7 +34,8 @@
                     <button type="button"
                             class="btn btn-danger"
                             @onclick="HandleDeleteLocation"
-                            disabled="@(selectedLocationId == 0)">
+                            disabled="@(selectedLocationId == 0)"
+                            style="margin-bottom: 25px; margin-top: 10px; width: 100%">
                         Slet lokation
                     </button>
                 </div>

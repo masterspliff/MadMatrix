@@ -1,8 +1,9 @@
 .manage-container {
-    padding: 20px;
+    padding: 50px;
     background-color: white;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    border-radius: 10px;
+    border: 2px solid #393939;
+    margin-bottom: 50px;
 }
 
 .table-container {
@@ -19,6 +20,7 @@
     width: 100%;
     border-collapse: separate;
     border-spacing: 0;
+    padding-left: 30px;
 }
 
     .custom-table th {
@@ -27,21 +29,26 @@
         text-align: left;
         border-bottom: 2px solid #dee2e6;
         white-space: nowrap;
+        border-top-left-radius: 5px;
     }
 
     .custom-table th select {
         font-size: 0.875rem;
         height: 30px;
         padding: 2px 8px;
+        min-width: 200px;
     }
 
     .custom-table td {
         padding: 12px;
         border-bottom: 1px solid #dee2e6;
+        justify-content: right;
+        padding-right: 30px;
+        padding-left: 30px;
     }
 
     .custom-table tr:hover {
-        background-color: #f8f9fa;
+        background-color: #f3f4f7;
     }
 
 .action-buttons {

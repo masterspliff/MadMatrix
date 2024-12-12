@@ -4,16 +4,16 @@
 @inject ITaskService TaskService
 @inject IEventService EventService
 
-<div style="margin-top: 50px" class="manage-container">
+<div style="margin-top: 50px; " class="manage-container">
     <h2 class="text-2xl font-bold mb-4">Administrer Opgaver og events</h2>
 
     <div class="table-container">
         <table class="custom-table">
     <thead>
         <tr>
-            <th>
+            <th style="padding-left: 30px">
                 Type
-                <select class="form-select form-select-sm d-inline-block w-auto ms-2" @bind="SelectedFilter">
+                <select class="form-select form-select-sm d-inline-block w-auto ms-2" @bind="SelectedFilter" style="padding-left: 30px">
                     <option value="all">Alle</option>
                     <option value="task">Opgaver</option>
                     <option value="event">Events</option>
@@ -36,7 +36,7 @@
                     <option value="month">Denne måned</option>
                 </select>
             </th>
-            <th>Handling</th>
+            <th style="text-align: right; padding-right: 30px">Handling</th>
         </tr>
     </thead>
     <tbody>
@@ -55,7 +55,7 @@
                         ✏️ Rediger
                     </button>
                     <button class="btn-delete" data-bs-toggle="modal" data-bs-target="#deleteModal" @onclick="() => ShowDeleteDialog(item)">
-                        🗑 Slet
+                        🗑
                     </button>
                 </td>
             </tr>
