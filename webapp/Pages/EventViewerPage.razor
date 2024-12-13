@@ -4,6 +4,7 @@
 @inject NavigationManager NavigationManager
 @inject IEventService EventService
 @inject ITaskService TaskService
+@inject ILocationService LocationService
 
 <div class="top-row ps-3 navbar navbar-dark custom-navbar" style="border: 1px solid #ffffff; border-radius: 5px;">
     <div class="container-fluid d-flex justify-content-between">
@@ -28,7 +29,7 @@ else
             <h1>Event Details</h1>
             
             <h3>@_currentEvent.Title</h3>
-            <p><strong>Location:</strong> @_currentEvent.LocationId</p>
+            <p><strong>Location:</strong> @(_currentLocation?.Name)</p>
             <p><strong>Date:</strong> @_currentEvent.DateForEvent</p>
             <p><strong>Customer:</strong> @_currentEvent.ByCustomer</p>
             <p><strong>Food Choices:</strong> @_currentEvent.FoodChoices</p>
@@ -96,6 +97,7 @@ else
 
     
     private TaskEvent? _currentEvent;
+    private Location? _currentLocation;
     private List<TaskItem> _tasks = new();
     
     private async Task HandleTaskStatusUpdated((int taskId, core.Models.TaskStatus newStatus) update)
@@ -115,14 +117,17 @@ else
         if (_currentEvent == null)
         {
             Console.WriteLine("Event not found");
+            return;
         }
-        else
-        {
-            // Create a list with just this event's ID
-            var eventIds = new List<int> { EventId };
 
-            _tasks = await TaskService.GetTasksByEventIdAsync(eventIds);
+        if (_currentEvent.LocationId > 0)
+        {
+            _currentLocation = await LocationService.GetLocationByIdAsync(_currentEvent.LocationId);
         }
+
+        // Create a list with just this event's ID
+        var eventIds = new List<int> { EventId };
+        _tasks = await TaskService.GetTasksByEventIdAsync(eventIds);
     }
 
     private void NavigateToEvents()
