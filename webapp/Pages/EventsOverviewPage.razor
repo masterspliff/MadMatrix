@@ -1,6 +1,7 @@
 ﻿@page "/eventsoverview"
 @using webapp.Service
 @inject IEventService EventService
+@inject ILocationService LocationService
 @inject NavigationManager NavigationManager
 
 <h3>Event Viewer</h3>
@@ -27,7 +28,7 @@ else
                                 <h5 class="card-title mb-0 text-center">@eventItem.Title</h5>
                             </div>
                         </div>
-                        <p class="card-text">Location: @eventItem.LocationId</p>
+                        <p class="card-text">Location: @GetLocationNameAsync(eventItem.LocationId)</p>
                         <p class="card-text">Date: @eventItem.DateForEvent</p>
                         <p class="card-text">Customer: @eventItem.ByCustomer</p>
                         <button class="btn" @onclick="() => NavigateToTasks(eventItem.Id)">View Event</button>
@@ -40,10 +41,34 @@ else
 
 @code {
     private List<TaskEvent> events;
+    private Dictionary<int, Location?> _locations = new();
 
     protected override async Task OnInitializedAsync()
     {
         events = await EventService.GetAllEventsAsync();
+    }
+
+    private string GetLocationNameAsync(int locationId)
+    {
+        if (locationId <= 0)
+            return "No location assigned";
+
+        if (_locations.TryGetValue(locationId, out var location))
+        {
+            return location?.Name ?? "No location assigned";
+        }
+
+        var task = LocationService.GetLocationByIdAsync(locationId);
+        task.ContinueWith(t =>
+        {
+            if (t.IsCompletedSuccessfully)
+            {
+                _locations[locationId] = t.Result;
+                StateHasChanged();
+            }
+        }, TaskScheduler.Current);
+        
+        return "Loading...";
     }
     
     private void NavigateToTasks(int EventId)

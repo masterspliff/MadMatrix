@@ -8,5 +8,7 @@ public interface ILocationService
 
     Task<bool> CreateLocationAsync(Location newLocationItem);
     Task<bool> DeleteLocationAsync(int id);
+    Task<Location?> GetLocationByIdAsync(int id);
+
 
 }

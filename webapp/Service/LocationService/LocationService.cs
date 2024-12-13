@@ -51,4 +51,23 @@ public class LocationService : ILocationService
         }
     }
     
+    public async Task<Location?> GetLocationByIdAsync(int id)
+    {
+        try
+        {
+            var response = await _httpClient.GetAsync($"Location/{id}");
+            if (response.IsSuccessStatusCode)
+            {
+                var location = await response.Content.ReadFromJsonAsync<Location>();
+                return location;
+            }
+            return null;
+        }
+        catch (Exception)
+        {
+            return null;
+        }
+    }
+
+    
 }
