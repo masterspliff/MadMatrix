@@ -5,37 +5,37 @@
 @inject IUserService UserService
 @inject IEventService EventService
 
-<EditForm Model="EditedTask" OnValidSubmit="SaveEdit" class="card" style="max-width: 800px; margin: auto; padding: 20px;">
+<EditForm Model="EditedTask" OnValidSubmit="SaveEdit" class="card" style="width: 100%; margin: auto; padding: 20px; border: none; box-shadow: none">
 
-    <h4 class="text-center">Rediger Opgave</h4>
+    <h4 class="text-left" style="margin-bottom: 10px">Rediger Opgave</h4>
 
     <!-- TASK TITLE FIELD -->
     <div class="form-group">
-        <label for="TaskTitle">Opgave Titel</label>
+        <label for="TaskTitle" class="form-label">Opgave Titel</label>
         <InputText id="TaskTitle" class="form-control" @bind-Value="EditedTask.Title" placeholder="Indtast opgave titel" />
     </div>
 
     <!-- TASK DESCRIPTION FIELD -->
     <div class="form-group">
-        <label for="TaskDescription">Beskrivelse</label>
+        <label for="TaskDescription" class="form-label">Beskrivelse</label>
         <InputText id="TaskDescription" class="form-control" @bind-Value="EditedTask.Description" placeholder="Indtast beskrivelse" />
     </div>
 
     <!-- TASK DATE FIELD -->
     <div class="form-group">
-        <label for="Date">Dato</label>
+        <label for="Date" class="form-label">Dato</label>
         <InputDate id="Date" class="form-control" @bind-Value="EditedTask.Date" />
     </div>
 
     <!-- TASK START TIME FIELD -->
     <div class="form-group">
-        <label for="StartTime">Starttidspunkt</label>
+        <label for="StartTime" class="form-label">Starttidspunkt</label>
         <input id="StartTime" type="time" class="form-control" value="@startTimeOnlyValue" @onchange="HandleStartTimeChange" />
     </div>
 
     <!-- TASK END TIME FIELD -->
     <div class="form-group">
-        <label for="EndTime">Sluttidspunkt</label>
+        <label for="EndTime" class="form-label">Sluttidspunkt</label>
         <input id="EndTime" type="time" class="form-control" value="@endTimeOnlyValue" @onchange="HandleEndTimeChange" />
     </div>
 
@@ -53,7 +53,7 @@
 
     <!-- ASSIGN WORKERS BASED ON SELECTED COMPETENCY -->
     <div class="form-group" style="border: 1px solid #ddd; padding: 10px;">
-        <label>Tildel Medarbejdere</label>
+        <label class="form-label">Tildel Medarbejdere</label>
         @if (isLoading)
         {
         <div>Loading users...</div>
