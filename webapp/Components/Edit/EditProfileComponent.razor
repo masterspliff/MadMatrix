@@ -62,96 +62,96 @@
 </div>
 </div>
 
-@code {
-private User? user;
-private bool isEditable = false;
-private string saveMessage = "";
-private EditContext? editContext;
-private bool isLoading = true;
-
-[Inject]
-private IUserService userService { get; set; }
-
-protected override async Task OnInitializedAsync()
-{
-    try
-    {
-        isLoading = true;
-        StateHasChanged();
-        
-        user = await loginService.GetCurrentUser();
-        if (user == null)
-        {
-            // Redirect to dashboard if no user data is found
-            navManager.NavigateTo("/dashboard");
-            return;
-        }
-        
-        editContext = new EditContext(user);
-    }
-    catch (Exception ex)
-    {
-        // Handle errors, e.g., log or show an error message
-        saveMessage = "Fejl under indlæsning af brugerdata.";
-        Console.WriteLine($"Error loading user data: {ex.Message}");
-    }
-    finally 
-    {
-        isLoading = false;
-        StateHasChanged();
-    }
-}
-
-private async Task HandleValidSubmit()
-{
-try
-{
-await SaveUserData(user);
-}
-catch (Exception ex)
-{
-// Handle errors, e.g., log or show an error message
-saveMessage = "Fejl under gemning af data.";
-}
-}
-
-private void ToggleEditMode()
-{
-isEditable = !isEditable;
-StateHasChanged();
-}
-
-private async Task HandleButtonClick()
-{
-if (isEditable)
-{
-await HandleValidSubmit();
-}
-ToggleEditMode();
-}
-
-public async Task SaveUserData(User user)
-{
-try
-{
-await userService.UpdateUser(user);
-saveMessage = "Ændringerne er blevet gemt.";
-StateHasChanged();
-
-// Reset the message after 2 seconds
-await Task.Delay(2000);
-saveMessage = string.Empty;
-StateHasChanged();
-}
-catch (Exception ex)
-{
-saveMessage = "Der opstod en fejl under gemning.";
-StateHasChanged();
-
-// Reset the message after 2 seconds
-await Task.Delay(2000);
-saveMessage = string.Empty;
-StateHasChanged();
-}
-}
-}
+ @code {                                                                                                                                                                                                                                                                    
+     private User? user;                                                                                                                                                                                                                                                    
+     private bool isEditable = false;                                                                                                                                                                                                                                       
+     private string saveMessage = "";                                                                                                                                                                                                                                       
+     private EditContext? editContext;                                                                                                                                                                                                                                      
+     private bool isLoading = true;                                                                                                                                                                                                                                         
+                                                                                                                                                                                                                                                                            
+     [Inject]                                                                                                                                                                                                                                                               
+     private IUserService userService { get; set; }                                                                                                                                                                                                                         
+                                                                                                                                                                                                                                                                            
+     protected override async Task OnInitializedAsync()                                                                                                                                                                                                                     
+     {                                                                                                                                                                                                                                                                      
+         try                                                                                                                                                                                                                                                                
+         {                                                                                                                                                                                                                                                                  
+             isLoading = true;                                                                                                                                                                                                                                              
+             StateHasChanged();                                                                                                                                                                                                                                             
+                                                                                                                                                                                                                                                                            
+             user = await loginService.GetCurrentUser();                                                                                                                                                                                                                    
+             if (user == null)                                                                                                                                                                                                                                              
+             {                                                                                                                                                                                                                                                              
+                 // Redirect to dashboard if no user data is found                                                                                                                                                                                                          
+                 navManager.NavigateTo("/dashboard");                                                                                                                                                                                                                       
+                 return;                                                                                                                                                                                                                                                    
+             }                                                                                                                                                                                                                                                              
+                                                                                                                                                                                                                                                                            
+             editContext = new EditContext(user);                                                                                                                                                                                                                           
+         }                                                                                                                                                                                                                                                                  
+         catch (Exception ex)                                                                                                                                                                                                                                               
+         {                                                                                                                                                                                                                                                                  
+             // Handle errors, e.g., log or show an error message                                                                                                                                                                                                           
+             saveMessage = "Fejl under indlæsning af brugerdata.";                                                                                                                                                                                                          
+             Console.WriteLine($"Error loading user data: {ex.Message}");                                                                                                                                                                                                   
+         }                                                                                                                                                                                                                                                                  
+         finally                                                                                                                                                                                                                                                            
+         {                                                                                                                                                                                                                                                                  
+             isLoading = false;                                                                                                                                                                                                                                             
+             StateHasChanged();                                                                                                                                                                                                                                             
+         }                                                                                                                                                                                                                                                                  
+     }                                                                                                                                                                                                                                                                      
+                                                                                                                                                                                                                                                                            
+     private async Task HandleValidSubmit()                                                                                                                                                                                                                                 
+     {                                                                                                                                                                                                                                                                      
+         try                                                                                                                                                                                                                                                                
+         {                                                                                                                                                                                                                                                                  
+             await SaveUserData(user);                                                                                                                                                                                                                                      
+         }                                                                                                                                                                                                                                                                  
+         catch (Exception ex)                                                                                                                                                                                                                                               
+         {                                                                                                                                                                                                                                                                  
+             // Handle errors, e.g., log or show an error message                                                                                                                                                                                                           
+             saveMessage = "Fejl under gemning af data.";                                                                                                                                                                                                                   
+         }                                                                                                                                                                                                                                                                  
+     }                                                                                                                                                                                                                                                                      
+                                                                                                                                                                                                                                                                            
+     private void ToggleEditMode()                                                                                                                                                                                                                                          
+     {                                                                                                                                                                                                                                                                      
+         isEditable = !isEditable;                                                                                                                                                                                                                                          
+         StateHasChanged();                                                                                                                                                                                                                                                 
+     }                                                                                                                                                                                                                                                                      
+                                                                                                                                                                                                                                                                            
+     private async Task HandleButtonClick()                                                                                                                                                                                                                                 
+     {                                                                                                                                                                                                                                                                      
+         if (isEditable)                                                                                                                                                                                                                                                    
+         {                                                                                                                                                                                                                                                                  
+             await HandleValidSubmit();                                                                                                                                                                                                                                     
+         }                                                                                                                                                                                                                                                                  
+         ToggleEditMode();                                                                                                                                                                                                                                                  
+     }                                                                                                                                                                                                                                                                      
+                                                                                                                                                                                                                                                                            
+     public async Task SaveUserData(User user)                                                                                                                                                                                                                              
+     {                                                                                                                                                                                                                                                                      
+         try                                                                                                                                                                                                                                                                
+         {                                                                                                                                                                                                                                                                  
+             await userService.UpdateUser(user);                                                                                                                                                                                                                            
+             saveMessage = "Ændringerne er blevet gemt.";                                                                                                                                                                                                                   
+             StateHasChanged();                                                                                                                                                                                                                                             
+                                                                                                                                                                                                                                                                            
+             // Reset the message after 2 seconds                                                                                                                                                                                                                           
+             await Task.Delay(2000);                                                                                                                                                                                                                                        
+             saveMessage = string.Empty;                                                                                                                                                                                                                                    
+             StateHasChanged();                                                                                                                                                                                                                                             
+         }                                                                                                                                                                                                                                                                  
+         catch (Exception ex)                                                                                                                                                                                                                                               
+         {                                                                                                                                                                                                                                                                  
+             saveMessage = "Der opstod en fejl under gemning.";                                                                                                                                                                                                             
+             StateHasChanged();                                                                                                                                                                                                                                             
+                                                                                                                                                                                                                                                                            
+             // Reset the message after 2 seconds                                                                                                                                                                                                                           
+             await Task.Delay(2000);                                                                                                                                                                                                                                        
+             saveMessage = string.Empty;                                                                                                                                                                                                                                    
+             StateHasChanged();                                                                                                                                                                                                                                             
+         }                                                                                                                                                                                                                                                                  
+     }                                                                                                                                                                                                                                                                      
+ } 
