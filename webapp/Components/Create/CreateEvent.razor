@@ -57,9 +57,7 @@
 @code {
     private TaskEvent NewEvent = new TaskEvent();
     private IEnumerable<Location> Locations = Enumerable.Empty<Location>();
-    [Parameter]
-    public EventCallback OnEventCreated { get; set; }
-
+    
     protected override async Task OnInitializedAsync()
     {
         Locations = await LocationService.GetAllLocationsAsync();
@@ -73,7 +71,6 @@
             if (isSuccess)
             {
                 NewEvent = new TaskEvent();
-                await OnEventCreated.InvokeAsync(); // Trigger the callback when the event is successfully created
             }
         }
         catch (Exception ex)

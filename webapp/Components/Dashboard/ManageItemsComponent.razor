@@ -4,67 +4,54 @@
 @inject ITaskService TaskService
 @inject IEventService EventService
 
-<div style="margin-top: 50px; " class="manage-container">
-    <h2 class="text-2xl font-bold mb-4">Administrer Opgaver og events</h2>
+<div style="margin-top: 50px;" class="manage-container">
+    <h2 class="text-2xl font-bold mb-4">Administrer Opgaver og Events</h2>
 
     <div class="table-container">
         <table class="custom-table">
-    <thead>
-        <tr>
-            <th style="padding-left: 30px">
-                Type
-                <select class="form-select form-select-sm d-inline-block w-auto ms-2" @bind="SelectedFilter" style="padding-left: 30px">
-                    <option value="all">Alle</option>
-                    <option value="task">Opgaver</option>
-                    <option value="event">Events</option>
-                </select>
-            </th>
-            <th>
-                Titel
-                <input type="text" 
-                       class="form-control form-control-sm d-inline-block w-auto ms-2" 
-                       placeholder="Søg efter titel..." 
-                       @bind="SearchTerm" 
-                       @bind:event="oninput" />
-            </th>
-            <th>
-                Dato
-                <select class="form-select form-select-sm d-inline-block w-auto ms-2" @bind="DateFilter">
-                    <option value="all">Alle datoer</option>
-                    <option value="today">I dag</option>
-                    <option value="week">Denne uge</option>
-                    <option value="month">Denne måned</option>
-                </select>
-            </th>
-            <th style="text-align: right; padding-right: 30px">Handling</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in GetCombinedItems())
-        {
-            <tr>
-                <td>
-                    <span class="status-badge @(item.IsEvent ? "status-event" : "status-task")">
-                        @item.Type
-                    </span>
-                </td>
-                <td>@item.Title</td>
-                <td>@(item.Date.ToString("dd/MM/yyyy"))</td>
-                <td class="action-buttons">
-                    <button class="btn-edit" data-bs-toggle="modal" data-bs-target="#editModal" @onclick="() => ShowEditDialog(item)">
-                        ✏️ Rediger
-                    </button>
-                    <button class="btn-delete" data-bs-toggle="modal" data-bs-target="#deleteModal" @onclick="() => ShowDeleteDialog(item)">
-                        🗑
-                    </button>
-                </td>
-            </tr>
-        }
-    </tbody>
+            <thead>
+                <tr>
+                    <th style="padding-left: 30px">Type</th>
+                    <th>Titel</th>
+                    <th>Dato</th>
+                    <th style="text-align: right; padding-right: 30px">Handling</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Items
+                                     .OrderByDescending(i => i.Date)
+                                     .Skip((CurrentPage - 1) * PageSize)
+                                     .Take(PageSize))
+                {
+                    <tr>
+                        <td>
+                            <span class="status-badge @(item.IsEvent ? "status-event" : "status-task")">
+                                @item.Type
+                            </span>
+                        </td>
+                        <td>@item.Title</td>
+                        <td>@(item.Date.ToString("dd/MM/yyyy"))</td>
+                        <td class="action-buttons">
+                            <button class="btn-edit" data-bs-toggle="modal" data-bs-target="#editModal" @onclick="() => ShowEditDialog(item)">
+                                ✏️ Rediger
+                            </button>
+                            <button class="btn-delete" data-bs-toggle="modal" data-bs-target="#deleteModal" @onclick="() => ShowDeleteDialog(item)">
+                                🗑
+                            </button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
         </table>
+
+        <!-- Pagination Controls -->
+        <div class="mt-3 d-flex justify-content-between">
+            <button class="btn btn-secondary" @onclick="PreviousPage" disabled="@(CurrentPage == 1)">Forrige</button>
+            <span>Side @CurrentPage af @TotalPages</span>
+            <button class="btn btn-secondary" @onclick="NextPage" disabled="@(CurrentPage == TotalPages)">Næste</button>
+        </div>
     </div>
 </div>
-
 
 <ModalWrapperComponent ModalId="deleteModal" ModalSize="modal-dialog" ShowFooter="false">
     <div class="p-3">
@@ -95,9 +82,12 @@
 </ModalWrapperComponent>
 
 @code {
-    private List<TaskItem> Tasks { get; set; } = new();
-    private List<TaskEvent> Events { get; set; } = new();
+    private List<(int Id, string Type, string Title, DateTime Date, bool IsEvent)> Items { get; set; } = new();
     private (int Id, string Type, string Title, DateTime Date, bool IsEvent)? SelectedItem;
+
+    private int CurrentPage { get; set; } = 1;
+    private int PageSize { get; set; } = 10;
+    private int TotalPages { get; set; } = 1;
 
     protected override async Task OnInitializedAsync()
     {
@@ -106,65 +96,24 @@
 
     private async Task RefreshData()
     {
-        var tasksResult = await TaskService.LoadAllTask();
-        Tasks = tasksResult.ToList();
+        var tasks = await TaskService.LoadAllTask();
+        var events = await EventService.GetAllEventsAsync();
 
-        var eventsResult = await EventService.GetAllEventsAsync();
-        Events = eventsResult.ToList();
+        Items = tasks.Select(t => (t.Id, "Opgave", t.Title, t.Date, false))
+                     .Concat(events.Select(e => (e.Id, "Event", e.Title, e.DateForEvent, true)))
+                     .ToList();
+
+        CalculateTotalPages();
     }
 
-    private string SearchTerm { get; set; } = "";
-    private string SelectedFilter { get; set; } = "all";
-    private string DateFilter { get; set; } = "all";
-
-    private List<(int Id, string Type, string Title, DateTime Date, bool IsEvent)> GetCombinedItems()
+    private void CalculateTotalPages()
     {
-        var items = new List<(int Id, string Type, string Title, DateTime Date, bool IsEvent)>();
-
-        // Add tasks
-        items.AddRange(Tasks.Select(t => (
-            t.Id,
-            Type: "Opgave",
-            t.Title,
-            t.Date,
-            IsEvent: false
-        )));
-
-        // Add events
-        items.AddRange(Events.Select(e => (
-            e.Id,
-            Type: "Event",
-            e.Title,
-            Date: e.DateForEvent,
-            IsEvent: true
-        )));
-
-        // Apply type filter
-        items = SelectedFilter switch
+        int totalItems = Items.Count;
+        TotalPages = (int)Math.Ceiling((double)totalItems / PageSize);
+        if (CurrentPage > TotalPages && TotalPages > 0)
         {
-            "task" => items.Where(i => !i.IsEvent).ToList(),
-            "event" => items.Where(i => i.IsEvent).ToList(),
-            _ => items
-        };
-
-        // Apply date filter
-        items = DateFilter switch
-        {
-            "today" => items.Where(i => i.Date.Date == DateTime.Today).ToList(),
-            "week" => items.Where(i => i.Date.Date >= DateTime.Today && 
-                                     i.Date.Date <= DateTime.Today.AddDays(7)).ToList(),
-            "month" => items.Where(i => i.Date.Month == DateTime.Today.Month && 
-                                      i.Date.Year == DateTime.Today.Year).ToList(),
-            _ => items
-        };
-
-        // Apply search filter
-        if (!string.IsNullOrWhiteSpace(SearchTerm))
-        {
-            items = items.Where(i => i.Title.Contains(SearchTerm, StringComparison.OrdinalIgnoreCase)).ToList();
+            CurrentPage = TotalPages;
         }
-
-        return items.OrderByDescending(i => i.Date).ToList();
     }
 
     private void ShowDeleteDialog((int Id, string Type, string Title, DateTime Date, bool IsEvent) item)
@@ -201,6 +150,22 @@
         catch (Exception ex)
         {
             Console.WriteLine($"Error deleting item: {ex.Message}");
+        }
+    }
+
+    private void PreviousPage()
+    {
+        if (CurrentPage > 1)
+        {
+            CurrentPage--;
+        }
+    }
+
+    private void NextPage()
+    {
+        if (CurrentPage < TotalPages)
+        {
+            CurrentPage++;
         }
     }
 }
