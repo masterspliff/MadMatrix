@@ -75,6 +75,28 @@ public class TaskServiceServer : ITaskService
             }
         }
     }
+    public async Task<List<TaskItem>> GetTasksByAssignedToId(List<int> AssignedToIds)
+    {
+        try
+        {
+            var userIdParam = string.Join(",", AssignedToIds);
+            var response = await _httpClient.GetAsync($"task/byUserId/{userIdParam}");
+            if (response.IsSuccessStatusCode)
+            {
+                var tasks = await response.Content.ReadFromJsonAsync<List<TaskItem>>();
+                return tasks ?? new List<TaskItem>();
+            }
+
+            throw new Exception("Could not load tasks by AssignedToId");
+        }
+        catch (Exception ex)
+        {
+            {
+                Console.WriteLine($"Error loading tasks for events: {ex.Message}");
+                return new List<TaskItem>();
+            }
+        }
+    }
     public async Task<bool> DeleteTaskAsync(int id)
     {
         var response = await _httpClient.DeleteAsync($"task/{id}");

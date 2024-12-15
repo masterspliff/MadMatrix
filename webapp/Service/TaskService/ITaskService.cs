@@ -22,4 +22,7 @@ public interface ITaskService
     
     // update a task
     Task<bool> UpdateTaskStatus(int taskId, TaskStatus status);
+    
+    // Get Task By AssignedToId
+    Task<List<TaskItem>> GetTasksByAssignedToId(List<int> assignedToIds);
 }

@@ -129,7 +129,7 @@ else
         var eventIds = new List<int> { EventId };
         _tasks = await TaskService.GetTasksByEventIdAsync(eventIds);
     }
-
+    
     private void NavigateToEvents()
     {
         NavigationManager.NavigateTo("/eventsoverview");
