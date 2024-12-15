@@ -1,3 +1,5 @@
+@page "/create-task"
+@using core.Models
 @using TaskStatus = core.Models.TaskStatus
 @using webapp.Service
 @using webapp.Service.LoginService
@@ -6,28 +8,20 @@
 @inject ILoginService LoginService
 @inject IEventService EventService
 
-    <!-- BEGIN FORM SECTION -->
-    <EditForm Model="NewTask" OnValidSubmit="CommitTask" class="card announcement-card" style="margin: 5px auto; border: none; box-shadow: none">
-
-        <div style="width: 100%">
-            <h4 class="text-left" style="margin-bottom: 10px">Opret Opgave</h4>
+<EditForm Model="NewTask" OnValidSubmit="CommitTask" class="card announcement-card" style="margin: 5px auto; border: none; box-shadow: none">
+    <div style="width: 100%">
+        <h4 class="text-left" style="margin-bottom: 10px">Opret Opgave</h4>
 
         <!-- TASK TITLE FIELD -->
         <div class="form-group">
             <label for="TaskTitle" class="form-label">Opgave Titel</label>
-            <InputText id="TaskTitle"
-                       class="form-control"
-                       @bind-Value="NewTask.Title"
-                       placeholder="Indtast opgave titel" />
+            <InputText id="TaskTitle" class="form-control" @bind-Value="NewTask.Title" placeholder="Indtast opgave titel" />
         </div>
 
         <!-- TASK DESCRIPTION FIELD -->
         <div class="form-group">
             <label for="TaskDescription" class="form-label">Beskrivelse</label>
-            <InputText id="TaskDescription"
-                       class="form-control"
-                       @bind-Value="NewTask.Description"
-                       placeholder="Indtast beskrivelse" />
+            <InputText id="TaskDescription" class="form-control" @bind-Value="NewTask.Description" placeholder="Indtast beskrivelse" />
         </div>
 
         <!-- TASK DATE FIELD -->
@@ -64,26 +58,7 @@
             </InputSelect>
         </div>
 
-        <!-- FILTER USERS BY COMPETENCY -->
-        <label style="font-weight: bold; margin-bottom: 10px; margin-top: 10px">Vælg Kompetencer for medarbejdere</label>
-        <div class="form-worker" style="border: 1px solid #f4f4f4; padding: 10px;">
-            @if (isLoading)
-            {
-                <div>Loading users...</div>
-            }
-            else
-            {
-                @foreach (var competency in Competencies)
-                {
-                    <div class="form-check">
-                        <input type="checkbox" class="form-check-input" @onchange="@(e => ToggleCompetencyFilter(competency))" id="@($"competency_{competency}")" />
-                        <label class="form-check-label" for="@($"competency_{competency}")">@competency</label>
-                    </div>
-                }
-            }
-        </div>
-
-        <!-- ASSIGN WORKERS BASED ON SELECTED COMPETENCY -->
+        <!-- ASSIGN WORKERS -->
         <label style="font-weight: bold; margin-bottom: 10px; margin-top: 10px">Tildel Medarbejdere</label>
         <div class="form-worker" style="border: 1px solid #ececec; padding: 10px; border-radius: 5px; background-color: lightgrey">
             @if (isLoading)
@@ -92,15 +67,39 @@
             }
             else
             {
-                @foreach (var user in _users.Where(u => u.Competencies.Intersect(SelectedCompetencies).Any()))
+                @foreach (var user in _users)
                 {
                     <div class="form-check">
-                        <input type="checkbox" class="form-check-input" @onchange="@(e => ToggleUserSelection(user.Id))" checked="@(NewTask.AssignedToIds.Contains(user.Id))" id="@($"user_{user.Id}")" />
+                        <input type="checkbox" class="form-check-input" 
+                               @onchange="@(e => ToggleUserSelection(user.Id))" 
+                               checked="@(NewTask.AssignedToIds.Contains(user.Id))" 
+                               id="@($"user_{user.Id}")" 
+                               @onclick="(() => ShowUserCompetencies(user.Id))" />
                         <label class="form-check-label" for="@($"user_{user.Id}")">@user.FirstName @user.LastName</label>
                     </div>
                 }
             }
         </div>
+
+        <!-- DISPLAY COMPETENCIES -->
+        @if (SelectedUserCompetencies?.Any() == true)
+        {
+            <div class="competencies-section" style="margin-top: 20px; border: 1px solid #ddd; padding: 10px; background-color: #f9f9f9; border-radius: 5px;">
+                <h5>Kompetencer</h5>
+                <ul>
+                    @foreach (var competency in SelectedUserCompetencies)
+                    {
+                        <li>@competency.ToString()</li> <!-- Displaying enum as string -->
+                    }
+                </ul>
+            </div>
+        }
+        else if (SelectedUserCompetencies != null)
+        {
+            <div class="competencies-section" style="margin-top: 20px;">
+                <em>Ingen kompetencer fundet for denne bruger.</em>
+            </div>
+        }
 
         <!-- SELECT EVENTS (MULTIPLE EVENTS SELECTION) -->
         <label style="font-weight: bold; margin-bottom: 10px; margin-top: 10px;" >Vælg Events</label>
@@ -114,38 +113,35 @@
                 @foreach (var eventItem in _events)
                 {
                     <div class="form-check">
-                        <input type="checkbox" class="form-check-input" @onchange="@(e => ToggleEventSelection(eventItem.Id))" checked="@(NewTask.EventIds.Contains(eventItem.Id))" id="@($"event_{eventItem.Id}")" />
+                        <input type="checkbox" class="form-check-input" 
+                               @onchange="@(e => ToggleEventSelection(eventItem.Id))" 
+                               checked="@(NewTask.EventIds.Contains(eventItem.Id))" 
+                               id="@($"event_{eventItem.Id}")" />
                         <label class="form-check-label" for="@($"event_{eventItem.Id}")">@eventItem.Title</label>
                     </div>
                 }
             }
         </div>
+
         <button type="submit" class="btn btn-primary" style="margin-top: 20px; width: 100%">Opret Opgave</button>
-        
-        </div>
-    </EditForm>
+    </div>
+</EditForm>
 
 @code {
     private TaskItem NewTask { get; set; } = new() { AssignedToIds = new List<int>(), EventIds = new List<int>() };
-    private User? currentUser;
     private List<User> _users = new();
     private List<TaskEvent> _events = new();
     private bool isLoading = true;
 
-    private List<Competency> Competencies = Enum.GetValues(typeof(Competency)).Cast<Competency>().ToList();
-    private List<Competency> SelectedCompetencies = new();
-
-    [Parameter]
-    public EventCallback OnTaskCreated { get; set; }
+    private List<Competency>? SelectedUserCompetencies { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
         try
         {
             isLoading = true;
-            currentUser = await LoginService.GetCurrentUser();
-            _users = await UserService.LoadUsers();
-            _events = await EventService.GetAllEventsAsync();
+            _users = await UserService.LoadUsers();  // Load all users
+            _events = await EventService.GetAllEventsAsync();  // Load all events
         }
         catch (Exception ex)
         {
@@ -157,59 +153,25 @@
         }
     }
 
-    private async Task CommitTask()
-    {
-        try
-        {
-            var isSuccess = await TaskService.CreateTaskAsync(NewTask);
-
-            if (isSuccess)
-            {
-                // Assign selected events to each user
-                foreach (var userId in NewTask.AssignedToIds)
-                {
-                    var eventAssignmentSuccess = await UserService.AddEventsToUserAsync(userId, NewTask.EventIds);
-
-                    if (!eventAssignmentSuccess)
-                    {
-                        Console.WriteLine($"Failed to assign events to user {userId}");
-                    }
-                }
-
-                // Reset the form after successful submission
-                NewTask = new() { AssignedToIds = new List<int>(), EventIds = new List<int>() };
-                await OnTaskCreated.InvokeAsync();
-            }
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Error creating task: {ex.Message}");
-        }
-    }
-
-
-
-    private void ToggleCompetencyFilter(Competency competency)
-    {
-        if (SelectedCompetencies.Contains(competency))
-        {
-            SelectedCompetencies.Remove(competency);
-        }
-        else
-        {
-            SelectedCompetencies.Add(competency);
-        }
-    }
-
     private void ToggleUserSelection(int userId)
     {
         if (NewTask.AssignedToIds.Contains(userId))
         {
-            NewTask.AssignedToIds.Remove(userId);
+            NewTask.AssignedToIds.Remove(userId);  // Unassign user
         }
         else
         {
-            NewTask.AssignedToIds.Add(userId);
+            NewTask.AssignedToIds.Add(userId);  // Assign user
+        }
+    }
+
+    private void ShowUserCompetencies(int userId)
+    {
+        // Find the selected user
+        var selectedUser = _users.FirstOrDefault(u => u.Id == userId);
+        if (selectedUser != null)
+        {
+            SelectedUserCompetencies = selectedUser.Competencies;
         }
     }
 
@@ -217,11 +179,29 @@
     {
         if (NewTask.EventIds.Contains(eventId))
         {
-            NewTask.EventIds.Remove(eventId);
+            NewTask.EventIds.Remove(eventId);  // Unselect event
         }
         else
         {
-            NewTask.EventIds.Add(eventId);
+            NewTask.EventIds.Add(eventId);  // Select event
+        }
+    }
+
+    private async Task CommitTask()
+    {
+        try
+        {
+            var isSuccess = await TaskService.CreateTaskAsync(NewTask);
+            if (isSuccess)
+            {
+                // Reset the form after successful submission
+                NewTask = new() { AssignedToIds = new List<int>(), EventIds = new List<int>() };
+                SelectedUserCompetencies = null;
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error creating task: {ex.Message}");
         }
     }
 
@@ -262,18 +242,6 @@
         if (args.Value is string timeValue && TimeOnly.TryParse(timeValue, out var parsedTime))
         {
             NewTask.EndTime = parsedTime;
-        }
-    }
-    
-    private async void AddEventToUser(int userId, List<int> EventIds)
-    {
-        try
-        {
-            await UserService.AddEventsToUserAsync(userId, EventIds);
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Error adding event to user: {ex.Message}");
         }
     }
 }
