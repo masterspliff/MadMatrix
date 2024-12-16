@@ -22,12 +22,12 @@ jobs:
           dotnet-version: '8.x'
 
       - name: Build with dotnet
-        run: dotnet build ClientApp --configuration Release
+        run: dotnet build --configuration Release
         env:
           MONGODB_PASSWORD: ${{ secrets.MONGODB_PASSWORD }}
 
       - name: dotnet publish
-        run: dotnet publish ClientApp -c Release -o "${{env.DOTNET_ROOT}}/myapp"
+        run: dotnet publish -c Release -o "${{env.DOTNET_ROOT}}/myapp"
         env:
           MONGODB_PASSWORD: ${{ secrets.MONGODB_PASSWORD }}
 
