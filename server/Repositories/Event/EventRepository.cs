@@ -15,16 +15,15 @@ public class EventRepository : IEventRepository
 
     public async Task<IEnumerable<TaskEvent>> GetAllAsync()
     {
-        return await _events.Find(_ => true).ToListAsync();
+        var filter = Builders<TaskEvent>.Filter.Empty;
+        return await _events.Find(filter).ToListAsync();
     }
 
     public async Task<TaskEvent?> GetByIdAsync(int id)
     {
-        var filter = Builders<TaskEvent>.Filter.Eq(e => e.Id, id);
-        return await _events.Find(filter).FirstOrDefaultAsync();
+        var filterById = Builders<TaskEvent>.Filter.Eq(taskEvent => taskEvent.Id, id);
+        return await _events.Find(filterById).FirstOrDefaultAsync();
     }
-
-    
     
     public async Task<TaskEvent> CreateAsync(TaskEvent entity)
     {
