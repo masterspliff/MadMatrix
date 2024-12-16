@@ -1,13 +1,13 @@
-using MongoDB.Driver; // Import MongoDB driver for database operations
-using MongoDB.Bson; // Import Bson for MongoDB document representation
-using core.Models; // Import models from the core project
+using MongoDB.Driver; 
+using MongoDB.Bson; 
+using core.Models; 
 
-namespace server.Data; // Define the namespace for the data context
+namespace server.Data; 
 
-public class MongoDbContext // Define the MongoDB context class
+public class MongoDbContext 
 {
-    private readonly IMongoDatabase _database; // MongoDB database instance
-    private readonly IMongoClient _client; // MongoDB client instance
+    private readonly IMongoDatabase _database; 
+    private readonly IMongoClient _client;
 
     public MongoDbContext(IConfiguration configuration) // Constructor accepting configuration
     {
@@ -35,11 +35,9 @@ public class MongoDbContext // Define the MongoDB context class
             throw; // Rethrow the exception
         }
     }
-
-    public IMongoClient Client => _client; // Public property to access the MongoDB client
-    public IMongoDatabase Database => _database; // Public property to access the MongoDB database
+    
     public IMongoCollection<TaskEvent> Events => _database.GetCollection<TaskEvent>("Events"); // Access the "Events" collection
     public IMongoCollection<Location> Locations => _database.GetCollection<Location>("Locations"); // Access the "Locations" collection
     public IMongoCollection<User> Users => _database.GetCollection<User>("Users"); // Access the "Users" collection
-    public IMongoCollection<core.Models.TaskItem> Tasks => _database.GetCollection<core.Models.TaskItem>("Tasks"); // Access the "Tasks" collection
+    public IMongoCollection<TaskItem> Tasks => _database.GetCollection<TaskItem>("Tasks"); // Access the "Tasks" collection
 }
