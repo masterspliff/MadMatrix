@@ -11,6 +11,9 @@ namespace server.Controllers;
 [Route("[controller]")]
 public class TaskController : ControllerBase
 {
+    /// <summary>
+    /// Repository for handling task data persistence
+    /// </summary>
     private readonly ITaskRepository _taskRepository;
 
     public TaskController(ITaskRepository taskRepository) // navngivning??
@@ -18,6 +21,10 @@ public class TaskController : ControllerBase
         _taskRepository = taskRepository;
     }
 
+    /// <summary>
+    /// Retrieves all tasks from the system
+    /// </summary>
+    /// <returns>A collection of all tasks, or an empty collection if none exist</returns>
     [HttpGet]
     public async Task<ActionResult<IEnumerable<TaskItem>>> GetAll()
     {
@@ -25,6 +32,11 @@ public class TaskController : ControllerBase
         return Ok(tasks);
     }
 
+    /// <summary>
+    /// Retrieves a specific task by its identifier
+    /// </summary>
+    /// <param name="id">The unique identifier of the task to retrieve</param>
+    /// <returns>The task if found, or NotFound if no task matches the given id</returns>
     [HttpGet("{id}")]
     public async Task<ActionResult<TaskItem>> GetById(int id)
     {
@@ -36,6 +48,11 @@ public class TaskController : ControllerBase
         return Ok(task);
     }
 
+    /// <summary>
+    /// Creates a new task in the system
+    /// </summary>
+    /// <param name="task">The task data to create, must include at least one assigned user</param>
+    /// <returns>The created task with its assigned id, or BadRequest if validation fails</returns>
     [HttpPost]
     public async Task<ActionResult<TaskItem>> Create(TaskItem task)
     {
@@ -57,6 +74,12 @@ public class TaskController : ControllerBase
     }
 
 
+    /// <summary>
+    /// Updates an existing task
+    /// </summary>
+    /// <param name="id">The id of the task to update</param>
+    /// <param name="task">The updated task data</param>
+    /// <returns>NoContent if successful, BadRequest if validation fails</returns>
     [HttpPut("{id}")]
     public async Task<IActionResult> Update(int id, TaskItem task)
     {
@@ -74,6 +97,11 @@ public class TaskController : ControllerBase
         return NoContent();
     }
 
+    /// <summary>
+    /// Deletes a task from the system
+    /// </summary>
+    /// <param name="id">The id of the task to delete</param>
+    /// <returns>NoContent if successful, NotFound if task doesn't exist</returns>
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(int id)
     {
@@ -87,6 +115,11 @@ public class TaskController : ControllerBase
         return NoContent();
     }
     
+    /// <summary>
+    /// Retrieves all tasks associated with specific events
+    /// </summary>
+    /// <param name="eventIds">Comma-separated list of event IDs</param>
+    /// <returns>Collection of tasks associated with the specified events, or BadRequest if invalid input</returns>
     [HttpGet("byevents/{eventIds}")]
     public async Task<ActionResult<IEnumerable<TaskItem>>> GetTasksByEventIds(string eventIds)
     {

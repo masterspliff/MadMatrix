@@ -4,73 +4,88 @@ using server.Data;
 
 namespace server.Repositories;
 
-// Implements the IUserRepository interface, providing CRUD operations for User entities
+/// <summary>
+/// Handles persistence and retrieval of User entities in MongoDB database
+/// </summary>
 public class UserRepository : IUserRepository
 {
-    private readonly IMongoCollection<User> _users; // MongoDB collection for storing User documents
+    /// <summary>
+    /// MongoDB collection containing all user documents.
+    /// Used to perform CRUD operations on user data.
+    /// </summary>
+    private readonly IMongoCollection<User> _users;
 
-    // Constructor: Initializes the MongoDB User collection using the provided context
+    /// <summary>
+    /// Initializes a new repository with access to users collection
+    /// </summary>
+    /// <param name="context">Database context providing access to MongoDB collections</param>
     public UserRepository(MongoDbContext context)
     {
         _users = context.Users; // Access the Users collection from the database context
     }
 
-    // Retrieves all users from the collection
+    /// <summary>
+    /// Retrieves all users from the database
+    /// </summary>
+    /// <returns>A list of all users</returns>
     public async Task<IEnumerable<User>> GetAllAsync()
     {
-        // MongoDB query to find all documents; `_ => true` is a shorthand for selecting everything
-        return await _users.Find(_ => true).ToListAsync(); // Convert results to a list asynchronously
+        return await _users.Find(_ => true).ToListAsync();
     }
 
-    // Retrieves a single user by their ID
+    /// <summary>
+    /// Retrieves a specific user by ID
+    /// </summary>
+    /// <param name="id">ID of the desired user</param>
+    /// <returns>User if found, otherwise null</returns>
     public async Task<User?> GetByIdAsync(int id)
     {
-        // Create a filter to match the ID field
-        var filter = Builders<User>.Filter.Eq(e => e.Id, id); 
-        // Find the first document matching the filter or return null if none exists
+        var filter = Builders<User>.Filter.Eq(e => e.Id, id);
         return await _users.Find(filter).FirstOrDefaultAsync();
     }
 
-    // Creates a new user in the collection
+    /// <summary>
+    /// Creates a new user in the database
+    /// </summary>
+    /// <param name="entity">User object to be created</param>
+    /// <returns>The created user with assigned ID</returns>
     public async Task<User> CreateAsync(User entity)
     {
-        // Retrieve the last user (sorted by ID in descending order)
         var lastUser = await _users.Find(_ => true)
-            .SortByDescending(u => u.Id) // Sort by ID in descending order
-            .FirstOrDefaultAsync(); // Get the first result or null if none exist
+            .SortByDescending(u => u.Id)
+            .FirstOrDefaultAsync();
 
-        // Assign a new ID: the next integer after the last user's ID or 1 if the collection is empty
         entity.Id = (lastUser?.Id ?? 0) + 1;
-
-        // Insert the new user document into the collection
         await _users.InsertOneAsync(entity);
-
-        // Return the created user with the new ID
         return entity;
     }
 
-    // Updates an existing user in the collection
+    /// <summary>
+    /// Updates an existing user in the database
+    /// </summary>
+    /// <param name="entity">User object with updated values</param>
     public async Task UpdateAsync(User entity)
     {
-        // Create a filter to match the user's ID
         var filter = Builders<User>.Filter.Eq(e => e.Id, entity.Id);
-
-        // Replace the document matching the filter with the updated entity
         await _users.ReplaceOneAsync(filter, entity);
     }
 
-    // Deletes a user from the collection by their ID
+    /// <summary>
+    /// Deletes a user from the database
+    /// </summary>
+    /// <param name="id">ID of the user to be deleted</param>
     public async Task DeleteAsync(int id)
     {
-        // Create a filter to match the user's ID
         var filter = Builders<User>.Filter.Eq(e => e.Id, id);
-
-        // Delete the document matching the filter
         await _users.DeleteOneAsync(filter);
     }
-    
-    // In UserRepository.cs
 
+    /// <summary>
+    /// Adds events to an existing user
+    /// </summary>
+    /// <param name="userId">ID of the user to be updated</param>
+    /// <param name="eventIds">List of event IDs to be added to the user</param>
+    /// <exception cref="KeyNotFoundException">If user with given ID is not found</exception>
     public async Task AddEventsToUserAsync(int userId, List<int> eventIds)
     {
         var user = await _users.Find(u => u.Id == userId).FirstOrDefaultAsync(); // Find the user by ID

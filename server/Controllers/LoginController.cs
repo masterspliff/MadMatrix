@@ -8,6 +8,9 @@ namespace server.Controllers;
 [Route("api/[controller]")]
 public class LoginController : ControllerBase
 {
+    /// <summary>
+    /// Repository for handling user authentication
+    /// </summary>
     private readonly ILoginRepository _loginRepository;
 
     public LoginController(ILoginRepository loginRepository)
@@ -15,6 +18,11 @@ public class LoginController : ControllerBase
         _loginRepository = loginRepository;
     }
 
+    /// <summary>
+    /// Authenticates a user with their credentials
+    /// </summary>
+    /// <param name="loginRequest">The login credentials containing email and password</param>
+    /// <returns>The authenticated user if successful, or Unauthorized if credentials are invalid</returns>
     [HttpPost]
     public IActionResult Login([FromBody] LoginDto loginRequest)
     {

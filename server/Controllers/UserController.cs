@@ -8,7 +8,10 @@ namespace server.Controllers;
 [Route("[controller]")]
 public class UserController : ControllerBase
 {
-    private readonly IUserRepository _userRepository; // Dependency for interacting with the user database
+    /// <summary>
+    /// Repository for handling user data persistence and authentication
+    /// </summary>
+    private readonly IUserRepository _userRepository;
 
     // Constructor to inject the IUserRepository dependency
     public UserController(IUserRepository userRepository)
@@ -17,6 +20,10 @@ public class UserController : ControllerBase
     }
 
     // Endpoint to retrieve all users
+    /// <summary>
+    /// Retrieves all users from the system
+    /// </summary>
+    /// <returns>A collection of all users, or an empty collection if none exist</returns>
     [HttpGet]
     public async Task<ActionResult<IEnumerable<User>>> GetAll()
     {
@@ -25,6 +32,11 @@ public class UserController : ControllerBase
     }
 
     // Endpoint to retrieve a user by their ID
+    /// <summary>
+    /// Retrieves a specific user by their identifier
+    /// </summary>
+    /// <param name="id">The unique identifier of the user to retrieve</param>
+    /// <returns>The user if found, or NotFound if no user matches the given id</returns>
     [HttpGet("{id}")]
     public async Task<ActionResult<User>> GetById(int id)
     {
@@ -37,8 +49,13 @@ public class UserController : ControllerBase
     }
 
     // Endpoint to register a new user
+    /// <summary>
+    /// Registers a new user in the system
+    /// </summary>
+    /// <param name="registerDto">The registration data including name, email, password, and other user details</param>
+    /// <returns>The created user with assigned id if successful, or BadRequest if email already exists</returns>
     [HttpPost("register")]
-    [Consumes("application/json")] // Specifies that the endpoint expects JSON data
+    [Consumes("application/json")]
     public async Task<ActionResult<User>> Register([FromBody] RegisterDto registerDto)
     {
         var users = await _userRepository.GetAllAsync(); // Fetch all users to check for duplicate emails
@@ -68,6 +85,11 @@ public class UserController : ControllerBase
     }
 
     // Endpoint to handle user login
+    /// <summary>
+    /// Authenticates a user with their credentials
+    /// </summary>
+    /// <param name="loginDto">The login credentials containing email and password</param>
+    /// <returns>The authenticated user if successful, or Unauthorized if credentials are invalid</returns>
     [HttpPost("login")]
     public async Task<ActionResult<User>> Login([FromBody] LoginDto loginDto)
     {
@@ -87,6 +109,12 @@ public class UserController : ControllerBase
     }
 
     // Endpoint to update an existing user
+    /// <summary>
+    /// Updates an existing user's information
+    /// </summary>
+    /// <param name="id">The id of the user to update</param>
+    /// <param name="user">The updated user data</param>
+    /// <returns>NoContent if successful, NotFound if user doesn't exist, or BadRequest if id mismatch</returns>
     [HttpPut("{id}")]
     public async Task<IActionResult> Update(int id, [FromBody] User user)
     {
@@ -107,6 +135,11 @@ public class UserController : ControllerBase
     }
 
     // Endpoint to delete a user by their ID
+    /// <summary>
+    /// Deletes a user from the system
+    /// </summary>
+    /// <param name="id">The id of the user to delete</param>
+    /// <returns>NoContent if successful, NotFound if user doesn't exist</returns>
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(int id)
     {
@@ -120,6 +153,12 @@ public class UserController : ControllerBase
         return NoContent(); // Return a 204 No Content status on successful deletion
     }
     
+    /// <summary>
+    /// Associates multiple events with a specific user
+    /// </summary>
+    /// <param name="userId">The id of the user to update</param>
+    /// <param name="eventIds">List of event IDs to associate with the user</param>
+    /// <returns>NoContent if successful, NotFound if user doesn't exist, or BadRequest if validation fails</returns>
     [HttpPut("{userId}/add-events")]
     public async Task<IActionResult> AddEventsToUser(int userId, [FromBody] List<int> eventIds)
     {

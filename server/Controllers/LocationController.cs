@@ -8,6 +8,9 @@ namespace server.Controllers;
 [Route("[controller]")]
 public class LocationController : ControllerBase
 {
+    /// <summary>
+    /// Repository for handling location data persistence
+    /// </summary>
     private readonly ILocationRepository _locationRepository;
 
     public LocationController(ILocationRepository locationRepository)
@@ -15,6 +18,10 @@ public class LocationController : ControllerBase
         _locationRepository = locationRepository;
     }
 
+    /// <summary>
+    /// Retrieves all locations from the system
+    /// </summary>
+    /// <returns>A collection of all locations, or an empty collection if none exist</returns>
     [HttpGet]
     public async Task<ActionResult<IEnumerable<Location>>> GetAll()
     {
@@ -22,6 +29,11 @@ public class LocationController : ControllerBase
         return Ok(locations);
     }
 
+    /// <summary>
+    /// Retrieves a specific location by its identifier
+    /// </summary>
+    /// <param name="id">The unique identifier of the location to retrieve</param>
+    /// <returns>The location if found, or NotFound if no location matches the given id</returns>
     [HttpGet("{id}")]
     public async Task<ActionResult<Location>> GetById(int id)
     {
@@ -33,6 +45,11 @@ public class LocationController : ControllerBase
         return Ok(location);
     }
 
+    /// <summary>
+    /// Creates a new location in the system
+    /// </summary>
+    /// <param name="location">The location data to create</param>
+    /// <returns>The created location with its assigned id, or BadRequest if validation fails</returns>
     [HttpPost]
     public async Task<ActionResult<Location>> Create(Location location)
     {
@@ -54,6 +71,12 @@ public class LocationController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// Updates an existing location
+    /// </summary>
+    /// <param name="id">The id of the location to update</param>
+    /// <param name="location">The updated location data</param>
+    /// <returns>NoContent if successful, BadRequest if id mismatch</returns>
     [HttpPut("{id}")]
     public async Task<IActionResult> Update(int id, Location location)
     {
@@ -66,6 +89,11 @@ public class LocationController : ControllerBase
         return NoContent();
     }
 
+    /// <summary>
+    /// Deletes a location from the system
+    /// </summary>
+    /// <param name="id">The id of the location to delete</param>
+    /// <returns>NoContent if successful</returns>
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(int id)
     {
