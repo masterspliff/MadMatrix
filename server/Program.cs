@@ -57,7 +57,6 @@ builder.Services.AddScoped<ILoginRepository, LoginRepositoryMongoDB>();
 
 // Register HTTP client services
 builder.Services.AddHttpClient();
-builder.Services.AddScoped<IUserService, UserService>();
 
 var app = builder.Build();
 
