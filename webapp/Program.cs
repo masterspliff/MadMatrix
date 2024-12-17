@@ -9,8 +9,11 @@ var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 
-// Listening on the server port (5267)
-builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("http://localhost:5267/") });
+// Get the base URL from configuration or environment, fallback to localhost for development
+var baseAddress = builder.HostEnvironment.IsDevelopment() 
+    ? "http://localhost:5267/" 
+    : "https://guldkantinen.azurewebsites.net/";
+builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(baseAddress) });
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ITaskService, TaskServiceServer>();
 builder.Services.AddScoped<IEventService, EventService>();
