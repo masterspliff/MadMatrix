@@ -22,15 +22,6 @@ builder.Services.AddCors(options =>
             .AllowAnyHeader());
 });
 
-// Check MongoDB password before starting server
-var password = Environment.GetEnvironmentVariable("MONGODB_PASSWORD");
-if (string.IsNullOrEmpty(password))
-{
-    Console.WriteLine("Please enter your MongoDB password:");
-    password = Console.ReadLine();
-    Environment.SetEnvironmentVariable("MONGODB_PASSWORD", password);
-}
-
 // Validate MongoDB connection immediately
 try 
 {
