@@ -4,6 +4,9 @@
         <TargetFramework>net8.0</TargetFramework>
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
+        <AspNetCoreHostingModel>OutOfProcess</AspNetCoreHostingModel>
+        <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+        <PublishReadyToRun>true</PublishReadyToRun>
     </PropertyGroup>
 
     <ItemGroup>
@@ -17,6 +20,5 @@
       <ProjectReference Include="..\core\core.csproj" />
       <ProjectReference Include="..\webapp\webapp.csproj" />
     </ItemGroup>
-
 
 </Project>
