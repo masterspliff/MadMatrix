@@ -45,33 +45,101 @@
 
 
 @code {
-    //Import parameters from the Model(?)
+    /// <summary>
+    /// The unique identifier of the task being displayed
+    /// </summary>
     [Parameter] public int taskId { get; set; }
+
+    /// <summary>
+    /// The title of the task to display
+    /// </summary>
     [Parameter] public string Title { get; set; }
+
+    /// <summary>
+    /// The detailed description of the task
+    /// </summary>
     [Parameter] public string Description { get; set; }
+
+    /// <summary>
+    /// The current status of the task
+    /// </summary>
     [Parameter] public TaskStatus Status { get; set; }
+
+    /// <summary>
+    /// Callback triggered when the task status changes
+    /// </summary>
     [Parameter] public EventCallback<TaskStatus> StatusChanged { get; set; }
+
+    /// <summary>
+    /// Callback triggered when task status is updated, providing both task ID and new status
+    /// </summary>
     [Parameter] public EventCallback<(int taskId, core.Models.TaskStatus newStatus)> OnTaskStatusUpdated { get; set; }
+
+    /// <summary>
+    /// Local tracking of task status for immediate UI updates
+    /// </summary>
     private TaskStatus _localStatus;
 
+    /// <summary>
+    /// Initializes the local status tracking when the component is first created
+    /// </summary>
     protected override void OnInitialized()
     {
         _localStatus = Status;
     }
 
+    /// <summary>
+    /// Updates the local status tracking when component parameters change
+    /// </summary>
     protected override void OnParametersSet()
     {
         _localStatus = Status;
     }
+
+    /// <summary>
+    /// The date when the task is scheduled
+    /// </summary>
     [Parameter] public DateTime Dato { get; set; }
+
+    /// <summary>
+    /// The start time of the task
+    /// </summary>
     [Parameter] public TimeOnly StartTime { get; set; }
+
+    /// <summary>
+    /// The end time of the task
+    /// </summary>
     [Parameter] public TimeOnly EndTime { get; set; }
+
+    /// <summary>
+    /// List of user IDs assigned to this task
+    /// </summary>
     [Parameter] public List<int> AssignedTo { get; set; }
+
+    /// <summary>
+    /// Controls whether to show the task description
+    /// Defaults to false
+    /// </summary>
     [Parameter] public bool? ShowDescription { get; set; } = false;
+
+    /// <summary>
+    /// Controls whether to show additional task data
+    /// Defaults to false
+    /// </summary>
     [Parameter] public bool? ShowData { get; set; } = false;
 
     
     
+    /// <summary>
+    /// Handles changes to the task status dropdown
+    /// Updates both local state and persists changes to the server
+    /// </summary>
+    /// <param name="e">Event arguments containing the new status value</param>
+    /// <returns>
+    /// A task representing the asynchronous operation.
+    /// On success, updates local state and triggers callbacks.
+    /// On failure, reverts to previous status.
+    /// </returns>
     private async Task OnStatusChanged(ChangeEventArgs e)
     {
         if (Enum.TryParse<TaskStatus>(e.Value?.ToString(), out var newStatus))

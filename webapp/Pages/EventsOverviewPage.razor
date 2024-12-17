@@ -40,14 +40,32 @@ else
 }
 
 @code {
+    /// <summary>
+    /// Stores the list of all events to be displayed
+    /// </summary>
     private List<TaskEvent> events;
+
+    /// <summary>
+    /// Cache of location information to avoid repeated API calls
+    /// Key: LocationId, Value: Location object
+    /// </summary>
     private Dictionary<int, Location?> _locations = new();
 
+    /// <summary>
+    /// Initializes the component by loading all events
+    /// </summary>
+    /// <returns>A task representing the event loading operation</returns>
     protected override async Task OnInitializedAsync()
     {
         events = await EventService.GetAllEventsAsync();
     }
 
+    /// <summary>
+    /// Retrieves the location name for a given location ID
+    /// Uses cached location data when available, otherwise fetches from service
+    /// </summary>
+    /// <param name="locationId">The ID of the location to look up</param>
+    /// <returns>The location name or appropriate placeholder text</returns>
     private string GetLocationNameAsync(int locationId)
     {
         if (locationId <= 0)
@@ -71,6 +89,10 @@ else
         return "Loading...";
     }
     
+    /// <summary>
+    /// Navigates to the detailed view of a specific event
+    /// </summary>
+    /// <param name="EventId">The ID of the event to view</param>
     private void NavigateToTasks(int EventId)
     {
         NavigationManager.NavigateTo($"/eventviewer/{EventId}");

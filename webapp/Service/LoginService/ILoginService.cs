@@ -1,25 +1,43 @@
 using core.Models;
 namespace webapp.Service.LoginService;
 
+/// <summary>
+/// Provides authentication and user management services for the application
+/// </summary>
 public interface ILoginService
 {
-    // Auth state changed event
+    /// <summary>
+    /// Event that is triggered when the authentication state changes
+    /// </summary>
     event EventHandler AuthStateChanged;
 
-    // If a user is logged in, the user will be returned.
-    // If no user is logged in, null will be returned
+    /// <summary>
+    /// Retrieves the currently logged-in user
+    /// </summary>
+    /// <returns>The current User object if logged in, null otherwise</returns>
     Task<User?> GetCurrentUser();
     
-    // If user is valid the function will return true and the
-    // user is set to be logged in.
+    /// <summary>
+    /// Authenticates a user with their email and password
+    /// </summary>
+    /// <param name="email">The user's email address</param>
+    /// <param name="password">The user's password</param>
+    /// <returns>True if authentication was successful, false otherwise</returns>
     Task<bool> Login(string email, string password);
 
-    // Check if a user is currently logged in
+    /// <summary>
+    /// Checks if there is currently a user logged into the application
+    /// </summary>
+    /// <returns>True if a user is logged in, false otherwise</returns>
     Task<bool> IsLoggedIn();
 
-    // Log out the current user
+    /// <summary>
+    /// Logs out the current user and clears their session
+    /// </summary>
     Task Logout();
 
-    // Notify subscribers that auth state has changed
+    /// <summary>
+    /// Notifies all subscribers that the authentication state has changed
+    /// </summary>
     Task NotifyAuthStateChanged();
 }

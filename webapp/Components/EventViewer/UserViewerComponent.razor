@@ -1,16 +1,29 @@
 ﻿@using webapp.Service
 @inject IUserService UserService
+
 <p class="assigned-user">@user.FirstName @user.LastName</p>
 
-
 @code {
+    /// <summary>
+    /// The unique identifier of the user to display.
+    /// Passed as a parameter from the parent component.
+    /// </summary>
     [Parameter]
     public int userId { get; set; }
+
+    /// <summary>
+    /// The user object containing the details to display.
+    /// Initialized as an empty user and populated when component loads.
+    /// </summary>
     private User user = new User();
 
+    /// <summary>
+    /// Initializes the component by loading the user data.
+    /// Fetches the user details using the provided userId.
+    /// </summary>
+    /// <returns>A task representing the asynchronous operation</returns>
     protected override async Task OnInitializedAsync()
     {
         user = await UserService.GetUserById(userId);        
     }
-    
 }

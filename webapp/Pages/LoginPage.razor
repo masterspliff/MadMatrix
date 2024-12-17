@@ -49,14 +49,29 @@
 </div>
 
 @code {
+    /// <summary>
+    /// Controls the display toggle between login and registration forms
+    /// </summary>
     private bool showRegister = false;
+
+    /// <summary>
+    /// Stores the currently logged in user's information
+    /// Used to display appropriate welcome message and role information
+    /// </summary>
     private User? currentUser;
 
+    /// <summary>
+    /// Initializes the component by fetching the current user's information if logged in
+    /// </summary>
+    /// <returns>A task representing the asynchronous initialization operation</returns>
     protected override async Task OnInitializedAsync()
     {
         currentUser = await LoginService.GetCurrentUser();
     }
 
+    /// <summary>
+    /// Toggles between the login and registration views
+    /// </summary>
     private void ToggleRegister()
     {
         showRegister = !showRegister;

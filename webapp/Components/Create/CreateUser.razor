@@ -71,16 +71,30 @@
 </div>
 
 @code {
-    // Model to hold the form input values
+    /// <summary>
+    /// Model containing the registration form data for a new user
+    /// </summary>
     private RegisterDto registerModel = new();
 
-    // Variable to store error messages
+    /// <summary>
+    /// Stores error messages during the registration process
+    /// </summary>
     private string errorMessage = string.Empty;
 
-    // Boolean array to track which competencies are selected
+    /// <summary>
+    /// Tracks the selection state of each competency checkbox
+    /// Each index corresponds to an enum value in the Competency type
+    /// </summary>
     private bool[] competencyValues = new bool[Enum.GetValues(typeof(Competency)).Length];
 
-    // Method to handle form submission
+    /// <summary>
+    /// Handles the submission of the registration form
+    /// </summary>
+    /// <returns>
+    /// A task representing the asynchronous operation.
+    /// On success, navigates to the dashboard.
+    /// On failure, sets an error message.
+    /// </returns>
     private async Task HandleValidSubmit()
     {
         try

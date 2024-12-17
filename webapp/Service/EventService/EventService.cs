@@ -2,15 +2,31 @@ namespace webapp.Service;
 using System.Net.Http.Json;
 using core.Models;
 
+/// <summary>
+/// Implementation of the IEventService interface that handles task event operations
+/// </summary>
 public class EventService : IEventService
 {
+    /// <summary>
+    /// HTTP client used for making requests to the event API endpoints
+    /// </summary>
     private readonly HttpClient _httpClient;
 
+    /// <summary>
+    /// Initializes a new instance of the EventService
+    /// </summary>
+    /// <param name="httpClient">The HTTP client to use for API requests</param>
     public EventService(HttpClient httpClient)
     {
         _httpClient = httpClient;
     }
     
+    /// <summary>
+    /// Creates a new task event by sending a POST request to the API
+    /// </summary>
+    /// <param name="newEvent">The event object containing all required event information</param>
+    /// <returns>True if creation was successful, false if the API request failed</returns>
+    /// <exception cref="Exception">Thrown when there's an error during the API request</exception>
     public async Task<bool> CreateEventAsync(TaskEvent newEvent)
     {
         try
@@ -24,6 +40,11 @@ public class EventService : IEventService
         }
     }
 
+    /// <summary>
+    /// Retrieves all events from the system through the API
+    /// </summary>
+    /// <returns>A list of all TaskEvent objects, or an empty list if none exist</returns>
+    /// <exception cref="Exception">Thrown when the API request fails or returns an error</exception>
     public async Task<List<TaskEvent>> GetAllEventsAsync()
     {
         try
@@ -43,6 +64,12 @@ public class EventService : IEventService
         }
     }
     
+    /// <summary>
+    /// Retrieves a specific event by its ID from the API
+    /// </summary>
+    /// <param name="eventId">The unique identifier of the event to retrieve</param>
+    /// <returns>The requested TaskEvent object</returns>
+    /// <exception cref="Exception">Thrown when the event is not found or the API request fails</exception>
     public async Task<TaskEvent> GetEventByIdAsync(int eventId)
     {
         try
@@ -61,6 +88,12 @@ public class EventService : IEventService
         }
     }
 
+    /// <summary>
+    /// Deletes an event from the system using its ID
+    /// </summary>
+    /// <param name="id">The unique identifier of the event to delete</param>
+    /// <returns>True if deletion was successful, false if the API request failed</returns>
+    /// <exception cref="Exception">Thrown when there's an error during the API request</exception>
     public async Task<bool> DeleteEventAsync(int id)
     {
         try
@@ -74,6 +107,13 @@ public class EventService : IEventService
         }
     }
 
+    /// <summary>
+    /// Updates an existing event in the system
+    /// </summary>
+    /// <param name="id">The unique identifier of the event to update</param>
+    /// <param name="taskEvent">The updated event information</param>
+    /// <returns>True if update was successful, false if the API request failed</returns>
+    /// <exception cref="Exception">Thrown when there's an error during the API request</exception>
     public async Task<bool> UpdateEventAsync(int id, TaskEvent taskEvent)
     {
         try

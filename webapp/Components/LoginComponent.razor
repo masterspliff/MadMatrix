@@ -45,20 +45,53 @@
     }
 
 @code {
+    /// <summary>
+    /// The username/email entered by the user
+    /// </summary>
     private string username = "";
+
+    /// <summary>
+    /// The password entered by the user
+    /// </summary>
     private string password = "";
+
+    /// <summary>
+    /// Error message to display when login fails
+    /// </summary>
     private string errorText = "";
+
+    /// <summary>
+    /// Indicates whether a login attempt is in progress
+    /// Used to show loading spinner and disable the login button
+    /// </summary>
     private bool isLoading = false;
+
+    /// <summary>
+    /// Tracks whether a user is currently logged in
+    /// </summary>
     private bool isLoggedIn = false;
 
+    /// <summary>
+    /// The page to redirect to after successful login
+    /// Defaults to the dashboard page
+    /// </summary>
     [Parameter]
     public string Target { get; set; } = "dashboard";
 
+    /// <summary>
+    /// Initializes the component by checking if user is already logged in
+    /// </summary>
+    /// <returns>A task representing the asynchronous operation</returns>
     protected override async Task OnInitializedAsync()
     {
         isLoggedIn = await loginService.IsLoggedIn();
     }
 
+    /// <summary>
+    /// Handles the logout process
+    /// Clears the authentication state and updates the UI
+    /// </summary>
+    /// <returns>A task representing the asynchronous operation</returns>
     private async Task HandleLogout()
     {
         await loginService.Logout();
@@ -67,6 +100,15 @@
         StateHasChanged();
     }
 
+    /// <summary>
+    /// Handles the login button click
+    /// Validates inputs, attempts login, and handles success/failure
+    /// </summary>
+    /// <returns>
+    /// A task representing the asynchronous operation.
+    /// On success, redirects to Target page.
+    /// On failure, displays error message.
+    /// </returns>
     private async Task OnClickLogin()
     {
         try
@@ -88,6 +130,7 @@
                 var user = await loginService.GetCurrentUser();
                 if (user != null)
                 {
+                    // This is only for debugging and to verify the login
                     Console.WriteLine($"User logged in successfully:");
                     Console.WriteLine($"ID: {user.Id}");
                     Console.WriteLine($"Name: {user.FirstName} {user.LastName}");

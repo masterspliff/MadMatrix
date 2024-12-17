@@ -89,17 +89,36 @@ else
 <!-- get all the tasks that has the eventid. kom så jit -->
 
 @code {
-
-    // view the event info
+    /// <summary>
+    /// The ID of the event being viewed, passed as a route parameter
+    /// </summary>
     [Parameter] public int EventId { get; set; }
     
+    /// <summary>
+    /// The ID of the currently selected task, supplied from query parameters
+    /// </summary>
     [SupplyParameterFromQuery] public int? taskId { get; set; }
 
-    
+    /// <summary>
+    /// The current event being displayed
+    /// </summary>
     private TaskEvent? _currentEvent;
+
+    /// <summary>
+    /// Location information for the current event
+    /// </summary>
     private Location? _currentLocation;
+
+    /// <summary>
+    /// List of tasks associated with the current event
+    /// </summary>
     private List<TaskItem> _tasks = new();
     
+    /// <summary>
+    /// Handles updates to a task's status
+    /// Updates the local task list and triggers UI refresh
+    /// </summary>
+    /// <param name="update">Tuple containing taskId and new status</param>
     private async Task HandleTaskStatusUpdated((int taskId, core.Models.TaskStatus newStatus) update)
     {
         var taskToUpdate = _tasks.FirstOrDefault(t => t.Id == update.taskId);
@@ -110,6 +129,10 @@ else
         }
     }
 
+    /// <summary>
+    /// Initializes the component by loading the event details, location, and associated tasks
+    /// </summary>
+    /// <returns>A task representing the initialization operation</returns>
     protected override async Task OnInitializedAsync()
     {
         _currentEvent = await EventService.GetEventByIdAsync(EventId);
@@ -130,11 +153,19 @@ else
         _tasks = await TaskService.GetTasksByEventIdAsync(eventIds);
     }
 
+    /// <summary>
+    /// Navigates back to the events overview page
+    /// </summary>
     private void NavigateToEvents()
     {
         NavigationManager.NavigateTo("/eventsoverview");
     }
 
+    /// <summary>
+    /// Opens the detailed view of a specific task
+    /// Updates the URL with the task ID without forcing a page reload
+    /// </summary>
+    /// <param name="taskId">The ID of the task to display</param>
     private void OpenTask(int taskId)
     {
         NavigationManager.NavigateTo($"/eventviewer/{EventId}?taskId={taskId}",forceLoad: false, true);

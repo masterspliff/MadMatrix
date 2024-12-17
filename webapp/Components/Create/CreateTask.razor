@@ -128,13 +128,35 @@
 </EditForm>
 
 @code {
+    /// <summary>
+    /// The new task being created, initialized with empty lists for assigned users and events
+    /// </summary>
     private TaskItem NewTask { get; set; } = new() { AssignedToIds = new List<int>(), EventIds = new List<int>() };
+
+    /// <summary>
+    /// Collection of all available users that can be assigned to tasks
+    /// </summary>
     private List<User> _users = new();
+
+    /// <summary>
+    /// Collection of all available events that can be linked to tasks
+    /// </summary>
     private List<TaskEvent> _events = new();
+
+    /// <summary>
+    /// Indicates whether the component is loading data
+    /// </summary>
     private bool isLoading = true;
 
+    /// <summary>
+    /// Stores the competencies of the currently selected user
+    /// </summary>
     private List<Competency>? SelectedUserCompetencies { get; set; }
 
+    /// <summary>
+    /// Initializes the component by loading all users and events
+    /// </summary>
+    /// <returns>A task representing the asynchronous operation</returns>
     protected override async Task OnInitializedAsync()
     {
         try
@@ -153,6 +175,10 @@
         }
     }
 
+    /// <summary>
+    /// Toggles the selection of a user for task assignment
+    /// </summary>
+    /// <param name="userId">The ID of the user to toggle selection for</param>
     private void ToggleUserSelection(int userId)
     {
         if (NewTask.AssignedToIds.Contains(userId))
@@ -165,6 +191,10 @@
         }
     }
 
+    /// <summary>
+    /// Displays the competencies for a selected user
+    /// </summary>
+    /// <param name="userId">The ID of the user whose competencies should be shown</param>
     private void ShowUserCompetencies(int userId)
     {
         // Find the selected user
@@ -175,6 +205,10 @@
         }
     }
 
+    /// <summary>
+    /// Toggles the selection of an event for the task
+    /// </summary>
+    /// <param name="eventId">The ID of the event to toggle selection for</param>
     private void ToggleEventSelection(int eventId)
     {
         if (NewTask.EventIds.Contains(eventId))
@@ -187,6 +221,14 @@
         }
     }
 
+    /// <summary>
+    /// Creates a new task using the TaskService
+    /// </summary>
+    /// <returns>
+    /// A task representing the asynchronous operation.
+    /// On success, resets the form and clears selections.
+    /// On failure, logs the error to console.
+    /// </returns>
     private async Task CommitTask()
     {
         try
@@ -205,6 +247,9 @@
         }
     }
 
+    /// <summary>
+    /// Gets or sets the start time as a string in HH:mm format
+    /// </summary>
     private string? startTimeOnlyValue
     {
         get => NewTask.StartTime.ToString("HH:mm");
@@ -217,6 +262,10 @@
         }
     }
 
+    /// <summary>
+    /// Handles changes to the start time input
+    /// </summary>
+    /// <param name="args">Event arguments containing the new time value</param>
     private void HandleStartTimeChange(ChangeEventArgs args)
     {
         if (args.Value is string timeValue && TimeOnly.TryParse(timeValue, out var parsedTime))
@@ -225,6 +274,9 @@
         }
     }
 
+    /// <summary>
+    /// Gets or sets the end time as a string in HH:mm format
+    /// </summary>
     private string? endTimeOnlyValue
     {
         get => NewTask.EndTime.ToString("HH:mm");
@@ -237,6 +289,10 @@
         }
     }
 
+    /// <summary>
+    /// Handles changes to the end time input
+    /// </summary>
+    /// <param name="args">Event arguments containing the new time value</param>
     private void HandleEndTimeChange(ChangeEventArgs args)
     {
         if (args.Value is string timeValue && TimeOnly.TryParse(timeValue, out var parsedTime))

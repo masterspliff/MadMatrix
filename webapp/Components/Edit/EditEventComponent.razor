@@ -57,12 +57,30 @@
 </EditForm>
 
 @code {
+    /// <summary>
+    /// The ID of the event being edited.
+    /// Passed as a parameter from the parent component.
+    /// </summary>
     [Parameter]
     public int Id { get; set; }
 
+    /// <summary>
+    /// The event being edited, containing all editable properties.
+    /// Initialized as a new event and populated when component loads.
+    /// </summary>
     private TaskEvent EditedEvent = new TaskEvent();
+
+    /// <summary>
+    /// Collection of all available locations that can be assigned to the event.
+    /// Loaded when the component initializes.
+    /// </summary>
     private IEnumerable<core.Models.Location> Locations = Enumerable.Empty<core.Models.Location>();
 
+    /// <summary>
+    /// Loads the event data and available locations when the component parameters change.
+    /// Fetches the event details using the provided ID and populates the edit form.
+    /// </summary>
+    /// <returns>A task representing the asynchronous operation</returns>
     protected override async Task OnParametersSetAsync()
     {
         Locations = await LocationService.GetAllLocationsAsync();
@@ -80,10 +98,22 @@
         }
     }
 
-
+    /// <summary>
+    /// Callback event triggered when the event is successfully saved.
+    /// Used to notify the parent component to refresh its data.
+    /// </summary>
     [Parameter]
     public EventCallback OnSaveCompleted { get; set; }
 
+    /// <summary>
+    /// Saves the edited event using the EventService.
+    /// Triggers the OnSaveCompleted callback on success.
+    /// </summary>
+    /// <returns>
+    /// A task representing the asynchronous operation.
+    /// On success, invokes OnSaveCompleted.
+    /// On failure, logs the error to console.
+    /// </returns>
     private async Task SaveEdit()
     {
         try

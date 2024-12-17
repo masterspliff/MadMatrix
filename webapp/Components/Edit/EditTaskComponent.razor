@@ -78,16 +78,39 @@
 
 </EditForm>
 
-@code {                                                                                                                                                                                                                                                                                                                                                                    
-     [Parameter]                                                                                                                                                                                                                                                                                                                                                            
-     public int TaskId { get; set; }                                                                                                                                                                                                                                                                                                                                        
+@code {
+    /// <summary>
+    /// The ID of the task being edited.
+    /// Passed as a parameter from the parent component.
+    /// </summary>
+    [Parameter]
+    public int TaskId { get; set; }
+
+    /// <summary>
+    /// The task being edited, containing all editable properties.
+    /// Initialized with an empty list for assigned users.
+    /// </summary>
+    private TaskItem EditedTask { get; set; } = new() { AssignedToIds = new List<int>() };
+
+    /// <summary>
+    /// Collection of all available users that can be assigned to the task.
+    /// Loaded when the component initializes.
+    /// </summary>
+    private List<User> _users = new();
+
+    /// <summary>
+    /// Indicates whether the component is currently loading data.
+    /// Used to show/hide loading indicators in the UI.
+    /// </summary>
+    private bool isLoading = true;
                                                                                                                                                                                                                                                                                                                                                                             
-     private TaskItem EditedTask { get; set; } = new() { AssignedToIds = new List<int>() };                                                                                                                                                                                                                                                                                 
-     private List<User> _users = new();                                                                                                                                                                                                                                                                                                                                     
-     private bool isLoading = true;                                                                                                                                                                                                                                                                                                                                         
-                                                                                                                                                                                                                                                                                                                                                                            
-     protected override async Task OnParametersSetAsync()                                                                                                                                                                                                                                                                                                                   
-     {                                                                                                                                                                                                                                                                                                                                                                      
+    /// <summary>
+    /// Loads the task data and available users when the component parameters change.
+    /// Fetches the task details using the provided TaskId and populates the edit form.
+    /// </summary>
+    /// <returns>A task representing the asynchronous operation</returns>
+    protected override async Task OnParametersSetAsync()
+    {
          try                                                                                                                                                                                                                                                                                                                                                                
          {                                                                                                                                                                                                                                                                                                                                                                  
              isLoading = true;                                                                                                                                                                                                                                                                                                                                              
@@ -108,11 +131,24 @@
          }                                                                                                                                                                                                                                                                                                                                                                  
      }                                                                                                                                                                                                                                                                                                                                                                      
                                                                                                                                                                                                                                                                                                                                                                             
-     [Parameter]                                                                                                                                                                                                                                                                                                                                                            
-     public EventCallback OnSaveCompleted { get; set; }                                                                                                                                                                                                                                                                                                                     
-                                                                                                                                                                                                                                                                                                                                                                            
-     private async Task SaveEdit()                                                                                                                                                                                                                                                                                                                                          
-     {                                                                                                                                                                                                                                                                                                                                                                      
+    /// <summary>
+    /// Callback event triggered when the task is successfully saved.
+    /// Used to notify the parent component to refresh its data.
+    /// </summary>
+    [Parameter]
+    public EventCallback OnSaveCompleted { get; set; }
+
+    /// <summary>
+    /// Saves the edited task using the TaskService.
+    /// Triggers the OnSaveCompleted callback on success.
+    /// </summary>
+    /// <returns>
+    /// A task representing the asynchronous operation.
+    /// On success, invokes OnSaveCompleted.
+    /// On failure, logs the error to console.
+    /// </returns>
+    private async Task SaveEdit()
+    {
          try                                                                                                                                                                                                                                                                                                                                                                
          {                                                                                                                                                                                                                                                                                                                                                                  
              var success = await TaskService.EditTaskAsync(TaskId, EditedTask);                                                                                                                                                                                                                                                                                             
@@ -127,8 +163,12 @@
          }                                                                                                                                                                                                                                                                                                                                                                  
      }                                                                                                                                                                                                                                                                                                                                                                      
                                                                                                                                                                                                                                                                                                                                                                             
-     private string? startTimeOnlyValue                                                                                                                                                                                                                                                                                                                                     
-     {                                                                                                                                                                                                                                                                                                                                                                      
+    /// <summary>
+    /// Gets or sets the start time as a string in HH:mm format.
+    /// Converts between TimeOnly and string representations.
+    /// </summary>
+    private string? startTimeOnlyValue
+    {
          get => EditedTask.StartTime.ToString("HH:mm");                                                                                                                                                                                                                                                                                                                     
          set                                                                                                                                                                                                                                                                                                                                                                
          {                                                                                                                                                                                                                                                                                                                                                                  
@@ -139,16 +179,25 @@
          }                                                                                                                                                                                                                                                                                                                                                                  
      }                                                                                                                                                                                                                                                                                                                                                                      
                                                                                                                                                                                                                                                                                                                                                                             
-     private void HandleStartTimeChange(ChangeEventArgs args)                                                                                                                                                                                                                                                                                                               
-     {                                                                                                                                                                                                                                                                                                                                                                      
+    /// <summary>
+    /// Handles changes to the start time input.
+    /// Parses the input string and updates the EditedTask's StartTime.
+    /// </summary>
+    /// <param name="args">Event arguments containing the new time value</param>
+    private void HandleStartTimeChange(ChangeEventArgs args)
+    {
          if (args.Value is string timeValue && TimeOnly.TryParse(timeValue, out var parsedTime))                                                                                                                                                                                                                                                                            
          {                                                                                                                                                                                                                                                                                                                                                                  
              EditedTask.StartTime = parsedTime;                                                                                                                                                                                                                                                                                                                             
          }                                                                                                                                                                                                                                                                                                                                                                  
      }                                                                                                                                                                                                                                                                                                                                                                      
                                                                                                                                                                                                                                                                                                                                                                             
-     private string? endTimeOnlyValue                                                                                                                                                                                                                                                                                                                                       
-     {                                                                                                                                                                                                                                                                                                                                                                      
+    /// <summary>
+    /// Gets or sets the end time as a string in HH:mm format.
+    /// Converts between TimeOnly and string representations.
+    /// </summary>
+    private string? endTimeOnlyValue
+    {
          get => EditedTask.EndTime.ToString("HH:mm");                                                                                                                                                                                                                                                                                                                       
          set                                                                                                                                                                                                                                                                                                                                                                
          {                                                                                                                                                                                                                                                                                                                                                                  
@@ -159,16 +208,26 @@
          }                                                                                                                                                                                                                                                                                                                                                                  
      }                                                                                                                                                                                                                                                                                                                                                                      
                                                                                                                                                                                                                                                                                                                                                                             
-     private void HandleEndTimeChange(ChangeEventArgs args)                                                                                                                                                                                                                                                                                                                 
-     {                                                                                                                                                                                                                                                                                                                                                                      
+    /// <summary>
+    /// Handles changes to the end time input.
+    /// Parses the input string and updates the EditedTask's EndTime.
+    /// </summary>
+    /// <param name="args">Event arguments containing the new time value</param>
+    private void HandleEndTimeChange(ChangeEventArgs args)
+    {
          if (args.Value is string timeValue && TimeOnly.TryParse(timeValue, out var parsedTime))                                                                                                                                                                                                                                                                            
          {                                                                                                                                                                                                                                                                                                                                                                  
              EditedTask.EndTime = parsedTime;                                                                                                                                                                                                                                                                                                                               
          }                                                                                                                                                                                                                                                                                                                                                                  
      }                                                                                                                                                                                                                                                                                                                                                                      
                                                                                                                                                                                                                                                                                                                                                                             
-     private void ToggleUserSelection(int userId)                                                                                                                                                                                                                                                                                                                           
-     {                                                                                                                                                                                                                                                                                                                                                                      
+    /// <summary>
+    /// Toggles the selection of a user for task assignment.
+    /// Adds or removes the user's ID from the AssignedToIds list.
+    /// </summary>
+    /// <param name="userId">The ID of the user to toggle selection for</param>
+    private void ToggleUserSelection(int userId)
+    {
          if (EditedTask.AssignedToIds.Contains(userId))                                                                                                                                                                                                                                                                                                                     
          {                                                                                                                                                                                                                                                                                                                                                                  
              EditedTask.AssignedToIds.Remove(userId);                                                                                                                                                                                                                                                                                                                       

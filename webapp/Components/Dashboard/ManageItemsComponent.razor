@@ -82,18 +82,45 @@
 </ModalWrapperComponent>
 
 @code {
+    /// <summary>
+    /// Collection of all tasks and events combined into a unified list
+    /// Each tuple contains: Id, Type (Task/Event), Title, Date, and IsEvent flag
+    /// </summary>
     private List<(int Id, string Type, string Title, DateTime Date, bool IsEvent)> Items { get; set; } = new();
+
+    /// <summary>
+    /// Currently selected item for editing or deletion
+    /// </summary>
     private (int Id, string Type, string Title, DateTime Date, bool IsEvent)? SelectedItem;
 
+    /// <summary>
+    /// Current page number in the pagination
+    /// </summary>
     private int CurrentPage { get; set; } = 1;
+
+    /// <summary>
+    /// Number of items to display per page
+    /// </summary>
     private int PageSize { get; set; } = 10;
+
+    /// <summary>
+    /// Total number of pages based on item count and page size
+    /// </summary>
     private int TotalPages { get; set; } = 1;
 
+    /// <summary>
+    /// Initializes the component by loading all tasks and events
+    /// </summary>
+    /// <returns>A task representing the asynchronous operation</returns>
     protected override async Task OnInitializedAsync()
     {
         await RefreshData();
     }
 
+    /// <summary>
+    /// Refreshes the combined list of tasks and events from their respective services
+    /// </summary>
+    /// <returns>A task representing the asynchronous operation</returns>
     private async Task RefreshData()
     {
         var tasks = await TaskService.LoadAllTask();
@@ -106,6 +133,10 @@
         CalculateTotalPages();
     }
 
+    /// <summary>
+    /// Calculates the total number of pages based on item count and page size
+    /// Updates CurrentPage if it exceeds the new total
+    /// </summary>
     private void CalculateTotalPages()
     {
         int totalItems = Items.Count;
@@ -116,16 +147,33 @@
         }
     }
 
+    /// <summary>
+    /// Sets the selected item for deletion and shows the delete confirmation dialog
+    /// </summary>
+    /// <param name="item">The item to be deleted</param>
     private void ShowDeleteDialog((int Id, string Type, string Title, DateTime Date, bool IsEvent) item)
     {
         SelectedItem = item;
     }
 
+    /// <summary>
+    /// Sets the selected item for editing and shows the edit dialog
+    /// </summary>
+    /// <param name="item">The item to be edited</param>
     private void ShowEditDialog((int Id, string Type, string Title, DateTime Date, bool IsEvent) item)
     {
         SelectedItem = item;
     }
 
+    /// <summary>
+    /// Deletes the currently selected item using the appropriate service
+    /// Either using Event- or TaskService
+    /// </summary>
+    /// <returns>
+    /// A task representing the asynchronous operation.
+    /// On success, refreshes the data.
+    /// On failure, logs the error to console.
+    /// </returns>
     private async Task DeleteSelectedItem()
     {
         if (SelectedItem == null) return;
@@ -153,6 +201,9 @@
         }
     }
 
+    /// <summary>
+    /// Navigates to the previous page if available
+    /// </summary>
     private void PreviousPage()
     {
         if (CurrentPage > 1)
@@ -161,6 +212,9 @@
         }
     }
 
+    /// <summary>
+    /// Navigates to the next page if available
+    /// </summary>
     private void NextPage()
     {
         if (CurrentPage < TotalPages)

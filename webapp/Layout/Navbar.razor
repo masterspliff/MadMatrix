@@ -25,6 +25,11 @@
 </ModalWrapperComponent>
 
 @code {
+    /// <summary>
+    /// Handles the logout process by calling the login service, updating the login state,
+    /// and redirecting to the home page.
+    /// </summary>
+    /// <returns>A task representing the asynchronous logout operation</returns>
     private async Task HandleLogout()
     {
         await LoginService.Logout();
@@ -32,22 +37,32 @@
         NavigationManager.NavigateTo("/", true);
     }
 
+    /// <summary>
+    /// Tracks whether a user is currently logged into the application.
+    /// Used to control the visibility of profile and logout buttons.
+    /// </summary>
     private bool isUserLoggedIn;
 
+    /// <summary>
+    /// Initializes the component by checking the current login state and subscribing to auth state changes.
+    /// </summary>
+    /// <returns>A task representing the initialization operation</returns>
     protected override async Task OnInitializedAsync()
     {
         isUserLoggedIn = await LoginService.IsLoggedIn();
         LoginService.AuthStateChanged += HandleAuthStateChanged;
     }
 
+    /// <summary>
+    /// Event handler that responds to changes in authentication state.
+    /// Updates the login status and triggers a UI refresh.
+    /// </summary>
+    /// <param name="sender">The source of the auth state change event</param>
+    /// <param name="e">Event arguments</param>
     private async void HandleAuthStateChanged(object sender, EventArgs e)
     {
         isUserLoggedIn = await LoginService.IsLoggedIn();
         await InvokeAsync(StateHasChanged);
     }
-
-    public void Dispose()
-    {
-        LoginService.AuthStateChanged -= HandleAuthStateChanged;
-    }
+    
 }

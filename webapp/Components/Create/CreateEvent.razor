@@ -55,14 +55,33 @@
 </EditForm>
 
 @code {
+    /// <summary>
+    /// The new event being created
+    /// </summary>
     private TaskEvent NewEvent = new TaskEvent();
+
+    /// <summary>
+    /// Collection of available locations for the event
+    /// </summary>
     private IEnumerable<Location> Locations = Enumerable.Empty<Location>();
     
+    /// <summary>
+    /// Initializes the component by loading all available locations
+    /// </summary>
+    /// <returns>A task representing the asynchronous operation</returns>
     protected override async Task OnInitializedAsync()
     {
         Locations = await LocationService.GetAllLocationsAsync();
     }
 
+    /// <summary>
+    /// Creates a new event using the EventService
+    /// </summary>
+    /// <returns>
+    /// A task representing the asynchronous operation.
+    /// On success, resets the NewEvent form to blank.
+    /// On failure, logs the error to console.
+    /// </returns>
     private async Task CreateEventNow()
     {
         try

@@ -44,24 +44,62 @@
     </EditForm>
     
 @code {
+    /// <summary>
+    /// Model for creating a new location
+    /// </summary>
     private Location locationModel = new() { Id = 0, Name = string.Empty };
+
+    /// <summary>
+    /// Stores error messages during location operations
+    /// </summary>
     private string errorMessage = string.Empty;
+
+    /// <summary>
+    /// Collection of all available locations
+    /// </summary>
     private IEnumerable<Location> locationsList = Array.Empty<Location>();
+
+    /// <summary>
+    /// ID of the location selected for deletion
+    /// </summary>
     private int selectedLocationId;
+
+    /// <summary>
+    /// Currently logged in user
+    /// </summary>
     private User? currentUser;
 
+    /// <summary>
+    /// Callback event triggered when a location is created or deleted
+    /// </summary>
     [Parameter]
     public EventCallback OnLocationCreated { get; set; }
 
+    /// <summary>
+    /// Initializes the component by loading the current user and refreshing the locations list
+    /// </summary>
+    /// <returns>A task representing the asynchronous operation</returns>
     protected override async Task OnInitializedAsync()
     {
         currentUser = await LoginService.GetCurrentUser();
         await RefreshLocations();
     }
 
+    /// <summary>
+    /// Refreshes the list of locations from the service
+    /// </summary>
+    /// <returns>A task representing the asynchronous operation</returns>
     private async Task RefreshLocations() => 
         locationsList = await LocationService.GetAllLocationsAsync();
 
+    /// <summary>
+    /// Handles the deletion of a selected location
+    /// </summary>
+    /// <returns>
+    /// A task representing the asynchronous operation.
+    /// On success, refreshes the location list and resets selection.
+    /// On failure, sets an error message.
+    /// </returns>
     private async Task HandleDeleteLocation()
     {
         Console.WriteLine($"Selected Location ID: {selectedLocationId}");
@@ -87,6 +125,14 @@
         }
     }
 
+    /// <summary>
+    /// Handles the creation of a new location
+    /// </summary>
+    /// <returns>
+    /// A task representing the asynchronous operation.
+    /// On success, clears the form and refreshes the location list.
+    /// On failure, sets an error message.
+    /// </returns>
     private async Task HandleCreateLocation()
     {
         try 
