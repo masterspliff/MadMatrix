@@ -10,6 +10,7 @@ builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 
 // Use relative path for API calls
+// Vi prøver lige noget andet nu
 var baseAddress = builder.HostEnvironment.IsDevelopment() 
     ? "http://localhost:5267/" 
     : "/api/";
