@@ -4,38 +4,79 @@
 @inject ITaskService TaskService
 @inject IEventService EventService
 
-<div style="margin-top: 50px;" class="manage-container">
+@* Main container for the management interface *@
+<div class="manage-container" style="margin-top: 50px;">
     <h2 class="text-2xl font-bold mb-4">Administrer Opgaver og Events</h2>
 
+    @* Table to display tasks and events *@
     <div class="table-container">
         <table class="custom-table">
+            @* Table header *@
             <thead>
                 <tr>
                     <th style="padding-left: 30px">Type</th>
                     <th>Titel</th>
+                    <th>Status</th>
                     <th>Dato</th>
                     <th style="text-align: right; padding-right: 30px">Handling</th>
                 </tr>
             </thead>
+            
+            @* Table body *@
             <tbody>
-                @foreach (var item in Items
-                                     .OrderByDescending(i => i.Date)
-                                     .Skip((CurrentPage - 1) * PageSize)
-                                     .Take(PageSize))
+                @* Calculate items to show on current page *@
+                @{
+                    var startIndex = (CurrentPage - 1) * PageSize;
+                    var itemsToShow = Items
+                        .OrderByDescending(i => i.Date)
+                        .Skip(startIndex)
+                        .Take(PageSize);
+                }
+
+                @foreach (var item in itemsToShow)
                 {
+                    @* Display a single row for each item *@
                     <tr>
+                        @* Type column with badge *@
                         <td>
-                            <span class="status-badge @(item.IsEvent ? "status-event" : "status-task")">
+                            <span class="badge @(item.IsEvent ? "bg-info" : "bg-warning")">
                                 @item.Type
                             </span>
                         </td>
+
+                        @* Title column *@
                         <td>@item.Title</td>
-                        <td>@(item.Date.ToString("dd/MM/yyyy"))</td>
+
+                        @* Status column *@
+                        <td>
+                            @if (!item.IsEvent)
+                            {
+                                <span class="badge @(item.Status switch {
+                                    core.Models.TaskStatus.NotStarted => "bg-secondary",
+                                    core.Models.TaskStatus.InProgress => "bg-primary",
+                                    core.Models.TaskStatus.Completed => "bg-success",
+                                    _ => "bg-secondary"
+                                })">
+                                    @item.Status
+                                </span>
+                            }
+                        </td>
+
+                        @* Date column *@
+                        <td>@item.Date.ToString("dd/MM/yyyy")</td>
+
+                        @* Action buttons column *@
                         <td class="action-buttons">
-                            <button class="btn-edit" data-bs-toggle="modal" data-bs-target="#editModal" @onclick="() => ShowEditDialog(item)">
+                            <button class="btn-edit" 
+                                    data-bs-toggle="modal" 
+                                    data-bs-target="#editModal" 
+                                    @onclick="() => ShowEditDialog(item)">
                                 ✏️ Rediger
                             </button>
-                            <button class="btn-delete" data-bs-toggle="modal" data-bs-target="#deleteModal" @onclick="() => ShowDeleteDialog(item)">
+                            <button class="btn-delete" 
+                                    data-bs-toggle="modal" 
+                                    data-bs-target="#deleteModal" 
+                                    @onclick="() => ShowDeleteDialog(item)">
                                 🗑
                             </button>
                         </td>
@@ -70,31 +111,43 @@
 <ModalWrapperComponent ModalId="editModal" ModalSize="modal-xl" ShowFooter="false">
     @if (SelectedItem != null)
     {
-        @if (SelectedItem.Value.IsEvent)
+        @if (SelectedItem.IsEvent)
         {
-            <EditEventComponent Id="@SelectedItem.Value.Id" OnSaveCompleted="RefreshData" />
+            <EditEventComponent Id="@SelectedItem.Id" OnSaveCompleted="LoadAllItemsFromServer" />
         }
         else
         {
-            <EditTaskComponent TaskId="@SelectedItem.Value.Id" OnSaveCompleted="RefreshData" />
+            <EditTaskComponent TaskId="@SelectedItem.Id" OnSaveCompleted="LoadAllItemsFromServer" />
         }
     }
 </ModalWrapperComponent>
 
 @code {
-    /// <summary>
-    /// Collection of all tasks and events combined into a unified list
-    /// Each tuple contains: Id, Type (Task/Event), Title, Date, and IsEvent flag
-    /// </summary>
-    private List<(int Id, string Type, string Title, DateTime Date, bool IsEvent)> Items { get; set; } = new();
+    // Define a custom type for our items to make the code more readable
+    private class DisplayItem
+    {
+        public int Id { get; set; }
+        public string Type { get; set; }
+        public string Title { get; set; }
+        public DateTime Date { get; set; }
+        public bool IsEvent { get; set; }
+        public core.Models.TaskStatus? Status { get; set; }
+    }
 
     /// <summary>
-    /// Currently selected item for editing or deletion
+    /// Combined collection of all tasks and events in the system,
+    /// converted to DisplayItem format for unified display
     /// </summary>
-    private (int Id, string Type, string Title, DateTime Date, bool IsEvent)? SelectedItem;
+    private List<DisplayItem> Items { get; set; } = new();
 
     /// <summary>
-    /// Current page number in the pagination
+    /// Currently selected item for editing or deletion operations.
+    /// Null when no item is selected.
+    /// </summary>
+    private DisplayItem? SelectedItem { get; set; }
+
+    /// <summary>
+    /// Current page number in the pagination, starting from 1
     /// </summary>
     private int CurrentPage { get; set; } = 1;
 
@@ -104,100 +157,163 @@
     private int PageSize { get; set; } = 10;
 
     /// <summary>
-    /// Total number of pages based on item count and page size
+    /// Total number of pages based on Items count and PageSize
     /// </summary>
     private int TotalPages { get; set; } = 1;
 
     /// <summary>
-    /// Initializes the component by loading all tasks and events
+    /// Initializes the component by loading all items from the server
     /// </summary>
-    /// <returns>A task representing the asynchronous operation</returns>
     protected override async Task OnInitializedAsync()
     {
-        await RefreshData();
+        await LoadAllItemsFromServer();
     }
 
     /// <summary>
-    /// Refreshes the combined list of tasks and events from their respective services
+    /// Fetches all tasks and events from their respective services and combines them into a unified display format
     /// </summary>
     /// <returns>A task representing the asynchronous operation</returns>
-    private async Task RefreshData()
+    private async Task LoadAllItemsFromServer()
     {
-        var tasks = await TaskService.LoadAllTask();
-        var events = await EventService.GetAllEventsAsync();
+        try
+        {
+            // Get tasks and events from their respective services
+            var tasks = await TaskService.LoadAllTask();
+            var events = await EventService.GetAllEventsAsync();
 
-        Items = tasks.Select(t => (t.Id, "Opgave", t.Title, t.Date, false))
-                     .Concat(events.Select(e => (e.Id, "Event", e.Title, e.DateForEvent, true)))
-                     .ToList();
+            // Convert tasks to our display format
+            var taskItems = tasks.Select(task => new DisplayItem
+            {
+                Id = task.Id,
+                Type = "Opgave",
+                Title = task.Title,
+                Date = task.Date,
+                IsEvent = false,
+                Status = task.Status
+            });
 
-        CalculateTotalPages();
+            // Convert events to our display format
+            var eventItems = events.Select(evt => new DisplayItem
+            {
+                Id = evt.Id,
+                Type = "Event",
+                Title = evt.Title,
+                Date = evt.DateForEvent,
+                IsEvent = true,
+                Status = null
+            });
+
+            // Combine both lists
+            Items = taskItems.Concat(eventItems).ToList();
+
+            // Update pagination
+            UpdatePagination();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error loading items: {ex.Message}");
+            Items = new List<DisplayItem>();
+        }
     }
 
     /// <summary>
     /// Calculates the total number of pages based on item count and page size
     /// Updates CurrentPage if it exceeds the new total
     /// </summary>
-    private void CalculateTotalPages()
+    // Calculate total pages and ensure current page is valid
+    private void UpdatePagination()
     {
+        // Calculate how many pages we need
         int totalItems = Items.Count;
         TotalPages = (int)Math.Ceiling((double)totalItems / PageSize);
+
+        // Make sure we're not on a page that doesn't exist
         if (CurrentPage > TotalPages && TotalPages > 0)
         {
             CurrentPage = TotalPages;
         }
+        else if (CurrentPage < 1)
+        {
+            CurrentPage = 1;
+        }
     }
 
     /// <summary>
-    /// Sets the selected item for deletion and shows the delete confirmation dialog
+    /// Navigates to the next page of items if available
     /// </summary>
-    /// <param name="item">The item to be deleted</param>
-    private void ShowDeleteDialog((int Id, string Type, string Title, DateTime Date, bool IsEvent) item)
+    private void GoToNextPage()
+    {
+        if (CurrentPage < TotalPages)
+        {
+            CurrentPage++;
+        }
+    }
+
+    /// <summary>
+    /// Navigates to the previous page of items if available
+    /// </summary>
+    private void GoToPreviousPage()
+    {
+        if (CurrentPage > 1)
+        {
+            CurrentPage--;
+        }
+    }
+
+    /// <summary>
+    /// Prepares and shows the delete confirmation dialog for the selected item
+    /// </summary>
+    /// <param name="item">The item to be potentially deleted</param>
+    private void ShowDeleteDialog(DisplayItem item)
     {
         SelectedItem = item;
     }
 
     /// <summary>
-    /// Sets the selected item for editing and shows the edit dialog
+    /// Prepares and shows the edit dialog for the selected item
     /// </summary>
     /// <param name="item">The item to be edited</param>
-    private void ShowEditDialog((int Id, string Type, string Title, DateTime Date, bool IsEvent) item)
+    private void ShowEditDialog(DisplayItem item)
     {
         SelectedItem = item;
     }
 
     /// <summary>
-    /// Deletes the currently selected item using the appropriate service
-    /// Either using Event- or TaskService
+    /// Deletes the currently selected item from the system
     /// </summary>
-    /// <returns>
-    /// A task representing the asynchronous operation.
-    /// On success, refreshes the data.
-    /// On failure, logs the error to console.
-    /// </returns>
+    /// <returns>A task representing the asynchronous delete operation</returns>
     private async Task DeleteSelectedItem()
     {
+        // Make sure we have an item selected
         if (SelectedItem == null) return;
 
         try
         {
-            bool success;
-            if (SelectedItem.Value.IsEvent)
+            // Delete either an event or a task
+            bool deleteSuccessful;
+            if (SelectedItem.IsEvent)
             {
-                success = await EventService.DeleteEventAsync(SelectedItem.Value.Id);
+                deleteSuccessful = await EventService.DeleteEventAsync(SelectedItem.Id);
             }
             else
             {
-                success = await TaskService.DeleteTaskAsync(SelectedItem.Value.Id);
+                deleteSuccessful = await TaskService.DeleteTaskAsync(SelectedItem.Id);
             }
 
-            if (success)
+            // If deletion was successful, refresh the list
+            if (deleteSuccessful)
             {
-                await RefreshData();
+                await LoadAllItemsFromServer();
             }
         }
         catch (Exception ex)
         {
             Console.WriteLine($"Error deleting item: {ex.Message}");
+        }
+        finally
+        {
+            // Clear the selected item
+            SelectedItem = null;
         }
     }
 
@@ -222,4 +338,5 @@
             CurrentPage++;
         }
     }
+
 }
