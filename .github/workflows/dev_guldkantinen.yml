@@ -26,7 +26,8 @@ jobs:
 
       - name: dotnet publish
         run: |
-          dotnet publish -c Release -o "${{env.DOTNET_ROOT}}/myapp"
+          dotnet publish server/server.csproj -c Release -o "${{env.DOTNET_ROOT}}/myapp/server"
+          dotnet publish webapp/webapp.csproj -c Release -o "${{env.DOTNET_ROOT}}/myapp/webapp"
           cp web.config "${{env.DOTNET_ROOT}}/myapp/web.config" || copy web.config "${{env.DOTNET_ROOT}}/myapp/web.config"
 
       - name: Upload artifact for deployment job
