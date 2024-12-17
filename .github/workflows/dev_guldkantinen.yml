@@ -66,4 +66,10 @@ jobs:
           app-name: 'guldkantinen'
           slot-name: 'Production'
           package: .
-          
+
+      # Add a new step to enable logging for the Azure Web App
+      - name: Enable Logging for Azure Web App
+        run: |
+          az webapp log config --name guldkantinen --resource-group <resource-group-name> --application-logging true --detailed-error-messages true --failed-request-tracing true --web-server-logging filesystem
+        env:
+          AZURE_WEBAPP_PACKAGE_PATH: '.'    
