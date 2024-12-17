@@ -22,7 +22,7 @@ builder.Services.AddCors(options =>
             .AllowAnyHeader());
 });
 
-// Validate MongoDB connection immediately
+// Validate MongoDB connection immediately yes yes
 try 
 {
     var mongoContext = new MongoDbContext(builder.Configuration);
