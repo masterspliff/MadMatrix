@@ -9,8 +9,13 @@ var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 
-// Listening on the server port (5267)
-builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("http://localhost:5267/") });
+// Configure the base URL based on environment
+var baseAddress = Environment.GetEnvironmentVariable("SERVER_API_URL") ??                                                                                                                                 
+                  (builder.HostEnvironment.IsDevelopment()                                                                                                                                                              
+                      ? "http://localhost:5267/"                                                                                                                                                                        
+                      : "https://kantinen-server.azurewebsites.net/"); 
+
+builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(baseAddress) });
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ITaskService, TaskServiceServer>();
 builder.Services.AddScoped<IEventService, EventService>();

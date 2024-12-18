@@ -1,0 +1,115 @@
+sequenceDiagram
+    actor Bruger as Bruger (User)
+    participant CreateTask as CreateTask.razor
+    participant TaskService as TaskServiceServer
+    participant EventService
+    participant UserService
+    participant TaskController
+    participant EventController
+    participant UserController
+    participant TaskRepo as TaskRepository
+    participant EventRepo as EventRepository
+    participant UserRepo as UserRepository
+    participant MongoDB as Database
+
+    Note over Bruger,MongoDB: Main User Interactions Flow
+
+    alt Opret Event (Create Event)
+        Bruger->>CreateTask: Navigate to create-event
+        activate CreateTask
+        CreateTask->>EventService: CreateEventAsync(TaskEvent)
+        EventService->>EventController: POST /event
+        EventController->>EventRepo: CreateAsync(TaskEvent)
+        EventRepo->>MongoDB: InsertOneAsync(event)
+        MongoDB-->>EventRepo: Confirmation
+        EventRepo-->>EventController: Created Event
+        EventController-->>EventService: 201 Created
+        EventService-->>CreateTask: true
+        CreateTask-->>Bruger: Show Confirmation
+        deactivate CreateTask
+    end
+
+    alt Tilføj Opgave (Add Task)
+        Bruger->>CreateTask: Navigate to create-task
+        activate CreateTask
+        CreateTask->>UserService: LoadUsers()
+        UserService->>UserController: GET /user
+        UserController->>UserRepo: GetAllAsync()
+        UserRepo->>MongoDB: Find(users)
+        MongoDB-->>UserRepo: Users List
+        UserRepo-->>UserController: Users
+        UserController-->>UserService: Users List
+        UserService-->>CreateTask: Users List
+
+        CreateTask->>EventService: GetAllEventsAsync()
+        EventService->>EventController: GET /event
+        EventController->>EventRepo: GetAllAsync()
+        EventRepo->>MongoDB: Find(events)
+        MongoDB-->>EventRepo: Events List
+        EventRepo-->>EventController: Events
+        EventController-->>EventService: Events List
+        EventService-->>CreateTask: Events List
+
+        Bruger->>CreateTask: Fill Task Details
+        Bruger->>CreateTask: Select Workers
+        CreateTask->>CreateTask: ToggleUserSelection()
+        CreateTask->>CreateTask: ShowUserCompetencies()
+
+        Bruger->>CreateTask: Submit Form
+        CreateTask->>TaskService: CreateTaskAsync(TaskItem)
+        TaskService->>TaskController: POST /task
+        TaskController->>TaskRepo: CreateAsync(TaskItem)
+        TaskRepo->>MongoDB: InsertOneAsync(task)
+        MongoDB-->>TaskRepo: Confirmation
+        TaskRepo-->>TaskController: Created Task
+        TaskController-->>TaskService: 201 Created
+        TaskService-->>CreateTask: true
+        CreateTask-->>Bruger: Show Confirmation
+        deactivate CreateTask
+    end
+
+    alt Administrer Event (Administer Event)
+        Bruger->>EventService: GetEventByIdAsync(id)
+        activate EventService
+        EventService->>EventController: GET /event/{id}
+        EventController->>EventRepo: GetByIdAsync(id)
+        EventRepo->>MongoDB: Find(event)
+        MongoDB-->>EventRepo: Event
+        EventRepo-->>EventController: Event
+        EventController-->>EventService: Event
+        EventService-->>Bruger: Show Event Details
+
+        Bruger->>EventService: UpdateEventAsync(id, event)
+        EventService->>EventController: PUT /event/{id}
+        EventController->>EventRepo: UpdateAsync(event)
+        EventRepo->>MongoDB: ReplaceOneAsync(event)
+        MongoDB-->>EventRepo: Confirmation
+        EventRepo-->>EventController: Success
+        EventController-->>EventService: 204 NoContent
+        EventService-->>Bruger: true
+        deactivate EventService
+    end
+
+    alt Udfør Opgave (Execute Task)
+        Bruger->>TaskService: GetTaskAsync(id)
+        activate TaskService
+        TaskService->>TaskController: GET /task/{id}
+        TaskController->>TaskRepo: GetByIdAsync(id)
+        TaskRepo->>MongoDB: Find(task)
+        MongoDB-->>TaskRepo: Task
+        TaskRepo-->>TaskController: Task
+        TaskController-->>TaskService: Task
+        TaskService-->>Bruger: Show Task Details
+
+        Bruger->>TaskService: UpdateTaskStatus(id, TaskStatus.Completed)
+        TaskService->>TaskController: PUT /task/{id}
+        TaskController->>TaskRepo: UpdateAsync(task)
+        TaskRepo->>MongoDB: ReplaceOneAsync(task)
+        MongoDB-->>TaskRepo: Confirmation
+        TaskRepo-->>TaskController: Success
+        TaskController-->>TaskService: 204 NoContent
+        TaskService-->>Bruger: true
+        deactivate TaskService
+    end
+
+    Note over Bruger,MongoDB: End of User Interactions
