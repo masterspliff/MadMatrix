@@ -15,9 +15,13 @@ builder.Services.AddAuthorization();
 // Configure the CORS policy
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowAll",
+    options.AddPolicy("AllowFrontend",
         builder => builder
-            .AllowAnyOrigin()
+            .WithOrigins(
+                "https://kantinen-frontend.azurewebsites.net",
+                "http://localhost:5117",  // Local development URL
+                "https://localhost:7112"  // Local development HTTPS URL
+            )
             .AllowAnyMethod()
             .AllowAnyHeader());
 });
@@ -59,7 +63,7 @@ app.UseSwaggerUI(c =>
     c.RoutePrefix = string.Empty; // Serve Swagger UI at the root
 });
 
-app.UseCors("AllowAll");
+app.UseCors("AllowFrontend");
 
 app.UseAuthentication();
 app.UseAuthorization();
