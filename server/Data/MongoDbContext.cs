@@ -26,29 +26,11 @@ public class MongoDbContext
     /// <exception cref="Exception">Thrown when database connection cannot be established</exception>
     public MongoDbContext(IConfiguration configuration)
     {
-        var password = Environment.GetEnvironmentVariable("MONGODB_PASSWORD");
-        var baseConnectionString = configuration.GetConnectionString("MongoDB");
-        var connectionString = baseConnectionString?.Replace("{password}", password);
-
+        var connectionString = configuration.GetConnectionString("MongoDB"); // Hardcoded because of azure deployement.
         var settings = MongoClientSettings.FromConnectionString(connectionString);
         settings.ServerApi = new ServerApi(ServerApiVersion.V1);
-
         _client = new MongoClient(settings);
         _database = _client.GetDatabase("MadMatrix");
-
-        // Test connection
-        try 
-        {
-            _database.RunCommand<BsonDocument>(new BsonDocument("ping", 1)); // Ping the database to test connection
-            Console.WriteLine("Successfully connected to MongoDB MadMatrix database!"); // Log success message
-        } 
-        catch (Exception ex) 
-        {
-            Console.ForegroundColor = ConsoleColor.Red; // Set console text color to red
-            Console.WriteLine($"MongoDB connection failed: {ex.Message}"); // Log failure message
-            Console.ResetColor(); // Reset console text color
-            throw; // Rethrow the exception
-        }
     }
     
     /// <summary>
