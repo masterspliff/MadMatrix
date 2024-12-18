@@ -9,10 +9,10 @@ var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 
-// Get the base URL from configuration or environment, fallback to localhost for development
+// Configure the base URL based on environment
 var baseAddress = builder.HostEnvironment.IsDevelopment() 
     ? "http://localhost:5267/" 
-    : "https://guldkantinen.azurewebsites.net/";
+    : "https://kantinen-server.azurewebsites.net/";
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(baseAddress) });
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ITaskService, TaskServiceServer>();
