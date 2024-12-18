@@ -10,9 +10,11 @@ builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 
 // Configure the base URL based on environment
-var baseAddress = builder.HostEnvironment.IsDevelopment() 
-    ? "http://localhost:5267/" 
-    : "https://kantinen-server.azurewebsites.net/";
+var baseAddress = Environment.GetEnvironmentVariable("SERVER_API_URL") ??                                                                                                                                 
+                  (builder.HostEnvironment.IsDevelopment()                                                                                                                                                              
+                      ? "http://localhost:5267/"                                                                                                                                                                        
+                      : "https://kantinen-server.azurewebsites.net/"); 
+
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(baseAddress) });
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ITaskService, TaskServiceServer>();

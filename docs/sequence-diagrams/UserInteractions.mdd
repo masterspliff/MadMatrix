@@ -1,0 +1,52 @@
+ sequenceDiagram                                                                                                                                                                                           
+     actor Bruger as Bruger (User)                                                                                                                                                                         
+     participant System as System (ServiceClass)                                                                                                                                                           
+     participant Database                                                                                                                                                                                  
+                                                                                                                                                                                                           
+     Note over Bruger,Database: Core Features                                                                                                                                                              
+                                                                                                                                                                                                           
+     alt Add Task                                                                                                                                                                                          
+         Bruger->>System: addTask()                                                                                                                                                                        
+         activate System                                                                                                                                                                                   
+         System->>Database: Store Task Data                                                                                                                                                                
+         activate Database                                                                                                                                                                                 
+         Database-->>System: Confirmation                                                                                                                                                                  
+         deactivate Database                                                                                                                                                                               
+         System-->>Bruger: Return Task Result                                                                                                                                                              
+         deactivate System                                                                                                                                                                                 
+     end                                                                                                                                                                                                   
+                                                                                                                                                                                                           
+     alt Add Event                                                                                                                                                                                         
+         Bruger->>System: addEvent()                                                                                                                                                                       
+         activate System                                                                                                                                                                                   
+         System->>Database: Store Event Data                                                                                                                                                               
+         activate Database                                                                                                                                                                                 
+         Database-->>System: Confirmation                                                                                                                                                                  
+         deactivate Database                                                                                                                                                                               
+         System-->>Bruger: Return Event Result                                                                                                                                                             
+         deactivate System                                                                                                                                                                                 
+     end                                                                                                                                                                                                   
+                                                                                                                                                                                                           
+     alt Add Location                                                                                                                                                                                      
+         Bruger->>System: addLocation()                                                                                                                                                                    
+         activate System                                                                                                                                                                                   
+         System->>Database: Store Location Data                                                                                                                                                            
+         activate Database                                                                                                                                                                                 
+         Database-->>System: Confirmation                                                                                                                                                                  
+         deactivate Database                                                                                                                                                                               
+         System-->>Bruger: Return Location Result                                                                                                                                                          
+         deactivate System                                                                                                                                                                                 
+     end                                                                                                                                                                                                   
+                                                                                                                                                                                                           
+     alt Get Event Overview                                                                                                                                                                                
+         Bruger->>System: getEventOverview()                                                                                                                                                               
+         activate System                                                                                                                                                                                   
+         System->>Database: Fetch Events Data                                                                                                                                                              
+         activate Database                                                                                                                                                                                 
+         Database-->>System: Events Data                                                                                                                                                                   
+         deactivate Database                                                                                                                                                                               
+         System-->>Bruger: Return Events Overview                                                                                                                                                          
+         deactivate System                                                                                                                                                                                 
+     end                                                                                                                                                                                                   
+                                                                                                                                                                                                           
+     Note over Bruger,Database: End of Core Features   

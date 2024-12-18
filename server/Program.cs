@@ -19,6 +19,7 @@ builder.Services.AddCors(options =>
         builder => builder
             .WithOrigins(
                 "https://kantinen-frontend.azurewebsites.net",
+                "http://kantinen-frontend.azurewebsites.net", 
                 "http://localhost:5117",  // Local development URL
                 "https://localhost:7112"  // Local development HTTPS URL
             )
