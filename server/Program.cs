@@ -22,30 +22,10 @@ builder.Services.AddCors(options =>
             .AllowAnyHeader());
 });
 
-// Check MongoDB password before starting server
-var password = Environment.GetEnvironmentVariable("MONGODB_PASSWORD");
-if (string.IsNullOrEmpty(password))
-{
-    Console.WriteLine("Please enter your MongoDB password:");
-    password = Console.ReadLine();
-    Environment.SetEnvironmentVariable("MONGODB_PASSWORD", password);
-}
 
-// Validate MongoDB connection immediately
-try 
-{
-    var mongoContext = new MongoDbContext(builder.Configuration);
-    // If we get here, the connection was successful
-    builder.Services.AddSingleton(mongoContext);
-}
-catch (Exception ex)
-{
-    Console.ForegroundColor = ConsoleColor.Red;
-    Console.WriteLine("Failed to connect to MongoDB during startup. Shutting down.");
-    Console.WriteLine($"Error: {ex.Message}");
-    Console.ResetColor();
-    Environment.Exit(1);
-}
+// Register MongoDB context and test connection
+builder.Services.AddSingleton<MongoDbContext>();   
+
 
 // Register repositories
 builder.Services.AddScoped<IEventRepository, EventRepository>();

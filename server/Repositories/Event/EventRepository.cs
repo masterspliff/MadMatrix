@@ -14,7 +14,6 @@ public class EventRepository : IEventRepository
     /// and handles the persistence of TaskEvent entities.
     /// </summary>
     private readonly IMongoCollection<TaskEvent> _events;
-
     /// <summary>
     /// Initializes a new instance of the EventRepository
     /// </summary>
@@ -23,7 +22,6 @@ public class EventRepository : IEventRepository
     {
         _events = context.Events;
     }
-
     /// <summary>
     /// Retrieves all TaskEvents from the database
     /// </summary>
@@ -33,7 +31,6 @@ public class EventRepository : IEventRepository
         var filter = Builders<TaskEvent>.Filter.Empty;
         return await _events.Find(filter).ToListAsync();
     }
-
     /// <summary>
     /// Retrieves a specific TaskEvent by its ID
     /// </summary>
@@ -44,7 +41,6 @@ public class EventRepository : IEventRepository
         var filterById = Builders<TaskEvent>.Filter.Eq(taskEvent => taskEvent.Id, id);
         return await _events.Find(filterById).FirstOrDefaultAsync();
     }
-    
     /// <summary>
     /// Creates a new TaskEvent with an automatically assigned ID
     /// </summary>
@@ -63,7 +59,6 @@ public class EventRepository : IEventRepository
 
         return entity;
     }
-
     /// <summary>
     /// Updates an existing TaskEvent in the database
     /// </summary>
@@ -74,7 +69,6 @@ public class EventRepository : IEventRepository
         var filter = Builders<TaskEvent>.Filter.Eq(e => e.Id, entity.Id);
         await _events.ReplaceOneAsync(filter, entity);
     }
-
     /// <summary>
     /// Deletes a TaskEvent from the database
     /// </summary>
