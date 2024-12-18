@@ -12,10 +12,10 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddAuthentication();
 builder.Services.AddAuthorization();
 
-// Configure the CORS policy
+// Configure the CORS policy yesy yes
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowFrontend",
+    options.AddPolicy("Allow",
         builder => builder
             .WithOrigins(
                 "https://kantinen-frontend.azurewebsites.net",
