@@ -61,3 +61,11 @@ public class User
     public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;   
 }
 
+public enum UserRole
+{
+    CoWorker,
+    Manager,
+    Administrator
+}
+
+

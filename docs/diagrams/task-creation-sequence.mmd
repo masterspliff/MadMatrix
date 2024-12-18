@@ -1,0 +1,54 @@
+
+sequenceDiagram
+    actor KL as Kantineleder
+    participant CT as CreateTask.razor
+    participant TS as TaskService
+    participant ES as EventService
+    participant US as UserService
+    participant TC as TaskController
+    participant TR as TaskRepository
+    participant DB as MongoDbContext
+
+    %% Forudsætninger
+    Note over KL, DB: Forudsætninger: Bruger er logget ind og Event eksisterer
+
+    %% 1. Indlæs Data
+    CT->>ES: 1.1 GetAllEventsAsync()
+    ES->>DB: 1.2 Events.Find()
+    DB-->>ES: 1.3 Events Liste
+    ES-->>CT: 1.4 Return Events Liste
+
+    CT->>US: 1.5 LoadUsers()
+    US->>DB: 1.6 Users.Find()
+    DB-->>US: 1.7 Medarbejder Liste
+    US-->>CT: 1.8 Return Medarbejder Liste
+
+    %% 2. Hovedflow - Opgave Oprettelse med Validering
+    loop 2.1 Validering af Indtastninger
+        KL->>CT: 2.1.1 Udfyld Påkrævede Felter
+        CT-->>CT: 2.1.2 Valider Input
+        Note right of CT: 2.1.3 -Titel/Beskrivelse
+        Note right of CT: 2.1.4 Gyldig dato og Tid
+        Note right of CT: 2.1.5 Medarbejder tildeling 
+        Note right of CT: 2.1.6 Event valg
+    end
+
+    %% 3. Opret Opgave
+    CT->>TS: 3.1 CreateTaskAsync(TaskItem)
+    TS->>TC: 3.2 CreateAsync(TaskItem)
+    TC->>TR: 3.3 InsertAsync(TaskItem)
+    TR->>DB: 3.4 Tasks.InsertOneAsync()
+
+    alt 3.5 Succes
+        DB-->>TR: 3.5.1 Opgave Oprettet
+        TR-->>TC: 3.5.2 Return TaskItem
+        TC-->>TS: 3.5.3 Return TaskItem
+        TS-->>CT: 3.5.4 true
+        CT-->>KL: 3.5.5 Vis Bekræftelse
+    else 3.6 Database Fejl
+        DB-->>TR: 3.6.1 Fejl
+        TR-->>TC: 3.6.2 Exception
+        TC-->>TS: 3.6.3 500 Internal Server Error
+        TS-->>CT: 3.6.4 false
+        CT-->>KL: 3.6.5 Vis Database Fejl
+end

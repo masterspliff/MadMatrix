@@ -1,0 +1,101 @@
+
+ classDiagram
+     %% Core Domain Models
+     namespace Models {
+         class TaskItem {
+             +int Id
+             +string Title
+             +string Description
+             +TaskStatus Status
+             +DateTime Date
+             +TimeOnly StartTime
+             +TimeOnly EndTime
+             +List<int> EventIds
+             +List<int> AssignedToIds
+             +CreateTask()
+             +UpdateStatus()
+         }
+
+         class User {
+             +int Id
+             +string FirstName
+             +string LastName
+             +List<UserRole> Roles
+             +List<Competency> Competencies
+             +List<int> EventIds
+             +AssignToTask()
+             +UpdateProfile()
+         }
+
+         class TaskEvent {
+             +int Id
+             +string Title
+             +DateTime DateForEvent
+             +int LocationId
+             +CreateEvent()
+             +AssignTasks()
+         }
+     }
+
+     %% Services Layer
+     namespace Services {
+         class TaskService {
+             +CreateTaskAsync()
+             +EditTaskAsync()
+             +LoadAllTask()
+             +GetTaskAsync()
+             +DeleteTaskAsync()
+             +UpdateTaskStatus()
+         }
+
+         class UserService {
+             +AddEventsToUserAsync()
+             +GetUserTasks()
+             +AssignTaskToUser()
+         }
+
+         class EventService {
+             +CreateEventAsync()
+             +GetEventTasks()
+             +AssignUsersToEvent()
+         }
+     }
+
+     %% Repository Layer
+     namespace Repositories {
+         class TaskRepository {
+             +GetAllAsync()
+             +GetByIdAsync()
+             +CreateAsync()
+             +UpdateAsync()
+             +DeleteAsync()
+         }
+
+         class UserRepository {
+             +GetAllAsync()
+             +GetByIdAsync()
+             +CreateAsync()
+             +UpdateAsync()
+             +DeleteAsync()
+         }
+
+         class EventRepository {
+             +GetAllAsync()
+             +GetByIdAsync()
+             +CreateAsync()
+             +UpdateAsync()
+             +DeleteAsync()
+         }
+     }
+
+     %% Relationships
+     TaskService --> TaskRepository : uses
+     TaskService --> TaskItem : manages
+     UserService --> UserRepository : uses
+     UserService --> User : manages
+     EventService --> EventRepository : uses
+     EventService --> TaskEvent : manages
+
+     TaskItem --> User : assigned to
+     TaskItem --> TaskEvent : belongs to
+     User --> TaskEvent : participates in

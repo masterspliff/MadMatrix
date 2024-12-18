@@ -1,0 +1,85 @@
+ graph TB
+     subgraph Prerequisites
+         Login["Login Check
+         AuthenticationService.ValidateToken()"]
+         EventExists["Event Exists Check
+         EventRepository.GetByIdAsync()"]
+     end
+
+     subgraph TaskCreation
+         Actor((Kantineleder))
+
+         CreateTask["Opret Opgave
+         POST /api/tasks"]
+
+         FillTitle["Titel
+         task.Title = input"]
+
+         FillDesc["Beskrivelse
+         task.Description = input"]
+
+         SetDate["Dato
+         task.Date = selectedDate"]
+
+         SetTime["Start/Slut Tid
+         task.StartTime/EndTime = input"]
+
+         SetStatus["Status
+         task.Status = selectedStatus"]
+
+         AssignUser["Tildel Medarbejder
+         task.AssignedToIds.Add()"]
+
+         SelectEvent["Vælg Event
+         task.EventIds.Add()"]
+     end
+
+     subgraph SystemActions
+         TaskController["TaskController.Create()"]
+         TaskService["TaskService.CreateTaskAsync()"]
+         LoadEvents["EventService.GetAllAsync()"]
+         LoadUsers["UserService.GetAllAsync()"]
+         SaveTask["TaskRepository.CreateAsync()"]
+     end
+
+     subgraph Exceptions
+         ValidationError["Validation Error
+         return BadRequest()"]
+         DBError["Database Error
+         return StatusCode(500)"]
+     end
+
+     %% Relationships
+     Actor --> Login
+     Login --> EventExists
+     EventExists --> CreateTask
+
+     CreateTask --> TaskController
+     TaskController --> TaskService
+
+     CreateTask --> FillTitle
+     FillTitle --> FillDesc
+     FillDesc --> SetDate
+     SetDate --> SetTime
+     SetTime --> SetStatus
+     SetStatus --> AssignUser
+     AssignUser --> SelectEvent
+
+     AssignUser --> LoadUsers
+     SelectEvent --> LoadEvents
+     SelectEvent --> SaveTask
+
+     TaskService --> ValidationError
+     SaveTask --> DBError
+
+     %% Styling
+     classDef prerequisite fill:#e6f3ff,stroke:#4d94ff
+     classDef userAction fill:#f2ffe6,stroke:#80ff00
+     classDef systemAction fill:#ffe6e6,stroke:#ff4d4d
+     classDef error fill:#ffcccc,stroke:#ff0000
+
+     class Login,EventExists prerequisite
+     class CreateTask,FillTitle,FillDesc,SetDate,SetTime,SetStatus,AssignUser,SelectEvent userAction
+     class TaskController,TaskService,LoadEvents,LoadUsers,SaveTask systemAction
+     class ValidationError,DBError error
+
