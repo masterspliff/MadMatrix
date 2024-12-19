@@ -47,7 +47,7 @@ jobs:
         if: github.ref == 'refs/heads/dev'
         uses: azure/webapps-deploy@v2
         with:
-          app-name: 'kantinen-server-dev'
+          app-name: 'kantinen-server'
           publish-profile: ${{ secrets.AZURE_SERVER_PUBLISH_PROFILE_API_DEV}}
           package: ${{env.DOTNET_ROOT}}/server
       
@@ -56,6 +56,6 @@ jobs:
         if: github.ref == 'refs/heads/dev'
         uses: azure/webapps-deploy@v2
         with:
-          app-name: 'kantinen-webapp-dev'
+          app-name: 'kantinen-frontend'
           publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE_APP_DEV}}
           package: ${{env.DOTNET_ROOT}}/webapp
