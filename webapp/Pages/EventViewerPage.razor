@@ -6,43 +6,70 @@
 @inject ITaskService TaskService
 @inject ILocationService LocationService
 
-<div style="margin-left: 100px; margin-right: 100px">
-<div class="top-row ps-3 navbar navbar-dark custom-navbar" style="border: 1px solid #ffffff; border-radius: 5px; padding-left: -16px; padding-right: -1px">
-    <div class="container-fluid d-flex justify-content-between" style="margin-left: -12px; margin-right: -12px">
-        <a class="navbar-brand text-black d-flex align-items-center">
-            <span style="font-size: 1.25rem; color: black; font-weight: bold;">Event Oversigtsplan</span>
-        </a>
-
-        <div class="d-flex align-items-center">
-            <button class="btn" @onclick="NavigateToEvents" style="margin-right: -5px">Gå tilbage</button> 
+<div class="container-fluid py-4">
+    <nav class="navbar navbar-light bg-white shadow-sm rounded mb-4">
+        <div class="container-fluid">
+            <span class="navbar-brand mb-0 h1">
+                <i class="bi bi-calendar-event me-2"></i>Event Oversigtsplan
+            </span>
+            <button class="btn btn-outline-primary" @onclick="NavigateToEvents">
+                <i class="bi bi-arrow-left me-2"></i>Gå tilbage
+            </button>
         </div>
-    </div>
-</div>
+    </nav>
 
 @if (_currentEvent == null)
 {
-        <p>Loading event details...</p>
+    <div class="d-flex justify-content-center align-items-center" style="height: 200px;">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
 }
 else
-
 {
     <div class="event-grid">    
         <div class="event-details information-pane">
-            <h5>Event Detajler</h5>
-            
-            <h7>@_currentEvent.Title</h7>
-            <p><strong>Lokation:</strong> @(_currentLocation?.Name)</p>
-            <p><strong>Dato:</strong> @_currentEvent.DateForEvent</p>
-            <p><strong>Kunde:</strong> @_currentEvent.ByCustomer</p>
-            <p><strong>Madvalg :</strong> @_currentEvent.FoodChoices</p>
-            <p><strong>Specielle Behovt:</strong> @_currentEvent.SpecialRequest</p>
-            <p><strong>Deltagere:</strong> @_currentEvent.Participants</p>
+            <div class="card h-100">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0"><i class="bi bi-info-circle me-2"></i>Event Detajler</h5>
+                </div>
+                <div class="card-body">
+                    <h4 class="card-title mb-4">@_currentEvent.Title</h4>
+                    <div class="event-info">
+                        <div class="info-item">
+                            <i class="bi bi-geo-alt text-primary"></i>
+                            <span><strong>Lokation:</strong> @(_currentLocation?.Name)</span>
+                        </div>
+                        <div class="info-item">
+                            <i class="bi bi-calendar text-primary"></i>
+                            <span><strong>Dato:</strong> @_currentEvent.DateForEvent</span>
+                        </div>
+                        <div class="info-item">
+                            <i class="bi bi-person text-primary"></i>
+                            <span><strong>Kunde:</strong> @_currentEvent.ByCustomer</span>
+                        </div>
+                        <div class="info-item">
+                            <i class="bi bi-cup-hot text-primary"></i>
+                            <span><strong>Madvalg:</strong> @_currentEvent.FoodChoices</span>
+                        </div>
+                        <div class="info-item">
+                            <i class="bi bi-chat-left-text text-primary"></i>
+                            <span><strong>Specielle Behov:</strong> @_currentEvent.SpecialRequest</span>
+                        </div>
+                        <div class="info-item">
+                            <i class="bi bi-people text-primary"></i>
+                            <span><strong>Deltagere:</strong> @_currentEvent.Participants</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
         <div class="task-overview information-pane">
             <h5>Opgave oversigt</h5>
             @foreach (var task in _tasks)
             {
-                <div class="information-pane hover-effect" @onclick="() => OpenTask(task.Id)">
+                <div class="information-pane" @onclick="() => OpenTask(task.Id)">
                     <TaskCardComponent ShowData="true" 
                               Title="@task.Title" 
                               Description="@task.Description" 

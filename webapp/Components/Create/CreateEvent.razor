@@ -51,6 +51,19 @@
     <div class="form-group text-center mt-4">
         <button type="submit" class="btn btn-primary" style="width: 100%">Opret Event</button>
     </div>
+
+    @if (!string.IsNullOrEmpty(successMessage))
+    {
+        <div class="alert alert-success" style="margin-top: 20px">
+            @successMessage
+        </div>
+    }
+    @if (!string.IsNullOrEmpty(errorMessage))
+    {
+        <div class="alert alert-danger" style="margin-top: 20px">
+            @errorMessage
+        </div>
+    }
 </div>
 </EditForm>
 
@@ -59,6 +72,8 @@
     /// The new event being created
     /// </summary>
     private TaskEvent NewEvent = new TaskEvent();
+    private string successMessage = string.Empty;
+    private string errorMessage = string.Empty;
 
     /// <summary>
     /// Collection of available locations for the event
@@ -86,14 +101,23 @@
     {
         try
         {
+            successMessage = string.Empty;
+            errorMessage = string.Empty;
+
             var isSuccess = await EventService.CreateEventAsync(NewEvent);
             if (isSuccess)
             {
+                successMessage = "Eventet blev oprettet!";
                 NewEvent = new TaskEvent();
+            }
+            else
+            {
+                errorMessage = "Eventet kunne ikke oprettes. Prøv igen.";
             }
         }
         catch (Exception ex)
         {
+            errorMessage = "Der opstod en fejl. Prøv igen senere.";
             Console.WriteLine($"Error creating event: {ex.Message}");
         }
     }

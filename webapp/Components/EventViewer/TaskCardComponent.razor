@@ -3,47 +3,67 @@
 @inject IUserService UserService
 @inject ITaskService TaskService
 
-<div>
-    <h7 style="margin-bottom: 10px">@Title</h7>
+<div class="card task-card mb-3">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="card-title mb-0">@Title</h5>
+        <span class="badge badge-@Status">@Status</span>
+    </div>
+    
     @if (ShowData == true)
     {
-        <p><strong>Status:</strong> @Status</p>
-        <p><strong>Start Tid:</strong> @StartTime</p>
-        <p><strong>Slut tid:</strong> @EndTime</p>
-        <p class="assigned-to-header">Tildelte Medarbejdere:</p>
-        <div class="assigned-to">
-            @foreach (var id in @AssignedTo)
-            {
-                // component that takes id and handles logic of displaying pfp and other info'
-                    <UserViewerComponent userId="@id"/>    
-                    <br/>
-            }
-
+        <div class="card-body">
+            <div class="task-info">
+                <div class="info-row">
+                    <i class="bi bi-clock text-primary"></i>
+                    <span><strong>Start:</strong> @StartTime</span>
+                </div>
+                <div class="info-row">
+                    <i class="bi bi-clock-history text-primary"></i>
+                    <span><strong>Slut:</strong> @EndTime</span>
+                </div>
+            </div>
+            
+            <div class="mt-3">
+                <h6 class="mb-2"><i class="bi bi-people-fill text-primary me-2"></i>Tildelte Medarbejdere:</h6>
+                <div class="assigned-users">
+                    @foreach (var id in @AssignedTo)
+                    {
+                        <UserViewerComponent userId="@id"/>
+                    }
+                </div>
+            </div>
         </div>
     }
 </div>
-    @if (ShowDescription == true)
-    {
-        <p class="assigned-to-header">Tildelte Medarbejdere:</p>
-        <div class="assigned-to">
-            @foreach (var id in @AssignedTo)
-            {
-                // component that takes id and handles logic of displaying pfp and other info'
-                <UserViewerComponent userId="@id"/>
-            }
-        </div>
-        <p><strong>Beskrivelse: </strong>@Description</p>
 
-        <div>
-            <label for="taskStatusDropdown"><strong>Status:</strong></label>
-            <select id="taskStatusDropdown" value="@_localStatus" @onchange="OnStatusChanged">
-                @foreach (var status in Enum.GetValues(typeof(TaskStatus)).Cast<TaskStatus>())
+@if (ShowDescription == true)
+{
+    <div class="card mt-3">
+        <div class="card-body">
+            <h6 class="mb-3"><i class="bi bi-people-fill text-primary me-2"></i>Tildelte Medarbejdere:</h6>
+            <div class="assigned-users mb-3">
+                @foreach (var id in @AssignedTo)
                 {
-                    <option value="@status">@status</option>
+                    <UserViewerComponent userId="@id"/>
                 }
-            </select>
+            </div>
+            
+            <div class="description-section">
+                <h6 class="mb-2"><i class="bi bi-card-text text-primary me-2"></i>Beskrivelse:</h6>
+                <p class="card-text">@Description</p>
+            </div>
 
+            <div class="status-section mt-3">
+                <label class="form-label" for="taskStatusDropdown"><i class="bi bi-toggle2-on text-primary me-2"></i>Status:</label>
+                <select class="form-select" id="taskStatusDropdown" value="@_localStatus" @onchange="OnStatusChanged">
+                    @foreach (var status in Enum.GetValues(typeof(TaskStatus)).Cast<TaskStatus>())
+                    {
+                        <option value="@status">@status</option>
+                    }
+                </select>
+            </div>
         </div>
+    </div>
 
 
 
