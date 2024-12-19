@@ -15,8 +15,20 @@
                     <InputText id="locationName" class="form-control" @bind-Value="locationModel.Name" placeholder="Navngiv lokationens navn" />
                 </div>
                 <div class="form-group">
-                    <button type="submit" class="btn btn-primary" style="margin-bottom: 50px; margin-top: 10px; width: 100%">Opret Location</button>
+                    <button type="submit" class="btn btn-primary" style="margin-bottom: 10px; margin-top: 10px; width: 100%">Opret Lokation</button>
                 </div>
+                @if (!string.IsNullOrEmpty(successMessage))
+                {
+                    <div class="alert alert-success" role="alert">
+                        @successMessage
+                    </div>
+                }
+                @if (!string.IsNullOrEmpty(errorMessage))
+                {
+                    <div class="alert alert-danger" role="alert">
+                        @errorMessage
+                    </div>
+                }
             </div>
 
             <div>
@@ -35,10 +47,22 @@
                             class="btn btn-danger"
                             @onclick="HandleDeleteLocation"
                             disabled="@(selectedLocationId == 0)"
-                            style="margin-bottom: 25px; margin-top: 10px; width: 100%">
+                            style="margin-bottom: 10px; margin-top: 10px; width: 100%">
                         Slet lokation
                     </button>
                 </div>
+                @if (!string.IsNullOrEmpty(deleteSuccessMessage))
+                {
+                    <div class="alert alert-success" role="alert">
+                        @deleteSuccessMessage
+                    </div>
+                }
+                @if (!string.IsNullOrEmpty(deleteErrorMessage))
+                {
+                    <div class="alert alert-danger" role="alert">
+                        @deleteErrorMessage
+                    </div>
+                }
             </div>
         </div>
     </EditForm>
@@ -53,6 +77,9 @@
     /// Stores error messages during location operations
     /// </summary>
     private string errorMessage = string.Empty;
+    private string successMessage = string.Empty;
+    private string deleteErrorMessage = string.Empty;
+    private string deleteSuccessMessage = string.Empty;
 
     /// <summary>
     /// Collection of all available locations
@@ -107,21 +134,24 @@
 
         try
         {
+            deleteSuccessMessage = string.Empty;
+            deleteErrorMessage = string.Empty;
+
             if (await LocationService.DeleteLocationAsync(selectedLocationId))
             {
                 await RefreshLocations();
                 selectedLocationId = 0;
                 await OnLocationCreated.InvokeAsync();
-                errorMessage = string.Empty;
+                deleteSuccessMessage = "Lokationen blev slettet med succes!";
             }
             else
             {
-                errorMessage = "Failed to delete location. Please try again.";
+                deleteErrorMessage = "Kunne ikke slette lokationen. Prøv venligst igen.";
             }
         }
         catch (Exception ex)
         {
-            errorMessage = $"An error occurred while deleting: {ex.Message}";
+            deleteErrorMessage = $"Der opstod en fejl under sletning: {ex.Message}";
         }
     }
 
@@ -137,21 +167,24 @@
     {
         try 
         {
+            successMessage = string.Empty;
+            errorMessage = string.Empty;
+            
             if (await LocationService.CreateLocationAsync(locationModel))
             {
                 locationModel = new() { Id = 0, Name = string.Empty };
                 await OnLocationCreated.InvokeAsync();
                 await RefreshLocations();
-                errorMessage = string.Empty;
+                successMessage = "Lokationen blev oprettet med succes!";
             }
             else
             {
-                errorMessage = "Failed to create location. Please try again.";
+                errorMessage = "Kunne ikke oprette lokationen. Prøv venligst igen.";
             }
         }
         catch (Exception ex)
         {
-            errorMessage = $"An error occurred: {ex.Message}";
+            errorMessage = $"Der opstod en fejl: {ex.Message}";
         }
     }
 }

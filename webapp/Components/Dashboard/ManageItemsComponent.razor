@@ -9,6 +9,13 @@
     <h2 class="text-2xl font-bold mb-4">Administrer Opgaver og Events</h2>
 
     @* Table to display tasks and events *@
+    @if (!string.IsNullOrEmpty(DeleteMessage))
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @DeleteMessage
+            <button type="button" class="btn-close" @onclick="() => DeleteMessage = null"></button>
+        </div>
+    }
     <div class="table-container">
         <table class="custom-table">
             @* Table header *@
@@ -24,16 +31,7 @@
             
             @* Table body *@
             <tbody>
-                @* Calculate items to show on current page *@
-                @{
-                    var startIndex = (CurrentPage - 1) * PageSize;
-                    var itemsToShow = Items
-                        .OrderByDescending(i => i.Date)
-                        .Skip(startIndex)
-                        .Take(PageSize);
-                }
-
-                @foreach (var item in itemsToShow)
+                @foreach (var item in Items.OrderByDescending(i => i.Date))
                 {
                     @* Display a single row for each item *@
                     <tr>
@@ -85,12 +83,6 @@
             </tbody>
         </table>
 
-        <!-- Pagination Controls -->
-        <div class="mt-3 d-flex justify-content-between">
-            <button class="btn btn-secondary" @onclick="PreviousPage" disabled="@(CurrentPage == 1)">Forrige</button>
-            <span>Side @CurrentPage af @TotalPages</span>
-            <button class="btn btn-secondary" @onclick="NextPage" disabled="@(CurrentPage == TotalPages)">Næste</button>
-        </div>
     </div>
 </div>
 
@@ -99,7 +91,6 @@
         <h5 class="modal-title mb-3">Er du sikker?</h5>
         <p>
             Denne handling kan ikke fortrydes. Dette vil permanent slette 
-            "@SelectedItem?.Type.ToLower()"en "@SelectedItem?.Title".
         </p>
         <div class="mt-4 text-end">
             <button class="btn btn-secondary" data-bs-dismiss="modal">Annuller</button>
@@ -145,21 +136,8 @@
     /// Null when no item is selected.
     /// </summary>
     private DisplayItem? SelectedItem { get; set; }
+    private string? DeleteMessage { get; set; }
 
-    /// <summary>
-    /// Current page number in the pagination, starting from 1
-    /// </summary>
-    private int CurrentPage { get; set; } = 1;
-
-    /// <summary>
-    /// Number of items to display per page
-    /// </summary>
-    private int PageSize { get; set; } = 10;
-
-    /// <summary>
-    /// Total number of pages based on Items count and PageSize
-    /// </summary>
-    private int TotalPages { get; set; } = 1;
 
     /// <summary>
     /// Initializes the component by loading all items from the server
@@ -206,8 +184,6 @@
             // Combine both lists
             Items = taskItems.Concat(eventItems).ToList();
 
-            // Update pagination
-            UpdatePagination();
         }
         catch (Exception ex)
         {
@@ -216,49 +192,6 @@
         }
     }
 
-    /// <summary>
-    /// Calculates the total number of pages based on item count and page size
-    /// Updates CurrentPage if it exceeds the new total
-    /// </summary>
-    // Calculate total pages and ensure current page is valid
-    private void UpdatePagination()
-    {
-        // Calculate how many pages we need
-        int totalItems = Items.Count;
-        TotalPages = (int)Math.Ceiling((double)totalItems / PageSize);
-
-        // Make sure we're not on a page that doesn't exist
-        if (CurrentPage > TotalPages && TotalPages > 0)
-        {
-            CurrentPage = TotalPages;
-        }
-        else if (CurrentPage < 1)
-        {
-            CurrentPage = 1;
-        }
-    }
-
-    /// <summary>
-    /// Navigates to the next page of items if available
-    /// </summary>
-    private void GoToNextPage()
-    {
-        if (CurrentPage < TotalPages)
-        {
-            CurrentPage++;
-        }
-    }
-
-    /// <summary>
-    /// Navigates to the previous page of items if available
-    /// </summary>
-    private void GoToPreviousPage()
-    {
-        if (CurrentPage > 1)
-        {
-            CurrentPage--;
-        }
-    }
 
     /// <summary>
     /// Prepares and shows the delete confirmation dialog for the selected item
@@ -300,9 +233,10 @@
                 deleteSuccessful = await TaskService.DeleteTaskAsync(SelectedItem.Id);
             }
 
-            // If deletion was successful, refresh the list
+            // If deletion was successful, refresh the list and show message
             if (deleteSuccessful)
             {
+                DeleteMessage = $"'{SelectedItem.Title}' blev slettet";
                 await LoadAllItemsFromServer();
             }
         }
@@ -317,26 +251,5 @@
         }
     }
 
-    /// <summary>
-    /// Navigates to the previous page if available
-    /// </summary>
-    private void PreviousPage()
-    {
-        if (CurrentPage > 1)
-        {
-            CurrentPage--;
-        }
-    }
-
-    /// <summary>
-    /// Navigates to the next page if available
-    /// </summary>
-    private void NextPage()
-    {
-        if (CurrentPage < TotalPages)
-        {
-            CurrentPage++;
-        }
-    }
 
 }

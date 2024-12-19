@@ -124,10 +124,16 @@
 
         <button type="submit" class="btn btn-primary" style="margin-top: 20px; width: 100%">Opret Opgave</button>
         
-        @if (!string.IsNullOrEmpty(message))
+        @if (!string.IsNullOrEmpty(successMessage))
         {
-            <div class="alert @messageClass" style="margin-top: 20px">
-                @message
+            <div class="alert alert-success" style="margin-top: 20px">
+                @successMessage
+            </div>
+        }
+        @if (!string.IsNullOrEmpty(errorMessage))
+        {
+            <div class="alert alert-danger" style="margin-top: 20px">
+                @errorMessage
             </div>
         }
     </div>
@@ -227,8 +233,8 @@
         }
     }
 
-    private string? message;
-    private string? messageClass;
+    private string successMessage = string.Empty;
+    private string errorMessage = string.Empty;
 
     /// <summary>
     /// Creates a new task using the TaskService
@@ -242,11 +248,13 @@
     {
         try
         {
+            successMessage = string.Empty;
+            errorMessage = string.Empty;
+
             var isSuccess = await TaskService.CreateTaskAsync(NewTask);
             if (isSuccess)
             {
-                message = "Opgaven blev oprettet!";
-                messageClass = "alert-success";
+                successMessage = "Opgaven blev oprettet!";
                 
                 // Reset the form after successful submission
                 NewTask = new() { AssignedToIds = new List<int>(), EventIds = new List<int>() };
@@ -254,14 +262,12 @@
             }
             else
             {
-                message = "Opgaven kunne ikke oprettes. Prøv igen.";
-                messageClass = "alert-danger";
+                errorMessage = "Opgaven kunne ikke oprettes. Prøv igen.";
             }
         }
         catch (Exception ex)
         {
-            message = "Der opstod en fejl. Prøv igen senere.";
-            messageClass = "alert-danger";
+            errorMessage = "Der opstod en fejl. Prøv igen senere.";
             Console.WriteLine($"Error creating task: {ex.Message}");
         }
     }
