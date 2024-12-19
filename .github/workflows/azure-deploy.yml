@@ -16,8 +16,6 @@ jobs:
         with:
           dotnet-version: '8.0.x'
           
-      - name: Azure Login
-        uses: Azure/login@v2.2.0
 
 
       # Build and publish server
