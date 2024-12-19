@@ -14,6 +14,7 @@ public class EventRepository : IEventRepository
     /// and handles the persistence of TaskEvent entities.
     /// </summary>
     private readonly IMongoCollection<TaskEvent> _events;
+    
     /// <summary>
     /// Initializes a new instance of the EventRepository
     /// </summary>
@@ -22,6 +23,7 @@ public class EventRepository : IEventRepository
     {
         _events = context.Events;
     }
+    
     /// <summary>
     /// Retrieves all TaskEvents from the database
     /// </summary>

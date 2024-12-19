@@ -65,7 +65,13 @@ public class TaskRepository : ITaskRepository
     public async Task UpdateAsync(TaskItem entity)
     {
         var filter = Builders<TaskItem>.Filter.Eq(e => e.Id, entity.Id);
-        await _tasks.ReplaceOneAsync(filter, entity);
+        var result = await _tasks.ReplaceOneAsync(filter, entity);
+        
+        if (!result.IsAcknowledged)
+            throw new Exception($"Failed to update task {entity.Id}");
+            
+        if (result.ModifiedCount == 0)
+            throw new Exception($"No task found with ID {entity.Id}");
     }
 
     /// <summary>

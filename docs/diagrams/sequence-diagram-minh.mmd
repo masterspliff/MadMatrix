@@ -1,0 +1,46 @@
+sequenceDiagram
+    actor Bruger as Bruger
+    participant EV as EventViewerPage.razor
+    participant ES as EventService
+    participant ECon as EventController
+    participant ERepo as EventRepository
+    participant TS as TaskService
+    participant TCon as TaskController
+    participant TRepo as TaskRepository
+
+    %% Forudsætninger
+    Note over Bruger,EV: Bruger er logget ind i systemet
+
+    %% 1. Bruger navigerer til Events
+    Bruger->>EV: 1. Gå til "Events" sektion
+
+    %% 2. Systemet indlæser events
+    EV->>ES: 2.1 GetAllEventsAsync()
+    ES->>ECon: 2.2 GET /event
+    ECon->>ERepo: 2.3 GetAllAsync()
+    ERepo-->>ECon: 2.4 Return events liste
+    ECon-->>ES: 2.5 Return events liste
+    ES-->>EV: 2.6 Return events liste
+
+    %% 3. Bruger vælger et specifikt event
+    Bruger->>EV: 3. Klik på specifikt event
+    EV->>ES: 3.1 GetEventById(eventId)
+    ES->>ECon: 3.2 GET /event/{id}
+    ECon->>ERepo: 3.3 GetByIdAsync(eventId)
+    ERepo-->>ECon: 3.4 Return event data
+    ECon-->>ES: 3.5 Return event data
+    ES-->>EV: 3.6 Return event detaljer
+
+    %% 4. Systemet henter opgaver til eventet
+    EV->>TS: 4.1 GetTasksByEventId(eventId)
+    TS->>TCon: 4.2 GET /task/byevents/{eventId}
+    TCon->>TRepo: 4.3 GetTasksByEventIdsAsync(eventId)
+    TRepo-->>TCon: 4.4 Return opgaveliste
+    TCon-->>TS: 4.5 Return opgaveliste
+    TS-->>EV: 4.6 Return opgaveliste
+
+    %% Undtagelsesflow: Systemet kan ikke indlæse events
+    alt Fejl ved indlæsning af events
+        ES-->>EV: Fejlbesked
+        EV-->>Bruger: Viser fejlbesked
+    end
