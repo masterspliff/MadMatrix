@@ -48,7 +48,7 @@ jobs:
         uses: azure/webapps-deploy@v2
         with:
           app-name: 'kantinen-server-dev'
-          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE_API_DEV }}
+          publish-profile: ${{ secrets.AZURE_SERVER_PUBLISH_PROFILE_API_DEV}}
           package: ${{env.DOTNET_ROOT}}/server
       
       # Deploy Blazor App (Development)
@@ -57,5 +57,5 @@ jobs:
         uses: azure/webapps-deploy@v2
         with:
           app-name: 'kantinen-webapp-dev'
-          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE_APP_DEV }}
+          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE_APP_DEV}}
           package: ${{env.DOTNET_ROOT}}/webapp
