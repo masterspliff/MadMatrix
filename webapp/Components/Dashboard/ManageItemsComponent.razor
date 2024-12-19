@@ -52,9 +52,9 @@
                             @if (!item.IsEvent)
                             {
                                 <span class="badge @(item.Status switch {
-                                    core.Models.TaskStatus.NotStarted => "bg-danger",
-                                    core.Models.TaskStatus.InProgress => "bg-warning",
-                                    core.Models.TaskStatus.Completed => "bg-success",
+                                    core.Models.TaskStatus.IkkePåbegyndt => "bg-danger",
+                                    core.Models.TaskStatus.Påbegyndt => "bg-warning",
+                                    core.Models.TaskStatus.Færdiggjort => "bg-success",
                                     _ => "bg-secondary"
                                 })">
                                     @item.Status

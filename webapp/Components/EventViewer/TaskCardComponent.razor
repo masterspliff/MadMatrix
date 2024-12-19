@@ -3,15 +3,15 @@
 @inject IUserService UserService
 @inject ITaskService TaskService
 
-<div style="max-width: 400px">
+<div>
     <h7 style="margin-bottom: 10px">@Title</h7>
     @if (ShowData == true)
     {
         <p><strong>Status:</strong> @Status</p>
         <p><strong>Start Tid:</strong> @StartTime</p>
         <p><strong>Slut tid:</strong> @EndTime</p>
-        <p><strong>Tildelte Medarbejdere:</strong></p>
-        <div class="assigned-to" style="max-width: 300px">
+        <p class="assigned-to-header">Tildelte Medarbejdere:</p>
+        <div class="assigned-to">
             @foreach (var id in @AssignedTo)
             {
                 // component that takes id and handles logic of displaying pfp and other info'
@@ -24,7 +24,7 @@
 </div>
     @if (ShowDescription == true)
     {
-        <p><strong>Tildelte Medarbejdere:</strong></p>
+        <p class="assigned-to-header">Tildelte Medarbejdere:</p>
         <div class="assigned-to">
             @foreach (var id in @AssignedTo)
             {

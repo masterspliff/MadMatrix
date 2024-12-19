@@ -1,48 +1,70 @@
 ﻿.event-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr); 
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     gap: 20px;
     padding: 16px;
+    width: 100%;
 }
 
 .information-pane {
-    min-height: 500px;
-    max-width: 400px;
+    min-height: min-content;
+    height: auto;
+    width: 100%;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
 .task-details {
     font-weight: bold;
+    flex: 1;
 }
-
-
 
 .event-details {
     font-size: 1.25rem;
     font-weight: bold;
     margin-bottom: 8px;
+    flex: 1;
 }
 
 .event-details p {
     font-size: 0.9rem;
     color: #666;
+    margin: 8px 0;
 }
 
 .event-card {
-    min-height: 300px;
+    min-height: auto;
+    width: 100%;
 }
 
-.btn{
-    background-color: #007bff;
-    color: #fff;
+.assigned-to {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    width: fit-content;
+}
+
+.assigned-to-header {
+    font-size: 1.1rem;
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+
+.btn {
+    background-color: #007bff !important;
+    color: #fff !important;
     border: none;
     padding: 8px 16px;
     border-radius: 4px;
     cursor: pointer;
+    transition: background-color 0.3s ease;
 }
 
 .btn:hover {
-    background-color: #0056b3;
-    color: #fff;
+    background-color: #0056b3 !important;
+    color: #fff !important;
     padding: 8px 16px;
     border-radius: 4px;
     cursor: pointer;

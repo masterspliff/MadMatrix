@@ -123,6 +123,13 @@
         </div>
 
         <button type="submit" class="btn btn-primary" style="margin-top: 20px; width: 100%">Opret Opgave</button>
+        
+        @if (!string.IsNullOrEmpty(message))
+        {
+            <div class="alert @messageClass" style="margin-top: 20px">
+                @message
+            </div>
+        }
     </div>
 </EditForm>
 
@@ -220,13 +227,16 @@
         }
     }
 
+    private string? message;
+    private string? messageClass;
+
     /// <summary>
     /// Creates a new task using the TaskService
     /// </summary>
     /// <returns>
     /// A task representing the asynchronous operation.
     /// On success, resets the form and clears selections.
-    /// On failure, logs the error to console.
+    /// On failure, displays error message.
     /// </returns>
     private async Task CommitTask()
     {
@@ -235,13 +245,23 @@
             var isSuccess = await TaskService.CreateTaskAsync(NewTask);
             if (isSuccess)
             {
+                message = "Opgaven blev oprettet!";
+                messageClass = "alert-success";
+                
                 // Reset the form after successful submission
                 NewTask = new() { AssignedToIds = new List<int>(), EventIds = new List<int>() };
                 SelectedUserCompetencies = null;
             }
+            else
+            {
+                message = "Opgaven kunne ikke oprettes. Prøv igen.";
+                messageClass = "alert-danger";
+            }
         }
         catch (Exception ex)
         {
+            message = "Der opstod en fejl. Prøv igen senere.";
+            messageClass = "alert-danger";
             Console.WriteLine($"Error creating task: {ex.Message}");
         }
     }

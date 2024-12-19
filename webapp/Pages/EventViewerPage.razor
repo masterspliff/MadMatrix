@@ -27,7 +27,7 @@ else
 
 {
     <div class="event-grid">    
-        <div class="event-details information-pane" style="max-width: 400px">
+        <div class="event-details information-pane">
             <h5>Event Detajler</h5>
             
             <h7>@_currentEvent.Title</h7>
@@ -38,7 +38,7 @@ else
             <p><strong>Specielle Behovt:</strong> @_currentEvent.SpecialRequest</p>
             <p><strong>Deltagere:</strong> @_currentEvent.Participants</p>
         </div>
-        <div class="task-overview information-pane" style="max-width: 400px; font-weight: bold; margin-bottom: 10px">
+        <div class="task-overview information-pane">
             <h5>Opgave oversigt</h5>
             @foreach (var task in _tasks)
             {
