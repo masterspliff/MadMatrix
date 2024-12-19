@@ -19,7 +19,7 @@ builder.Services.AddScoped(sp =>
     }
     else
     {
-        baseAddress = "kantinen-server.azurewebsites.net"
+        baseAddress = "https://kantinen-server.azurewebsites.net/"
                       ?? throw new InvalidOperationException("API_BASE_URL environment variable not configured");
     }
     Console.WriteLine($"API_BASE_URL: {baseAddress}");
