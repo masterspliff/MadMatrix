@@ -5,11 +5,18 @@
     padding: 16px;
 }
 
-.event-details {
-
+.information-pane {
+    min-height: 500px;
+    max-width: 400px;
 }
 
-.event-details h3 {
+.task-details {
+    font-weight: bold;
+}
+
+
+
+.event-details {
     font-size: 1.25rem;
     font-weight: bold;
     margin-bottom: 8px;
@@ -18,4 +25,25 @@
 .event-details p {
     font-size: 0.9rem;
     color: #666;
+}
+
+.event-card {
+    min-height: 300px;
+}
+
+.btn{
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.btn:hover {
+    background-color: #0056b3;
+    color: #fff;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
 }

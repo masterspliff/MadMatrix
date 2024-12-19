@@ -114,7 +114,7 @@ code {
 }
 
 .assigned-to {
-    display: flex;
+    display: inline;
     align-items: center;
     margin-top: 8px;
     flex-direction: row;

@@ -87,3 +87,7 @@
     background-color: #f3e5f5;
     color: #4a148c;
 }
+
+.badge {
+    min-width: 70px
+}

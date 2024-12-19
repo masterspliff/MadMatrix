@@ -39,7 +39,7 @@
                     <tr>
                         @* Type column with badge *@
                         <td>
-                            <span class="badge @(item.IsEvent ? "bg-info" : "bg-warning")">
+                            <span class="badge @(item.IsEvent ? "bg-dark" : "bg-secondary")">
                                 @item.Type
                             </span>
                         </td>
@@ -52,8 +52,8 @@
                             @if (!item.IsEvent)
                             {
                                 <span class="badge @(item.Status switch {
-                                    core.Models.TaskStatus.NotStarted => "bg-secondary",
-                                    core.Models.TaskStatus.InProgress => "bg-primary",
+                                    core.Models.TaskStatus.NotStarted => "bg-danger",
+                                    core.Models.TaskStatus.InProgress => "bg-warning",
                                     core.Models.TaskStatus.Completed => "bg-success",
                                     _ => "bg-secondary"
                                 })">
