@@ -55,7 +55,7 @@ jobs:
           publish-profile: ${{ secrets.AZURE_SERVER_PUBLISH_PROFILE_API_DEV}}
           package: ${{env.DOTNET_ROOT}}/server
       
-      # Deploy Blazor App (Development)
+      # Deploy Blazor App (Development) kom nu
       - name: Deploy Blazor to Azure Web App (Development)
         if: github.ref == 'refs/heads/dev'
         uses: azure/webapps-deploy@v2
