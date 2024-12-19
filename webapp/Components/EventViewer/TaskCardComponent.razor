@@ -3,25 +3,28 @@
 @inject IUserService UserService
 @inject ITaskService TaskService
 
-    <h3>@Title</h3>
+<div style="max-width: 400px">
+    <h7 style="margin-bottom: 10px">@Title</h7>
     @if (ShowData == true)
     {
         <p><strong>Status:</strong> @Status</p>
-        <p><strong>Start Date:</strong> @StartTime</p>
-        <p><strong>End Date:</strong> @EndTime</p>
-        <p><strong>Assigned To:</strong></p>
-            <div class="assigned-to">
-                @foreach (var id in @AssignedTo)
-                {
+        <p><strong>Start Tid:</strong> @StartTime</p>
+        <p><strong>Slut tid:</strong> @EndTime</p>
+        <p><strong>Tildelte Medarbejdere:</strong></p>
+        <div class="assigned-to" style="max-width: 300px">
+            @foreach (var id in @AssignedTo)
+            {
                 // component that takes id and handles logic of displaying pfp and other info'
-                <UserViewerComponent userId="@id"/>
-                }
+                    <UserViewerComponent userId="@id"/>    
+                    <br/>
+            }
 
         </div>
     }
+</div>
     @if (ShowDescription == true)
     {
-        <p><strong>Assigned To:</strong></p>
+        <p><strong>Tildelte Medarbejdere:</strong></p>
         <div class="assigned-to">
             @foreach (var id in @AssignedTo)
             {
@@ -29,7 +32,7 @@
                 <UserViewerComponent userId="@id"/>
             }
         </div>
-        <p><strong>Description:</strong>@Description</p>
+        <p><strong>Beskrivelse: </strong>@Description</p>
 
         <div>
             <label for="taskStatusDropdown"><strong>Status:</strong></label>

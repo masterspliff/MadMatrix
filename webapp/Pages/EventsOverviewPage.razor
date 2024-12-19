@@ -4,7 +4,8 @@
 @inject ILocationService LocationService
 @inject NavigationManager NavigationManager
 
-<h3>Event Viewer</h3>
+<div style="margin-left: 100px; margin-right: 100px"> 
+<h3>Event Oversigt</h3>
 
 @if (events == null)
 {
@@ -12,32 +13,33 @@
 }
 else if (!events.Any())
 {
-    <p>No events found.</p>
+    <p>Ingen events fundet</p>
 }
 else
 {
-    <ul>
+    <ul style="margin-left: -50px">
         <div class="event-grid">
             @foreach (var eventItem in events)
             {
                 <div class="event-card">
-                    <div class="card-body" style="cursor: pointer;">
+                    <div class="card-body" style="cursor: pointer; display: flex; flex-direction: column; height: 100%;">
                         <div class="d-flex align-items-center mb-2">
                             <div>
                                 <p class="small">@eventItem.Id</p>
-                                <h5 class="card-title mb-0 text-center">@eventItem.Title</h5>
+                                <h7 class="card-title mb-0 text-center">@eventItem.Title</h7>
                             </div>
                         </div>
-                        <p class="card-text">Location: @GetLocationNameAsync(eventItem.LocationId)</p>
-                        <p class="card-text">Date: @eventItem.DateForEvent</p>
-                        <p class="card-text">Customer: @eventItem.ByCustomer</p>
-                        <button class="btn" @onclick="() => NavigateToTasks(eventItem.Id)">View Event</button>
+                        <p class="card-text">Lokation: @GetLocationNameAsync(eventItem.LocationId)</p>
+                        <p class="card-text">Dato: @eventItem.DateForEvent</p>
+                        <p class="card-text">Kunde: @eventItem.ByCustomer</p>
+                        <button class="btn" @onclick="() => NavigateToTasks(eventItem.Id)" style="margin-top: auto;">Se event</button>
                     </div>
                 </div>
             }
         </div>
     </ul>
 }
+</div>
 
 @code {
     /// <summary>

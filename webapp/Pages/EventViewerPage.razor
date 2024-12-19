@@ -6,14 +6,15 @@
 @inject ITaskService TaskService
 @inject ILocationService LocationService
 
-<div class="top-row ps-3 navbar navbar-dark custom-navbar" style="border: 1px solid #ffffff; border-radius: 5px;">
-    <div class="container-fluid d-flex justify-content-between">
-        <a class="navbar-brand text-black d-flex align-items-center" href="">
-            <span style="font-size: 1.25rem; color: black; font-weight: bold;">Event Viewer</span>
+<div style="margin-left: 100px; margin-right: 100px">
+<div class="top-row ps-3 navbar navbar-dark custom-navbar" style="border: 1px solid #ffffff; border-radius: 5px; padding-left: -16px; padding-right: -1px">
+    <div class="container-fluid d-flex justify-content-between" style="margin-left: -12px; margin-right: -12px">
+        <a class="navbar-brand text-black d-flex align-items-center">
+            <span style="font-size: 1.25rem; color: black; font-weight: bold;">Event Oversigtsplan</span>
         </a>
 
         <div class="d-flex align-items-center">
-            <button class="btn-eaa" @onclick="NavigateToEvents">EventsOverview</button> 
+            <button class="btn" @onclick="NavigateToEvents" style="margin-right: -5px">Gå tilbage</button> 
         </div>
     </div>
 </div>
@@ -23,21 +24,22 @@
         <p>Loading event details...</p>
 }
 else
+
 {
     <div class="event-grid">    
-        <div class="event-details information-pane">
-            <h1>Event Details</h1>
+        <div class="event-details information-pane" style="max-width: 400px">
+            <h5>Event Detajler</h5>
             
-            <h3>@_currentEvent.Title</h3>
-            <p><strong>Location:</strong> @(_currentLocation?.Name)</p>
-            <p><strong>Date:</strong> @_currentEvent.DateForEvent</p>
-            <p><strong>Customer:</strong> @_currentEvent.ByCustomer</p>
-            <p><strong>Food Choices:</strong> @_currentEvent.FoodChoices</p>
-            <p><strong>Special Request:</strong> @_currentEvent.SpecialRequest</p>
-            <p><strong>Participants:</strong> @_currentEvent.Participants</p>
+            <h7>@_currentEvent.Title</h7>
+            <p><strong>Lokation:</strong> @(_currentLocation?.Name)</p>
+            <p><strong>Dato:</strong> @_currentEvent.DateForEvent</p>
+            <p><strong>Kunde:</strong> @_currentEvent.ByCustomer</p>
+            <p><strong>Madvalg :</strong> @_currentEvent.FoodChoices</p>
+            <p><strong>Specielle Behovt:</strong> @_currentEvent.SpecialRequest</p>
+            <p><strong>Deltagere:</strong> @_currentEvent.Participants</p>
         </div>
-        <div class="task-overview information-pane">
-            <h1>Task Overview // DETTE SKAL VÆRE EVENT TASKS OG IKKE ALLE TASKS</h1>
+        <div class="task-overview information-pane" style="max-width: 400px; font-weight: bold; margin-bottom: 10px">
+            <h5>Opgave oversigt</h5>
             @foreach (var task in _tasks)
             {
                 <div class="information-pane hover-effect" @onclick="() => OpenTask(task.Id)">
@@ -87,6 +89,7 @@ else
     
 }    
 <!-- get all the tasks that has the eventid. kom så jit -->
+</div>
 
 @code {
     /// <summary>
